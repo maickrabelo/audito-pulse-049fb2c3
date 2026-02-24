@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 158 33% 98%;
+    --foreground: 158 47% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 158 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 158 84% 4.9%;
+
+    --primary: 158 75% 22%;
+    --primary-foreground: 158 40% 98%;
+
+    --secondary: 158 56% 42%;
+    --secondary-foreground: 158 40% 98%;
+
+    --muted: 158 40% 96.1%;
+    --muted-foreground: 158 16.3% 46.9%;
+
+    --accent: 158 56% 28%;
+    --accent-foreground: 158 40% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 158 40% 98%;
+
+    --border: 158 31.8% 91.4%;
+    --input: 158 31.8% 91.4%;
+    --ring: 158 75% 42%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 158 47% 10%;
+    --foreground: 158 40% 98%;
+
+    --card: 158 47% 12%;
+    --card-foreground: 158 40% 98%;
+
+    --popover: 158 47% 12%;
+    --popover-foreground: 158 40% 98%;
+
+    --primary: 158 75% 30%;
+    --primary-foreground: 158 40% 98%;
+
+    --secondary: 158 56% 32%;
+    --secondary-foreground: 158 40% 98%;
+
+    --muted: 158 32.6% 17.5%;
+    --muted-foreground: 158 20.2% 65.1%;
+
+    --accent: 158 56% 22%;
+    --accent-foreground: 158 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 158 40% 98%;
+
+    --border: 158 32.6% 17.5%;
+    --input: 158 32.6% 17.5%;
+    --ring: 158 75% 32%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  .audit-container {
+    @apply container px-4 sm:px-6 lg:px-8 py-6 mx-auto;
+  }
+
+  .section-title {
+    @apply text-2xl sm:text-3xl font-bold mb-6 text-audit-primary;
+  }
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}

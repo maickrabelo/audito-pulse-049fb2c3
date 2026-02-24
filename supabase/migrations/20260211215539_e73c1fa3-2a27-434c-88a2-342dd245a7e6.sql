@@ -1,0 +1,1 @@
+ALTER TABLE public.sst_managers ADD COLUMN onboarding_completed_pages jsonb DEFAULT '[]'::jsonb;

@@ -1,0 +1,44 @@
+User-agent: Googlebot
+Allow: /
+Disallow: /dashboard
+Disallow: /reports
+Disallow: /report-form
+Disallow: /profile
+Disallow: /sst-dashboard
+Disallow: /sst-portal
+Disallow: /master-dashboard
+Disallow: /user-management
+Disallow: /company-dashboard
+Disallow: /climate-dashboard
+Disallow: /climate-survey
+Disallow: /hseit-dashboard
+Disallow: /hseit/
+Disallow: /burnout-dashboard
+Disallow: /burnout/
+Disallow: /contratar
+Disallow: /checkout
+Disallow: /parceiro/dashboard
+Disallow: /afiliado/dashboard
+Disallow: /change-password
+Disallow: /pending-approval
+
+User-agent: Bingbot
+Allow: /
+Disallow: /dashboard
+Disallow: /reports
+Disallow: /report-form
+Disallow: /profile
+Disallow: /sst-dashboard
+Disallow: /sst-portal
+Disallow: /master-dashboard
+Disallow: /user-management
+
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /reports
+Disallow: /profile
+Disallow: /sst-dashboard
+Disallow: /master-dashboard
+
+Sitemap: https://honest-eye-reports.lovable.app/sitemap.xml
