@@ -7,12 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Search, Plus, Building, UserCheck, Edit, Trash, ArrowLeft, Key, Copy, Upload, ClipboardList, BarChart3, Users, Globe, Activity } from "lucide-react";
-import { PendingPartnersManager } from '@/components/admin/PendingPartnersManager';
-import { PendingAffiliatesManager } from '@/components/admin/PendingAffiliatesManager';
-import { ActivePartnersManager } from '@/components/admin/ActivePartnersManager';
-import { AdminPortalManager } from '@/components/admin/AdminPortalManager';
-import { AccessLogsTab } from '@/components/admin/AccessLogsTab';
+import { Search, Plus, Building, UserCheck, Edit, Trash, ArrowLeft, Key, Copy, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -94,10 +89,7 @@ const MasterDashboard = () => {
     if (role && role !== 'admin') {
       // Usuário autenticado mas sem permissão de admin
       if (role === 'company') navigate('/dashboard');
-      else if (role === 'sst') navigate('/sst-dashboard');
       else if (role === 'pending') navigate('/pending-approval');
-      else if (role === 'partner') navigate('/parceiro/dashboard');
-      else if (role === 'affiliate') navigate('/afiliado/dashboard');
       else navigate('/');
     }
   }, [authLoading, session, role, navigate]);
@@ -1077,89 +1069,12 @@ const MasterDashboard = () => {
             <h1 className="text-3xl font-bold text-audit-primary">Painel Administrativo</h1>
           </div>
 
-          {/* Quick Actions Section */}
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Ações Rápidas</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="border-2 border-primary/20 hover:border-primary/40 transition-colors">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center gap-2">
-                    <ClipboardList className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-lg">Pesquisa de Clima</CardTitle>
-                  </div>
-                  <CardDescription>
-                    Crie e gerencie pesquisas de clima organizacional
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Button 
-                    onClick={() => navigate('/climate-survey/new')} 
-                    className="w-full"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Nova Pesquisa
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    onClick={() => navigate('/climate-dashboard')}
-                    className="w-full text-sm"
-                  >
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    Ver Dashboard
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-orange-500/20 hover:border-orange-500/40 transition-colors">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-orange-500" />
-                    <CardTitle className="text-lg">Usuários de Teste</CardTitle>
-                  </div>
-                  <CardDescription>
-                    Crie usuários para testar dashboards
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Button 
-                    onClick={handleCreateTestUsers} 
-                    className="w-full bg-orange-500 hover:bg-orange-600"
-                    disabled={isCreatingTestUsers}
-                  >
-                    {isCreatingTestUsers ? (
-                      <>Criando...</>
-                    ) : (
-                      <>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Criar Usuários Teste
-                      </>
-                    )}
-                  </Button>
-                  {testUsersResult && (
-                    <div className="text-xs space-y-1 p-2 bg-muted rounded">
-                      <p className="font-medium">Credenciais:</p>
-                      <p><strong>Parceiro:</strong> {testUsersResult.partner?.email}</p>
-                      <p><strong>Afiliado:</strong> {testUsersResult.affiliate?.email}</p>
-                      <p className="text-muted-foreground">Senha: Teste123!</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
           
           <Tabs defaultValue="companies" value={activeTab} onValueChange={setActiveTab} className="mb-8">
             <div className="flex justify-between items-center mb-4">
               <TabsList>
                 <TabsTrigger value="companies">Empresas</TabsTrigger>
                 <TabsTrigger value="sst">Gestoras SST</TabsTrigger>
-                <TabsTrigger value="portal">Portal</TabsTrigger>
-                <TabsTrigger value="active-partners">Parceiros Ativos</TabsTrigger>
-                <TabsTrigger value="partners">Aprovações Pendentes</TabsTrigger>
-                <TabsTrigger value="logs" className="flex items-center gap-1">
-                  <Activity className="h-3.5 w-3.5" />
-                  Logs
-                </TabsTrigger>
               </TabsList>
               
               <div className="flex gap-4">
@@ -1807,26 +1722,6 @@ const MasterDashboard = () => {
               </Card>
             </TabsContent>
 
-            {/* Portal Tab */}
-            <TabsContent value="portal" className="space-y-6">
-              <AdminPortalManager />
-            </TabsContent>
-
-            {/* Active Partners Tab */}
-            <TabsContent value="active-partners" className="space-y-6">
-              <ActivePartnersManager />
-            </TabsContent>
-
-            {/* Pending Approvals Tab */}
-            <TabsContent value="partners" className="space-y-6">
-              <PendingPartnersManager />
-              <PendingAffiliatesManager />
-            </TabsContent>
-
-            {/* Logs Tab */}
-            <TabsContent value="logs" className="space-y-6">
-              <AccessLogsTab />
-            </TabsContent>
           </Tabs>
         </div>
       </main>
