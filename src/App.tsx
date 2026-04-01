@@ -22,6 +22,7 @@ import UserManagement from "./pages/UserManagement";
 import ChangePassword from "./pages/ChangePassword";
 import TrialSignup from "./pages/TrialSignup";
 import SSTDashboard from "./pages/SSTDashboard";
+import ReportSuccess from "./pages/ReportSuccess";
 
 const queryClient = new QueryClient();
 
