@@ -428,6 +428,25 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
     );
   }
 
+  if (!companyId) {
+    return hideNavigation ? (
+      <div className="flex items-center justify-center py-8">
+        <p className="text-muted-foreground">Nenhuma empresa selecionada. Selecione uma empresa para visualizar o dashboard.</p>
+      </div>
+    ) : (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow bg-gray-50 py-8 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-audit-primary">Dashboard</h2>
+            <p className="text-muted-foreground">Nenhuma empresa vinculada ao seu perfil. Entre em contato com o administrador.</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   const dashboardContent = (
     <>
       {isTrialExpired && <TrialExpiredOverlay />}
