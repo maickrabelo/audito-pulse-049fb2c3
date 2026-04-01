@@ -107,6 +107,7 @@ serve(async (req) => {
           max_employees: parseInt(employee_count || '15'),
           referred_by_partner_id: referredByPartnerId,
           referred_by_affiliate_id: referredByAffiliateId,
+          slug: company_cnpj ? company_cnpj.replace(/\D/g, '') : null,
         })
         .select()
         .single();
