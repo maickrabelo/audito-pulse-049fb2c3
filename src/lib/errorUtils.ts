@@ -46,7 +46,7 @@ export function getSafeErrorMessage(error: any): string {
   const errorCode = error.code || '';
 
   // Log full error server-side only (not in production console)
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.error('Full error details:', {
       message: errorMessage,
       code: errorCode,
