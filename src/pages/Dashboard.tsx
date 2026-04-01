@@ -110,6 +110,9 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
           setCompanyId(result.id);
           setCompanySlug(result.slug);
         }
+      } else {
+        // No company found - stop loading
+        setIsLoading(false);
       }
     };
 
@@ -419,6 +422,25 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
         <Navbar />
         <main className="flex-grow bg-gray-50 py-8 flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-audit-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!companyId) {
+    return hideNavigation ? (
+      <div className="flex items-center justify-center py-8">
+        <p className="text-muted-foreground">Nenhuma empresa selecionada. Selecione uma empresa para visualizar o dashboard.</p>
+      </div>
+    ) : (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow bg-gray-50 py-8 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-audit-primary">Dashboard</h2>
+            <p className="text-muted-foreground">Nenhuma empresa vinculada ao seu perfil. Entre em contato com o administrador.</p>
+          </div>
         </main>
         <Footer />
       </div>
