@@ -138,17 +138,7 @@ const ReportForm = () => {
 
       setIsSubmitting(false);
       
-      toast({
-        title: "Denúncia enviada com sucesso",
-        description: data.tracking_code 
-          ? `Código de rastreamento: ${data.tracking_code}`
-          : "Sua denúncia foi registrada e será analisada em breve.",
-      });
-      
-      // Redirect to home page
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
+      navigate('/report-success', { state: { trackingCode: data.tracking_code } });
     } catch (error: any) {
       setIsSubmitting(false);
       toast({
