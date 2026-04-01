@@ -21,6 +21,7 @@ import PendingApproval from "./pages/PendingApproval";
 import UserManagement from "./pages/UserManagement";
 import ChangePassword from "./pages/ChangePassword";
 import TrialSignup from "./pages/TrialSignup";
+import SSTDashboard from "./pages/SSTDashboard";
 
 const queryClient = new QueryClient();
 
