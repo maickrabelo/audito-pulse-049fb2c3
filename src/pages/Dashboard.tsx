@@ -110,6 +110,9 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
           setCompanyId(result.id);
           setCompanySlug(result.slug);
         }
+      } else {
+        // No company found - stop loading
+        setIsLoading(false);
       }
     };
 
