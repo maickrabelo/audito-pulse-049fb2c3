@@ -55,6 +55,7 @@ const reportSchema = z.object({
 
 const ReportForm = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
