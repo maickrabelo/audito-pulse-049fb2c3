@@ -22,6 +22,7 @@ import UserManagement from "./pages/UserManagement";
 import ChangePassword from "./pages/ChangePassword";
 import TrialSignup from "./pages/TrialSignup";
 import SSTDashboard from "./pages/SSTDashboard";
+import ReportSuccess from "./pages/ReportSuccess";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/report" element={<ReportChat />} />
               <Route path="/report-form" element={<ReportForm />} />
+              <Route path="/report-success" element={<ReportSuccess />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/profile" element={<CompanyProfile />} />
               <Route path="/master-dashboard" element={<MasterDashboard />} />

@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   { value: "rh", label: "Recursos Humanos" },
@@ -54,6 +55,7 @@ const reportSchema = z.object({
 
 const ReportForm = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -136,17 +138,7 @@ const ReportForm = () => {
 
       setIsSubmitting(false);
       
-      toast({
-        title: "Denúncia enviada com sucesso",
-        description: data.tracking_code 
-          ? `Código de rastreamento: ${data.tracking_code}`
-          : "Sua denúncia foi registrada e será analisada em breve.",
-      });
-      
-      // Redirect to home page
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
+      navigate('/report-success', { state: { trackingCode: data.tracking_code } });
     } catch (error: any) {
       setIsSubmitting(false);
       toast({
