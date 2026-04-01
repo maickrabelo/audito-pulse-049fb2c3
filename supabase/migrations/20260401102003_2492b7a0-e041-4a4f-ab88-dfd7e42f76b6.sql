@@ -1,0 +1,2 @@
+UPDATE public.profiles SET full_name='Grupo AMO', sst_manager_id='a0a70e8c-26cc-4aaf-8587-22b39ef6cabd' WHERE id='9cf65be2-c565-4d2a-9770-98b867e87b27';
+UPDATE public.user_roles SET role='sst' WHERE user_id='9cf65be2-c565-4d2a-9770-98b867e87b27';
