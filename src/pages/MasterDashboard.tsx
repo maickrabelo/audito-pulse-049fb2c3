@@ -201,21 +201,15 @@ const MasterDashboard = () => {
       }
 
       const companyName = formData.get('companyName') as string;
+      const companyCNPJ = formData.get('companyCNPJ') as string;
       
-      // Generate slug from company name
-      const slug = companyName
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-        .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
-        .trim()
-        .replace(/\s+/g, '-') // Replace spaces with hyphens
-        .replace(/-+/g, '-'); // Remove duplicate hyphens
+      // Generate slug from CNPJ (digits only)
+      const slug = companyCNPJ.replace(/\D/g, '');
 
       const { error } = await supabase.from('companies').insert({
         name: companyName,
         email: formData.get('companyEmail') as string,
-        cnpj: formData.get('companyCNPJ') as string,
+        cnpj: companyCNPJ,
         phone: formData.get('companyPhone') as string,
         address: formData.get('companyAddress') as string,
         logo_url: logoUrl,
