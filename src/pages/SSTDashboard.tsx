@@ -33,6 +33,7 @@ const SSTDashboard = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [viewingCompany, setViewingCompany] = useState<AssignedCompany | null>(null);
 
   useEffect(() => {
     if (role && role !== 'sst') {
