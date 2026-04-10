@@ -18,7 +18,7 @@ const SEOStructuredData: React.FC<SEOStructuredDataProps> = ({ faqs = [] }) => {
     name: 'SOIA',
     description: 'Sistema NR-01 para levantamento e gestão de riscos psicossociais no trabalho',
     url: siteUrl,
-    logo: `${siteUrl}/lovable-uploads/Logo_SOIA.png`,
+    logo: `${siteUrl}/lovable-uploads/Logo_GrupoAMO.png`,
     contactPoint: {
       '@type': 'ContactPoint',
       email: 'contato@soia.com.br',
