@@ -306,7 +306,7 @@ const SSTDashboard = () => {
                       <Button
                         size="sm"
                         className="flex-1"
-                        onClick={() => navigate(`/company-dashboard/${company.id}`)}
+                        onClick={() => setViewingCompany(company)}
                       >
                         Ver Dashboard
                       </Button>
