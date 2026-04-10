@@ -63,8 +63,6 @@ serve(async (req) => {
         phone: phone || null,
         address: address || null,
         slug,
-        subscription_status: 'trial',
-        trial_ends_at: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
       })
       .select()
       .single();
