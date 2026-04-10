@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search } from "lucide-react";
+import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import AddCompanyDialog from '@/components/sst/AddCompanyDialog';
@@ -33,6 +33,7 @@ const SSTDashboard = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [viewingCompany, setViewingCompany] = useState<AssignedCompany | null>(null);
 
   useEffect(() => {
     if (role && role !== 'sst') {
@@ -131,11 +132,37 @@ const SSTDashboard = () => {
 
   const isActive = (status: string | null) => status === 'active' || status === 'trial';
 
+  // Iframe view for company dashboard
+  if (viewingCompany) {
+    return (
+      <div className="flex flex-col h-screen">
+        <div className="flex items-center gap-4 px-4 py-3 bg-background border-b shadow-sm shrink-0">
+          <Button variant="outline" size="sm" onClick={() => setViewingCompany(null)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar ao Painel SST
+          </Button>
+          <div className="flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-primary" />
+            <span className="font-medium text-foreground">{viewingCompany.name}</span>
+            {viewingCompany.cnpj && (
+              <span className="text-sm text-muted-foreground">— CNPJ: {viewingCompany.cnpj}</span>
+            )}
+          </div>
+        </div>
+        <iframe
+          src={`/company-dashboard/${viewingCompany.id}`}
+          className="flex-1 w-full border-0"
+          title={`Dashboard - ${viewingCompany.name}`}
+        />
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="flex-grow bg-gray-50 py-8 flex items-center justify-center">
+        <main className="flex-grow bg-muted py-8 flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </main>
         <Footer />
@@ -279,7 +306,7 @@ const SSTDashboard = () => {
                       <Button
                         size="sm"
                         className="flex-1"
-                        onClick={() => navigate(`/company-dashboard/${company.id}`)}
+                        onClick={() => setViewingCompany(company)}
                       >
                         Ver Dashboard
                       </Button>
