@@ -14,7 +14,7 @@ const Footer = () => {
             {isWhiteLabel && brandLogo ? (
               <img src={brandLogo} alt="Logo" className="h-10 object-contain mb-4" />
             ) : (
-              <img src="/lovable-uploads/Logo_SOIA.png" alt="SOIA - Sistema de Ouvidoria" className="h-10 brightness-0 invert mb-4" />
+              <img src="/lovable-uploads/Logo_GrupoAMO.png" alt="Grupo AMO" className="h-10 brightness-0 invert mb-4" />
             )}
             <p className="text-white/60 text-sm mb-6">
               Sistema completo de canal de denúncias e ouvidoria inteligente para empresas.

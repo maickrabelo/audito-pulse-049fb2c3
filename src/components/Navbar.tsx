@@ -26,7 +26,7 @@ const Navbar = () => {
               {isWhiteLabel && brandLogo ? (
                 <img src={brandLogo} alt="Logo" className="h-10 object-contain" />
               ) : (
-                <img src="/lovable-uploads/Logo_SOIA.png" alt="SOIA Logo" className="h-8" />
+                <img src="/lovable-uploads/Logo_GrupoAMO.png" alt="Grupo AMO Logo" className="h-8" />
               )}
             </Link>
           </div>
