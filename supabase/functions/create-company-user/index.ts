@@ -21,6 +21,7 @@ Deno.serve(async (req) => {
     const apiKey = req.headers.get("x-api-key");
     const expectedApiKey = Deno.env.get("CREATE_COMPANY_API_KEY");
 
+    console.log("apiKey present:", !!apiKey, "expectedApiKey present:", !!expectedApiKey, "match:", apiKey === expectedApiKey);
     let authorized = false;
 
     if (apiKey && expectedApiKey && apiKey === expectedApiKey) {
