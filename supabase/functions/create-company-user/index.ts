@@ -16,37 +16,48 @@ Deno.serve(async (req) => {
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // Support two auth methods: Bearer token (SST/admin) or x-api-key
+    // Support three auth methods: service_role key, x-api-key, or JWT (SST/admin)
     const authHeader = req.headers.get("Authorization");
     const apiKey = req.headers.get("x-api-key");
     const expectedApiKey = Deno.env.get("CREATE_COMPANY_API_KEY");
 
-    console.log("apiKey present:", !!apiKey, "expectedApiKey present:", !!expectedApiKey, "match:", apiKey === expectedApiKey);
     let authorized = false;
 
-    if (apiKey && expectedApiKey && apiKey === expectedApiKey) {
-      // API key auth - for internal/partner use
-      authorized = true;
-    } else if (authHeader?.startsWith("Bearer ")) {
-      // JWT auth - verify SST or admin role
-      const supabaseCaller = createClient(supabaseUrl, supabaseAnonKey, {
-        global: { headers: { Authorization: authHeader } },
-      });
-
+    // Check if using service role key (sent by internal tools)
+    if (authHeader) {
       const token = authHeader.replace("Bearer ", "");
-      const { data: claimsData, error: claimsError } = await supabaseCaller.auth.getClaims(token);
-      if (!claimsError && claimsData?.claims) {
-        const callerId = claimsData.claims.sub;
-        const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-        const { data: callerRole } = await supabaseAdmin
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", callerId)
-          .single();
+      if (token === supabaseServiceKey) {
+        authorized = true;
+      }
+    }
 
-        if (callerRole && ["sst", "admin"].includes(callerRole.role)) {
-          authorized = true;
+    // Check x-api-key
+    if (!authorized && apiKey && expectedApiKey && apiKey === expectedApiKey) {
+      authorized = true;
+    }
+
+    // Check JWT auth (SST/admin users)
+    if (!authorized && authHeader?.startsWith("Bearer ")) {
+      try {
+        const supabaseCaller = createClient(supabaseUrl, supabaseAnonKey, {
+          global: { headers: { Authorization: authHeader } },
+        });
+        const token = authHeader.replace("Bearer ", "");
+        const { data: claimsData, error: claimsError } = await supabaseCaller.auth.getClaims(token);
+        if (!claimsError && claimsData?.claims) {
+          const callerId = claimsData.claims.sub;
+          const adminCheck = createClient(supabaseUrl, supabaseServiceKey);
+          const { data: callerRole } = await adminCheck
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", callerId)
+            .single();
+          if (callerRole && ["sst", "admin"].includes(callerRole.role)) {
+            authorized = true;
+          }
         }
+      } catch (e) {
+        // JWT check failed, continue
       }
     }
 
