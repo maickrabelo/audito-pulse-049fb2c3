@@ -12,33 +12,49 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    // Support two auth methods: Bearer token (SST/admin) or x-api-key
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
+    const apiKey = req.headers.get("x-api-key");
+    const expectedApiKey = Deno.env.get("CREATE_COMPANY_API_KEY");
+
+    let authorized = false;
+
+    if (apiKey && expectedApiKey && apiKey === expectedApiKey) {
+      // API key auth - for internal/partner use
+      authorized = true;
+    } else if (authHeader?.startsWith("Bearer ")) {
+      // JWT auth - verify SST or admin role
+      const supabaseCaller = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } },
+      });
+
+      const token = authHeader.replace("Bearer ", "");
+      const { data: claimsData, error: claimsError } = await supabaseCaller.auth.getClaims(token);
+      if (!claimsError && claimsData?.claims) {
+        const callerId = claimsData.claims.sub;
+        const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+        const { data: callerRole } = await supabaseAdmin
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", callerId)
+          .single();
+
+        if (callerRole && ["sst", "admin"].includes(callerRole.role)) {
+          authorized = true;
+        }
+      }
+    }
+
+    if (!authorized) {
       return new Response(
         JSON.stringify({ error: "Não autorizado" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    // Verify caller identity
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
-    const supabaseCaller = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabaseCaller.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(
-        JSON.stringify({ error: "Token inválido" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const callerId = claimsData.claims.sub;
 
     // Admin client for privileged operations
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
