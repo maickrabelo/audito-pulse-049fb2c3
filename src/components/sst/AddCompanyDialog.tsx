@@ -61,7 +61,46 @@ const AddCompanyDialog = ({ open, onOpenChange, sstManagerId, onCompanyAdded }: 
 
       if (assignError) throw assignError;
 
-      toast({ title: "Empresa cadastrada", description: "A empresa foi cadastrada e vinculada com sucesso." });
+      // Create login user for the company if email was provided
+      const companyEmail = formData.get('email') as string;
+      if (companyEmail) {
+        try {
+          const { data: sessionData } = await supabase.auth.getSession();
+          const { error: userError } = await supabase.functions.invoke('create-company-user', {
+            body: {
+              company_id: company.id,
+              email: companyEmail,
+              cnpj,
+              company_name: formData.get('name') as string,
+            },
+          });
+
+          if (userError) {
+            console.error('Error creating company user:', userError);
+            toast({
+              title: "Empresa cadastrada, mas login não criado",
+              description: `A empresa foi cadastrada, mas houve erro ao criar o login: ${userError.message}. Crie o login manualmente.`,
+              variant: "destructive",
+            });
+          } else {
+            const cnpjDigits = cnpj.replace(/\D/g, '');
+            toast({
+              title: "Empresa cadastrada com sucesso!",
+              description: `Login criado: ${companyEmail} | Senha inicial: ${cnpjDigits} (CNPJ)`,
+            });
+          }
+        } catch (userErr: any) {
+          console.error('Error creating company user:', userErr);
+          toast({
+            title: "Empresa cadastrada, login pendente",
+            description: "A empresa foi criada, mas o login precisa ser criado manualmente.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({ title: "Empresa cadastrada", description: "A empresa foi cadastrada sem login (email não informado)." });
+      }
+
       onOpenChange(false);
       onCompanyAdded();
     } catch (error: any) {
