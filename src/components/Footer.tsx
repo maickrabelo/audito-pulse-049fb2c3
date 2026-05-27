@@ -49,11 +49,25 @@ const Footer = () => {
           </div>
 
           <div>
+            <h3 className="text-lg font-semibold mb-4">Legal</h3>
+            <ul className="space-y-3 text-sm">
+              <li><Link to="/politica-de-privacidade" className="text-white/60 hover:text-white transition-colors">Política de Privacidade</Link></li>
+              <li><Link to="/termos-de-uso" className="text-white/60 hover:text-white transition-colors">Termos de Uso</Link></li>
+              <li><Link to="/politica-de-seguranca" className="text-white/60 hover:text-white transition-colors">Política de Segurança</Link></li>
+              <li><Link to="/politica-de-retencao" className="text-white/60 hover:text-white transition-colors">Política de Retenção</Link></li>
+            </ul>
+          </div>
+
+          <div>
             <h3 className="text-lg font-semibold mb-4">Contato</h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-audit-secondary flex-shrink-0 mt-0.5" />
                 <span className="text-white/60">contato@soia.com.br</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Mail className="h-5 w-5 text-audit-secondary flex-shrink-0 mt-0.5" />
+                <span className="text-white/60">Encarregado (DPO): dpo@agenciamundi.com</span>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-audit-secondary flex-shrink-0 mt-0.5" />
