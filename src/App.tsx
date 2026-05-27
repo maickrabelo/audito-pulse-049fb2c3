@@ -23,6 +23,10 @@ import ChangePassword from "./pages/ChangePassword";
 import TrialSignup from "./pages/TrialSignup";
 import SSTDashboard from "./pages/SSTDashboard";
 import ReportSuccess from "./pages/ReportSuccess";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
+import TermosDeUso from "./pages/TermosDeUso";
+import PoliticaSeguranca from "./pages/PoliticaSeguranca";
+import PoliticaRetencao from "./pages/PoliticaRetencao";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +62,10 @@ const App = () => (
               <Route path="/company-dashboard/:id" element={<Dashboard />} />
               <Route path="/sst-dashboard" element={<SSTDashboard />} />
               <Route path="/report/:companySlug" element={<CompanyReport />} />
+              <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+              <Route path="/termos-de-uso" element={<TermosDeUso />} />
+              <Route path="/politica-de-seguranca" element={<PoliticaSeguranca />} />
+              <Route path="/politica-de-retencao" element={<PoliticaRetencao />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </WhiteLabelProvider>

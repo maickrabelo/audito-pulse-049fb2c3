@@ -333,9 +333,9 @@ const ReportForm = () => {
               <CardFooter className="flex-col space-y-4">
                 <p className="text-sm text-gray-500 w-full">
                   Ao enviar este formulário, você concorda com nossa{" "}
-                  <a href="#" className="text-audit-primary hover:underline">Política de Privacidade</a>{" "}
+                  <a href="/politica-de-privacidade" className="text-audit-primary hover:underline">Política de Privacidade</a>{" "}
                   e{" "}
-                  <a href="#" className="text-audit-primary hover:underline">Termos de Uso</a>.
+                  <a href="/termos-de-uso" className="text-audit-primary hover:underline">Termos de Uso</a>.
                 </p>
                 
                 <div className="flex justify-end w-full">
