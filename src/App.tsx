@@ -23,6 +23,10 @@ import ChangePassword from "./pages/ChangePassword";
 import TrialSignup from "./pages/TrialSignup";
 import SSTDashboard from "./pages/SSTDashboard";
 import ReportSuccess from "./pages/ReportSuccess";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
+import TermosDeUso from "./pages/TermosDeUso";
+import PoliticaSeguranca from "./pages/PoliticaSeguranca";
+import PoliticaRetencao from "./pages/PoliticaRetencao";
 
 const queryClient = new QueryClient();
 
