@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <footer className="bg-audit-dark text-white">
       <div className="audit-container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           <div className="lg:col-span-1">
             {isWhiteLabel && brandLogo ? (
               <img src={brandLogo} alt="Logo" className="h-10 object-contain mb-4" />
