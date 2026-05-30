@@ -11,7 +11,7 @@ const PoliticaSeguranca = () => {
   return (
     <LegalLayout title="Política de Segurança da Informação" updatedAt="27 de maio de 2026">
       <p>
-        Esta Política descreve as medidas técnicas e organizacionais adotadas pelo Agência Mundi
+        Esta Política descreve as medidas técnicas e organizacionais adotadas pela Agência Mundi
         para proteger as informações tratadas na plataforma SOIA, em conformidade com o art. 46
         da LGPD.
       </p>

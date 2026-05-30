@@ -5,7 +5,7 @@ import usePageSEO from '@/hooks/usePageSEO';
 const PoliticaPrivacidade = () => {
   usePageSEO({
     title: 'Política de Privacidade — SOIA | Agência Mundi',
-    description: 'Política de Privacidade do canal de denúncias SOIA do Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
+    description: 'Política de Privacidade do canal de denúncias SOIA da Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
   });
 
   return (
@@ -20,7 +20,7 @@ const PoliticaPrivacidade = () => {
       <h2>1. Papéis no tratamento</h2>
       <p>
         A empresa contratante (cliente) atua como <strong>Controladora</strong> dos dados
-        coletados em seu canal de denúncias. O Agência Mundi atua como <strong>Operador</strong>,
+        coletados em seu canal de denúncias. A Agência Mundi atua como <strong>Operador</strong>,
         tratando dados em nome e conforme instruções da Controladora.
       </p>
 

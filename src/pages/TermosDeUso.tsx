@@ -5,7 +5,7 @@ import usePageSEO from '@/hooks/usePageSEO';
 const TermosDeUso = () => {
   usePageSEO({
     title: 'Termos de Uso — SOIA | Agência Mundi',
-    description: 'Termos de Uso da plataforma SOIA, canal de denúncias e ouvidoria do Agência Mundi.',
+    description: 'Termos de Uso da plataforma SOIA, canal de denúncias e ouvidoria da Agência Mundi.',
   });
 
   return (
@@ -69,19 +69,19 @@ const TermosDeUso = () => {
       <p>
         Envidamos esforços para manter a plataforma disponível 24/7. Eventuais janelas de
         manutenção, indisponibilidades programadas ou interrupções decorrentes de caso
-        fortuito/força maior não geram responsabilidade do Agência Mundi.
+        fortuito/força maior não geram responsabilidade da Agência Mundi.
       </p>
 
       <h2>8. Limitação de responsabilidade</h2>
       <p>
-        O Agência Mundi não responde por: (i) decisões tomadas pela Controladora a partir das
+        A Agência Mundi não responde por: (i) decisões tomadas pela Controladora a partir das
         denúncias; (ii) conteúdo enviado por denunciantes; (iii) danos indiretos, lucros
         cessantes ou perda de oportunidade.
       </p>
 
       <h2>9. Cancelamento e suspensão</h2>
       <p>
-        O Agência Mundi pode suspender ou encerrar o acesso de qualquer usuário em caso de
+        A Agência Mundi pode suspender ou encerrar o acesso de qualquer usuário em caso de
         descumprimento destes Termos, sem prejuízo das medidas legais cabíveis.
       </p>
 
@@ -93,7 +93,7 @@ const TermosDeUso = () => {
 
       <h2>11. Foro e legislação aplicável</h2>
       <p>
-        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede do Agência Mundi,
+        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede da Agência Mundi,
         com renúncia a qualquer outro, por mais privilegiado que seja.
       </p>
 
