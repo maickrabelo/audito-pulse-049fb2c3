@@ -4,14 +4,14 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const PoliticaSeguranca = () => {
   usePageSEO({
-    title: 'Política de Segurança da Informação — SOIA | Grupo AMO',
+    title: 'Política de Segurança da Informação — SOIA | Agência Mundi',
     description: 'Política de Segurança da Informação da plataforma SOIA, com medidas técnicas e organizacionais em conformidade com a LGPD.',
   });
 
   return (
     <LegalLayout title="Política de Segurança da Informação" updatedAt="27 de maio de 2026">
       <p>
-        Esta Política descreve as medidas técnicas e organizacionais adotadas pelo Grupo AMO
+        Esta Política descreve as medidas técnicas e organizacionais adotadas pela Agência Mundi
         para proteger as informações tratadas na plataforma SOIA, em conformidade com o art. 46
         da LGPD.
       </p>

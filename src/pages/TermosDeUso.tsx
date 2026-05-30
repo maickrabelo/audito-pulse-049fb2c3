@@ -4,15 +4,15 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const TermosDeUso = () => {
   usePageSEO({
-    title: 'Termos de Uso — SOIA | Grupo AMO',
-    description: 'Termos de Uso da plataforma SOIA, canal de denúncias e ouvidoria do Grupo AMO.',
+    title: 'Termos de Uso — SOIA | Agência Mundi',
+    description: 'Termos de Uso da plataforma SOIA, canal de denúncias e ouvidoria da Agência Mundi.',
   });
 
   return (
     <LegalLayout title="Termos de Uso" updatedAt="27 de maio de 2026">
       <p>
         Estes Termos regem o uso da plataforma <strong>SOIA — Sistema de Ouvidoria Inteligente</strong>,
-        de titularidade do <strong>Grupo AMO</strong>. Ao acessar ou utilizar a plataforma, o usuário
+        de titularidade da <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
         concorda integralmente com estes Termos e com a{' '}
         <a href="/politica-de-privacidade">Política de Privacidade</a>.
       </p>
@@ -21,7 +21,7 @@ const TermosDeUso = () => {
       <ul>
         <li><strong>Plataforma</strong>: sistema SOIA, incluindo site, painéis e APIs.</li>
         <li><strong>Controladora</strong>: empresa cliente que contrata o canal de denúncias.</li>
-        <li><strong>Operador</strong>: Grupo AMO, responsável pela operação técnica.</li>
+        <li><strong>Operador</strong>: Agência Mundi, responsável pela operação técnica.</li>
         <li><strong>Usuário</strong>: qualquer pessoa que acesse a plataforma, incluindo denunciantes, gestores e administradores.</li>
         <li><strong>Denunciante</strong>: pessoa que envia manifestação por meio do canal, de forma anônima ou identificada.</li>
       </ul>
@@ -55,7 +55,7 @@ const TermosDeUso = () => {
       <p>
         A plataforma assegura ao denunciante o direito ao anonimato e à proteção contra
         retaliação. A Controladora é responsável pela apuração e tratamento da denúncia. O
-        Grupo AMO atua exclusivamente como Operador, não interferindo no mérito.
+        Agência Mundi atua exclusivamente como Operadora, não interferindo no mérito.
       </p>
 
       <h2>6. Propriedade intelectual</h2>
@@ -69,19 +69,19 @@ const TermosDeUso = () => {
       <p>
         Envidamos esforços para manter a plataforma disponível 24/7. Eventuais janelas de
         manutenção, indisponibilidades programadas ou interrupções decorrentes de caso
-        fortuito/força maior não geram responsabilidade do Grupo AMO.
+        fortuito/força maior não geram responsabilidade da Agência Mundi.
       </p>
 
       <h2>8. Limitação de responsabilidade</h2>
       <p>
-        O Grupo AMO não responde por: (i) decisões tomadas pela Controladora a partir das
+        A Agência Mundi não responde por: (i) decisões tomadas pela Controladora a partir das
         denúncias; (ii) conteúdo enviado por denunciantes; (iii) danos indiretos, lucros
         cessantes ou perda de oportunidade.
       </p>
 
       <h2>9. Cancelamento e suspensão</h2>
       <p>
-        O Grupo AMO pode suspender ou encerrar o acesso de qualquer usuário em caso de
+        A Agência Mundi pode suspender ou encerrar o acesso de qualquer usuário em caso de
         descumprimento destes Termos, sem prejuízo das medidas legais cabíveis.
       </p>
 
@@ -93,7 +93,7 @@ const TermosDeUso = () => {
 
       <h2>11. Foro e legislação aplicável</h2>
       <p>
-        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede do Grupo AMO,
+        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede da Agência Mundi,
         com renúncia a qualquer outro, por mais privilegiado que seja.
       </p>
 
