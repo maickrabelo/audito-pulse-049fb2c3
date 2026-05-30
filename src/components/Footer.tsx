@@ -85,7 +85,7 @@ const Footer = () => {
       <div className="border-t border-white/10">
         <div className="audit-container py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/50">
-            <p>&copy; {new Date().getFullYear()} SOIA - Sistema de Ouvidoria Inteligente. Todos os direitos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} Ouvidoria AMO. Todos os direitos reservados.</p>
             <p>Desenvolvido com 💚 para empresas que cuidam das pessoas.</p>
           </div>
         </div>
