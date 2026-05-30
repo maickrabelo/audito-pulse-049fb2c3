@@ -4,14 +4,14 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const TermosDeUso = () => {
   usePageSEO({
-    title: 'Termos de Uso — SOIA | Agência Mundi',
-    description: 'Termos de Uso da plataforma SOIA, canal de denúncias e ouvidoria da Agência Mundi.',
+    title: 'Termos de Uso — Ouvidoria AMO | Agência Mundi',
+    description: 'Termos de Uso da plataforma Ouvidoria AMO, canal de denúncias e ouvidoria da Agência Mundi.',
   });
 
   return (
     <LegalLayout title="Termos de Uso" updatedAt="27 de maio de 2026">
       <p>
-        Estes Termos regem o uso da plataforma <strong>SOIA — Sistema de Ouvidoria Inteligente</strong>,
+        Estes Termos regem o uso da plataforma <strong>Ouvidoria AMO</strong>,
         de titularidade da <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
         concorda integralmente com estes Termos e com a{' '}
         <a href="/politica-de-privacidade">Política de Privacidade</a>.
@@ -19,7 +19,7 @@ const TermosDeUso = () => {
 
       <h2>1. Definições</h2>
       <ul>
-        <li><strong>Plataforma</strong>: sistema SOIA, incluindo site, painéis e APIs.</li>
+        <li><strong>Plataforma</strong>: sistema Ouvidoria AMO, incluindo site, painéis e APIs.</li>
         <li><strong>Controladora</strong>: empresa cliente que contrata o canal de denúncias.</li>
         <li><strong>Operador</strong>: Agência Mundi, responsável pela operação técnica.</li>
         <li><strong>Usuário</strong>: qualquer pessoa que acesse a plataforma, incluindo denunciantes, gestores e administradores.</li>

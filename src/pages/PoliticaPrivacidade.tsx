@@ -4,15 +4,15 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const PoliticaPrivacidade = () => {
   usePageSEO({
-    title: 'Política de Privacidade — SOIA | Agência Mundi',
-    description: 'Política de Privacidade do canal de denúncias SOIA da Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
+    title: 'Política de Privacidade — Ouvidoria AMO | Agência Mundi',
+    description: 'Política de Privacidade do canal de denúncias Ouvidoria AMO da Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
   });
 
   return (
     <LegalLayout title="Política de Privacidade" updatedAt="27 de maio de 2026">
       <p>
         Esta Política de Privacidade descreve como a <strong>Agência Mundi</strong>, por meio da
-        plataforma <strong>SOIA — Sistema de Ouvidoria Inteligente</strong>, coleta, utiliza,
+        plataforma <strong>Ouvidoria AMO</strong>, coleta, utiliza,
         armazena e protege dados pessoais, em conformidade com a Lei Geral de Proteção de
         Dados Pessoais (Lei nº 13.709/2018 — LGPD).
       </p>

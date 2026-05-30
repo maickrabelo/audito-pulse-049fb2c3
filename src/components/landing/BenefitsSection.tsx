@@ -46,7 +46,7 @@ const BenefitsSection = () => {
           <div ref={leftRef} className={`transition-all duration-700 ${leftVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}>
             <span className="text-audit-secondary font-semibold text-sm uppercase tracking-wider">Benefícios</span>
             <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-6">
-              Por que escolher o SOIA?
+              Por que escolher o Ouvidoria AMO?
             </h2>
             <p className="text-white/70 text-lg mb-8">
               Uma solução completa que protege sua empresa, cuida dos colaboradores e garante conformidade com as normas regulamentadoras.

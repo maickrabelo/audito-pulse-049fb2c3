@@ -65,7 +65,7 @@ const FeaturesSection = () => {
             Sistema completo para gestão de riscos psicossociais
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            O SOIA integra canal de denúncias, pesquisa de clima, avaliação de burnout, levantamento de riscos psicossociais e compliance NR-01 em uma solução completa.
+            O Ouvidoria AMO integra canal de denúncias, pesquisa de clima, avaliação de burnout, levantamento de riscos psicossociais e compliance NR-01 em uma solução completa.
           </p>
         </div>
 

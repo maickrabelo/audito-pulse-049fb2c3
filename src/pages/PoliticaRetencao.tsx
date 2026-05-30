@@ -4,15 +4,15 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const PoliticaRetencao = () => {
   usePageSEO({
-    title: 'Política de Retenção de Dados — SOIA | Agência Mundi',
-    description: 'Política de Retenção de Dados da plataforma SOIA, com prazos e critérios de eliminação em conformidade com a LGPD.',
+    title: 'Política de Retenção de Dados — Ouvidoria AMO | Agência Mundi',
+    description: 'Política de Retenção de Dados da plataforma Ouvidoria AMO, com prazos e critérios de eliminação em conformidade com a LGPD.',
   });
 
   return (
     <LegalLayout title="Política de Retenção de Dados" updatedAt="27 de maio de 2026">
       <p>
         Esta Política estabelece os prazos de retenção e os critérios de eliminação dos dados
-        pessoais tratados pela plataforma SOIA, em observância aos princípios da necessidade
+        pessoais tratados pela plataforma Ouvidoria AMO, em observância aos princípios da necessidade
         e da finalidade (art. 6º, III e VI, da LGPD).
       </p>
 
