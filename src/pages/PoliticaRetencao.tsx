@@ -4,7 +4,7 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const PoliticaRetencao = () => {
   usePageSEO({
-    title: 'Política de Retenção de Dados — SOIA | Grupo AMO',
+    title: 'Política de Retenção de Dados — SOIA | Agência Mundi',
     description: 'Política de Retenção de Dados da plataforma SOIA, com prazos e critérios de eliminação em conformidade com a LGPD.',
   });
 
