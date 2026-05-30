@@ -12,7 +12,7 @@ const TermosDeUso = () => {
     <LegalLayout title="Termos de Uso" updatedAt="27 de maio de 2026">
       <p>
         Estes Termos regem o uso da plataforma <strong>SOIA — Sistema de Ouvidoria Inteligente</strong>,
-        de titularidade do <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
+        de titularidade da <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
         concorda integralmente com estes Termos e com a{' '}
         <a href="/politica-de-privacidade">Política de Privacidade</a>.
       </p>
@@ -55,7 +55,7 @@ const TermosDeUso = () => {
       <p>
         A plataforma assegura ao denunciante o direito ao anonimato e à proteção contra
         retaliação. A Controladora é responsável pela apuração e tratamento da denúncia. O
-        Agência Mundi atua exclusivamente como Operador, não interferindo no mérito.
+        Agência Mundi atua exclusivamente como Operadora, não interferindo no mérito.
       </p>
 
       <h2>6. Propriedade intelectual</h2>

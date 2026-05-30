@@ -11,7 +11,7 @@ const PoliticaPrivacidade = () => {
   return (
     <LegalLayout title="Política de Privacidade" updatedAt="27 de maio de 2026">
       <p>
-        Esta Política de Privacidade descreve como o <strong>Agência Mundi</strong>, por meio da
+        Esta Política de Privacidade descreve como a <strong>Agência Mundi</strong>, por meio da
         plataforma <strong>SOIA — Sistema de Ouvidoria Inteligente</strong>, coleta, utiliza,
         armazena e protege dados pessoais, em conformidade com a Lei Geral de Proteção de
         Dados Pessoais (Lei nº 13.709/2018 — LGPD).
