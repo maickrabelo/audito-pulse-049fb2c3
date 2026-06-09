@@ -11,17 +11,19 @@ const PoliticaPrivacidade = () => {
   return (
     <LegalLayout title="Política de Privacidade" updatedAt="27 de maio de 2026">
       <p>
-        Esta Política de Privacidade descreve como a <strong>Agência Mundi</strong>, por meio da
-        plataforma <strong>Ouvidoria AMO</strong>, coleta, utiliza,
-        armazena e protege dados pessoais, em conformidade com a Lei Geral de Proteção de
-        Dados Pessoais (Lei nº 13.709/2018 — LGPD).
+        Esta Política de Privacidade descreve como o <strong>Grupo AMO</strong>, por meio da
+        plataforma <strong>Ouvidoria AMO</strong> (desenvolvida e mantida pela{' '}
+        <strong>Agência Mundi</strong>), coleta, utiliza, armazena e protege dados pessoais, em
+        conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 — LGPD).
       </p>
 
       <h2>1. Papéis no tratamento</h2>
       <p>
         A empresa contratante (cliente) atua como <strong>Controladora</strong> dos dados
-        coletados em seu canal de denúncias. A Agência Mundi atua como <strong>Operador</strong>,
-        tratando dados em nome e conforme instruções da Controladora.
+        coletados em seu canal de denúncias. O <strong>Grupo AMO</strong> atua como{' '}
+        <strong>Operador</strong>, tratando dados em nome e conforme instruções da Controladora.
+        O desenvolvimento e a manutenção técnica da plataforma são realizados pela{' '}
+        <strong>Agência Mundi</strong>, na qualidade de subprocessadora.
       </p>
 
       <h2>2. Dados coletados</h2>
