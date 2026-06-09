@@ -12,7 +12,8 @@ const TermosDeUso = () => {
     <LegalLayout title="Termos de Uso" updatedAt="27 de maio de 2026">
       <p>
         Estes Termos regem o uso da plataforma <strong>Ouvidoria AMO</strong>,
-        de titularidade da <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
+        de titularidade do <strong>Grupo AMO</strong> e desenvolvida e mantida pela{' '}
+        <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
         concorda integralmente com estes Termos e com a{' '}
         <a href="/politica-de-privacidade">Política de Privacidade</a>.
       </p>
@@ -21,7 +22,8 @@ const TermosDeUso = () => {
       <ul>
         <li><strong>Plataforma</strong>: sistema Ouvidoria AMO, incluindo site, painéis e APIs.</li>
         <li><strong>Controladora</strong>: empresa cliente que contrata o canal de denúncias.</li>
-        <li><strong>Operador</strong>: Agência Mundi, responsável pela operação técnica.</li>
+        <li><strong>Operador</strong>: Grupo AMO, titular da plataforma.</li>
+        <li><strong>Desenvolvedora/Mantenedora</strong>: Agência Mundi, responsável pelo desenvolvimento, operação técnica, segurança e manutenção da plataforma.</li>
         <li><strong>Usuário</strong>: qualquer pessoa que acesse a plataforma, incluindo denunciantes, gestores e administradores.</li>
         <li><strong>Denunciante</strong>: pessoa que envia manifestação por meio do canal, de forma anônima ou identificada.</li>
       </ul>
