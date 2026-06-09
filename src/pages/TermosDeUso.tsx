@@ -57,33 +57,35 @@ const TermosDeUso = () => {
       <p>
         A plataforma assegura ao denunciante o direito ao anonimato e à proteção contra
         retaliação. A Controladora é responsável pela apuração e tratamento da denúncia. O
-        Agência Mundi atua exclusivamente como Operadora, não interferindo no mérito.
+        Grupo AMO atua como Operador da plataforma, e a Agência Mundi atua como desenvolvedora
+        e mantenedora técnica — nenhum deles interfere no mérito das denúncias.
       </p>
 
       <h2>6. Propriedade intelectual</h2>
       <p>
         Todo o software, marca, logotipo, layout e conteúdo da plataforma pertencem ao Grupo
-        AMO ou a seus licenciadores. É vedada qualquer reprodução, distribuição ou modificação
-        sem autorização escrita.
+        AMO ou a seus licenciadores. O desenvolvimento técnico é realizado pela Agência Mundi.
+        É vedada qualquer reprodução, distribuição ou modificação sem autorização escrita.
       </p>
 
       <h2>7. Disponibilidade e suporte</h2>
       <p>
-        Envidamos esforços para manter a plataforma disponível 24/7. Eventuais janelas de
-        manutenção, indisponibilidades programadas ou interrupções decorrentes de caso
-        fortuito/força maior não geram responsabilidade da Agência Mundi.
+        Envidamos esforços para manter a plataforma disponível 24/7, por meio da Agência Mundi,
+        responsável técnica pela operação. Eventuais janelas de manutenção, indisponibilidades
+        programadas ou interrupções decorrentes de caso fortuito/força maior não geram
+        responsabilidade do Grupo AMO nem da Agência Mundi.
       </p>
 
       <h2>8. Limitação de responsabilidade</h2>
       <p>
-        A Agência Mundi não responde por: (i) decisões tomadas pela Controladora a partir das
-        denúncias; (ii) conteúdo enviado por denunciantes; (iii) danos indiretos, lucros
-        cessantes ou perda de oportunidade.
+        O Grupo AMO e a Agência Mundi não respondem por: (i) decisões tomadas pela Controladora
+        a partir das denúncias; (ii) conteúdo enviado por denunciantes; (iii) danos indiretos,
+        lucros cessantes ou perda de oportunidade.
       </p>
 
       <h2>9. Cancelamento e suspensão</h2>
       <p>
-        A Agência Mundi pode suspender ou encerrar o acesso de qualquer usuário em caso de
+        O Grupo AMO pode suspender ou encerrar o acesso de qualquer usuário em caso de
         descumprimento destes Termos, sem prejuízo das medidas legais cabíveis.
       </p>
 
@@ -95,7 +97,7 @@ const TermosDeUso = () => {
 
       <h2>11. Foro e legislação aplicável</h2>
       <p>
-        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede da Agência Mundi,
+        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede do Grupo AMO,
         com renúncia a qualquer outro, por mais privilegiado que seja.
       </p>
 
