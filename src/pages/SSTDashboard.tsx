@@ -141,6 +141,10 @@ const SSTDashboard = () => {
     (c.email && c.email.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const totalPages = Math.max(1, Math.ceil(filteredCompanies.length / PAGE_SIZE));
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const paginatedCompanies = filteredCompanies.slice(pageStart, pageStart + PAGE_SIZE);
+
   const isActive = (status: string | null) => status === 'active' || status === 'trial';
 
   // Iframe view for company dashboard
