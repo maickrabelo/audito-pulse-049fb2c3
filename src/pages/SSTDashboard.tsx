@@ -8,10 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search, ArrowLeft } from "lucide-react";
+import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search, ArrowLeft, Upload, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import AddCompanyDialog from '@/components/sst/AddCompanyDialog';
+import BulkAddCompaniesDialog from '@/components/sst/BulkAddCompaniesDialog';
+import CompletePendingCompanyDialog from '@/components/sst/CompletePendingCompanyDialog';
 
 interface AssignedCompany {
   id: string;
@@ -19,6 +21,7 @@ interface AssignedCompany {
   slug: string | null;
   cnpj: string | null;
   email: string | null;
+  address: string | null;
   subscription_status: string | null;
   trial_ends_at: string | null;
 }
@@ -31,6 +34,8 @@ const SSTDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [reportCounts, setReportCounts] = useState<Record<string, number>>({});
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isBulkOpen, setIsBulkOpen] = useState(false);
+  const [completingCompany, setCompletingCompany] = useState<AssignedCompany | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [viewingCompany, setViewingCompany] = useState<AssignedCompany | null>(null);
@@ -66,7 +71,7 @@ const SSTDashboard = () => {
       const [companiesRes, reportsRes] = await Promise.all([
         supabase
           .from('companies')
-          .select('id, name, slug, cnpj, email, subscription_status, trial_ends_at')
+          .select('id, name, slug, cnpj, email, address, subscription_status, trial_ends_at')
           .in('id', companyIds),
         supabase
           .from('reports')
@@ -180,14 +185,20 @@ const SSTDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground">Painel SST</h1>
               <p className="text-muted-foreground mt-1">Gerencie as empresas vinculadas à sua gestão</p>
             </div>
-            <Button onClick={() => setIsAddOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Cadastrar Empresa
-            </Button>
+            <div className="flex gap-2 flex-wrap">
+              <Button variant="outline" onClick={() => setIsBulkOpen(true)}>
+                <Upload className="h-4 w-4 mr-2" />
+                Cadastrar em Lote
+              </Button>
+              <Button onClick={() => setIsAddOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Cadastrar Empresa
+              </Button>
+            </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
@@ -231,6 +242,21 @@ const SSTDashboard = () => {
                 </div>
               </CardContent>
             </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-full bg-yellow-100">
+                    <AlertCircle className="h-6 w-6 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Pendentes</p>
+                    <p className="text-2xl font-bold">
+                      {companies.filter(c => c.subscription_status === 'pending').length}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Search */}
@@ -263,17 +289,21 @@ const SSTDashboard = () => {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCompanies.map(company => (
-                <Card key={company.id} className="hover:shadow-lg transition-shadow">
+              {filteredCompanies.map(company => {
+                const isPending = company.subscription_status === 'pending';
+                return (
+                <Card key={company.id} className={`hover:shadow-lg transition-shadow ${isPending ? 'border-yellow-400 border-2 bg-yellow-50/40' : ''}`}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <CardTitle className="text-lg">{company.name}</CardTitle>
                       <Badge variant={
                         company.subscription_status === 'active' ? 'default' :
-                        company.subscription_status === 'trial' ? 'secondary' : 'outline'
-                      }>
+                        company.subscription_status === 'trial' ? 'secondary' :
+                        isPending ? 'outline' : 'outline'
+                      } className={isPending ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : ''}>
                         {company.subscription_status === 'active' ? 'Ativa' :
-                         company.subscription_status === 'trial' ? 'Trial' : 'Inativa'}
+                         company.subscription_status === 'trial' ? 'Trial' :
+                         isPending ? 'Pendente' : 'Inativa'}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -293,36 +323,52 @@ const SSTDashboard = () => {
                     <div className="flex items-center justify-between py-2 border-t">
                       <div className="flex items-center gap-2">
                         <Power className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{isActive(company.subscription_status) ? 'Ativa' : 'Inativa'}</span>
+                        <span className="text-sm">
+                          {isPending ? 'Aguardando cadastro' : isActive(company.subscription_status) ? 'Ativa' : 'Inativa'}
+                        </span>
                       </div>
                       <Switch
                         checked={isActive(company.subscription_status)}
                         onCheckedChange={() => toggleCompanyStatus(company)}
-                        disabled={togglingId === company.id}
+                        disabled={togglingId === company.id || isPending}
                       />
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <Button
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => setViewingCompany(company)}
-                      >
-                        Ver Dashboard
-                      </Button>
-                      {company.slug && (
+                      {isPending ? (
                         <Button
                           size="sm"
-                          variant="outline"
-                          onClick={() => window.open(`${window.location.origin}/report/${company.slug}`, '_blank')}
+                          className="flex-1"
+                          variant="default"
+                          onClick={() => setCompletingCompany(company)}
                         >
-                          <ExternalLink className="h-4 w-4" />
+                          Completar cadastro
                         </Button>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => setViewingCompany(company)}
+                          >
+                            Ver Dashboard
+                          </Button>
+                          {company.slug && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => window.open(`${window.location.origin}/report/${company.slug}`, '_blank')}
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </>
                       )}
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -330,12 +376,26 @@ const SSTDashboard = () => {
       <Footer />
 
       {profile?.sst_manager_id && (
-        <AddCompanyDialog
-          open={isAddOpen}
-          onOpenChange={setIsAddOpen}
-          sstManagerId={profile.sst_manager_id}
-          onCompanyAdded={loadCompanies}
-        />
+        <>
+          <AddCompanyDialog
+            open={isAddOpen}
+            onOpenChange={setIsAddOpen}
+            sstManagerId={profile.sst_manager_id}
+            onCompanyAdded={loadCompanies}
+          />
+          <BulkAddCompaniesDialog
+            open={isBulkOpen}
+            onOpenChange={setIsBulkOpen}
+            sstManagerId={profile.sst_manager_id}
+            onCompaniesAdded={loadCompanies}
+          />
+          <CompletePendingCompanyDialog
+            open={!!completingCompany}
+            onOpenChange={(o) => !o && setCompletingCompany(null)}
+            company={completingCompany}
+            onCompleted={loadCompanies}
+          />
+        </>
       )}
     </div>
   );
