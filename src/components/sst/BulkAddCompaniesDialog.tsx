@@ -48,7 +48,7 @@ function parseInput(text: string): ParsedRow[] {
     const cnpjDigits = (cnpj || '').replace(/\D/g, '');
     const row: ParsedRow = { address, city, uf, cep, cnpj, cnpjDigits, name };
     if (!name) row.error = 'Razão Social ausente';
-    else if (cnpjDigits.length !== 14) row.error = 'CNPJ inválido';
+    else if (cnpjDigits.length !== 14 && cnpjDigits.length !== 11) row.error = 'CNPJ/CPF inválido';
     rows.push(row);
   }
   return rows;
