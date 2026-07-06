@@ -185,14 +185,20 @@ const SSTDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground">Painel SST</h1>
               <p className="text-muted-foreground mt-1">Gerencie as empresas vinculadas à sua gestão</p>
             </div>
-            <Button onClick={() => setIsAddOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Cadastrar Empresa
-            </Button>
+            <div className="flex gap-2 flex-wrap">
+              <Button variant="outline" onClick={() => setIsBulkOpen(true)}>
+                <Upload className="h-4 w-4 mr-2" />
+                Cadastrar em Lote
+              </Button>
+              <Button onClick={() => setIsAddOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Cadastrar Empresa
+              </Button>
+            </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
@@ -231,6 +237,21 @@ const SSTDashboard = () => {
                     <p className="text-sm text-muted-foreground">Empresas Ativas</p>
                     <p className="text-2xl font-bold">
                       {companies.filter(c => isActive(c.subscription_status)).length}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-full bg-yellow-100">
+                    <AlertCircle className="h-6 w-6 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Pendentes</p>
+                    <p className="text-2xl font-bold">
+                      {companies.filter(c => c.subscription_status === 'pending').length}
                     </p>
                   </div>
                 </div>
