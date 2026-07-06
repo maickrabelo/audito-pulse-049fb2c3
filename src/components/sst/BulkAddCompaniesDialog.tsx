@@ -71,7 +71,8 @@ const BulkAddCompaniesDialog = ({ open, onOpenChange, sstManagerId, onCompaniesA
     let created = 0;
     let linked = 0;
     let duplicatesInPaste = 0;
-    let skipped = 0;
+    let alreadyLinked = 0;
+    let errorsCount = 0;
     const errors: string[] = [];
 
     // Dedupe within the paste by CNPJ
@@ -109,6 +110,7 @@ const BulkAddCompaniesDialog = ({ open, onOpenChange, sstManagerId, onCompaniesA
     for (const row of uniqueRows) {
       try {
         let companyId = existingMap.get(row.cnpjDigits);
+        const wasExisting = !!companyId;
 
         if (!companyId) {
           const fullAddress = `${row.address}, ${row.city}/${row.uf} - CEP ${row.cep}`;
@@ -127,7 +129,7 @@ const BulkAddCompaniesDialog = ({ open, onOpenChange, sstManagerId, onCompaniesA
           companyId = company.id;
           created++;
         } else if (alreadyAssigned.has(companyId)) {
-          skipped++;
+          alreadyLinked++;
           continue;
         }
 
@@ -135,21 +137,27 @@ const BulkAddCompaniesDialog = ({ open, onOpenChange, sstManagerId, onCompaniesA
           .from('company_sst_assignments')
           .insert({ company_id: companyId, sst_manager_id: sstManagerId });
         if (assignError) {
-          // If already assigned (race), treat as skipped rather than error
-          if (assignError.code === '23505') { skipped++; continue; }
+          if (assignError.code === '23505') { alreadyLinked++; continue; }
           throw assignError;
         }
-        if (existingMap.has(row.cnpjDigits)) linked++;
+        if (wasExisting) linked++;
       } catch (e: any) {
-        skipped++;
+        errorsCount++;
         errors.push(`${row.name}: ${e.message}`);
       }
     }
 
     setIsSubmitting(false);
+    const parts: string[] = [];
+    if (created) parts.push(`${created} nova(s)`);
+    if (linked) parts.push(`${linked} vinculada(s) agora`);
+    if (alreadyLinked) parts.push(`${alreadyLinked} já cadastrada(s) na sua gestão`);
+    if (duplicatesInPaste) parts.push(`${duplicatesInPaste} duplicada(s) no texto`);
+    if (errorsCount) parts.push(`${errorsCount} com erro`);
     toast({
       title: `Cadastro concluído`,
-      description: `${created} nova(s), ${linked} vinculada(s), ${skipped} ignorada(s)${duplicatesInPaste ? `, ${duplicatesInPaste} duplicada(s) no texto` : ''}.`,
+      description: parts.join(' · ') || 'Nada a processar.',
+      variant: errorsCount > 0 ? 'destructive' : 'default',
     });
     if (errors.length) console.warn('Bulk import errors:', errors);
     setText('');
