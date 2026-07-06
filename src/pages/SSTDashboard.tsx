@@ -39,6 +39,12 @@ const SSTDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [viewingCompany, setViewingCompany] = useState<AssignedCompany | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 12;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   useEffect(() => {
     if (role && role !== 'sst') {
@@ -134,6 +140,10 @@ const SSTDashboard = () => {
     (c.cnpj && c.cnpj.includes(searchTerm)) ||
     (c.email && c.email.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const totalPages = Math.max(1, Math.ceil(filteredCompanies.length / PAGE_SIZE));
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const paginatedCompanies = filteredCompanies.slice(pageStart, pageStart + PAGE_SIZE);
 
   const isActive = (status: string | null) => status === 'active' || status === 'trial';
 
@@ -288,8 +298,9 @@ const SSTDashboard = () => {
               </CardContent>
             </Card>
           ) : (
+            <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCompanies.map(company => {
+              {paginatedCompanies.map(company => {
                 const isPending = company.subscription_status === 'pending';
                 return (
                 <Card key={company.id} className={`hover:shadow-lg transition-shadow ${isPending ? 'border-yellow-400 border-2 bg-yellow-50/40' : ''}`}>
@@ -370,6 +381,23 @@ const SSTDashboard = () => {
                 );
               })}
             </div>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-6">
+                <p className="text-sm text-muted-foreground">
+                  Mostrando {pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filteredCompanies.length)} de {filteredCompanies.length}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                    Anterior
+                  </Button>
+                  <span className="text-sm">Página {currentPage} de {totalPages}</span>
+                  <Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+                    Próxima
+                  </Button>
+                </div>
+              </div>
+            )}
+            </>
           )}
         </div>
       </main>
