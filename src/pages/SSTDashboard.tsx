@@ -41,6 +41,7 @@ const SSTDashboard = () => {
   const [viewingCompany, setViewingCompany] = useState<AssignedCompany | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 12;
+  const ASSIGNMENTS_BATCH_SIZE = 1000;
 
   useEffect(() => {
     setCurrentPage(1);
@@ -59,12 +60,24 @@ const SSTDashboard = () => {
     }
 
     try {
-      const { data: assignments, error: assignError } = await supabase
-        .from('company_sst_assignments')
-        .select('company_id')
-        .eq('sst_manager_id', profile.sst_manager_id);
+      const assignments: { company_id: string }[] = [];
+      let from = 0;
+      let hasMoreAssignments = true;
 
-      if (assignError) throw assignError;
+      while (hasMoreAssignments) {
+        const { data, error: assignError } = await supabase
+          .from('company_sst_assignments')
+          .select('company_id')
+          .eq('sst_manager_id', profile.sst_manager_id)
+          .range(from, from + ASSIGNMENTS_BATCH_SIZE - 1);
+
+        if (assignError) throw assignError;
+
+        const batch = data || [];
+        assignments.push(...batch);
+        hasMoreAssignments = batch.length === ASSIGNMENTS_BATCH_SIZE;
+        from += ASSIGNMENTS_BATCH_SIZE;
+      }
 
       if (!assignments || assignments.length === 0) {
         setCompanies([]);
