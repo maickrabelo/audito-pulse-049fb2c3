@@ -74,27 +74,44 @@ const SSTDashboard = () => {
 
       const companyIds = assignments.map(a => a.company_id);
 
-      const [companiesRes, reportsRes] = await Promise.all([
-        supabase
-          .from('companies')
-          .select('id, name, slug, cnpj, email, address, subscription_status, trial_ends_at')
-          .in('id', companyIds),
-        supabase
-          .from('reports')
-          .select('company_id')
-          .in('company_id', companyIds),
-      ]);
+      // Batch .in() calls to avoid URL length limits
+      const chunk = <T,>(arr: T[], size: number): T[][] => {
+        const out: T[][] = [];
+        for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+        return out;
+      };
+      const idChunks = chunk(companyIds, 150);
 
-      if (companiesRes.error) throw companiesRes.error;
-      setCompanies(companiesRes.data || []);
+      const companiesResults = await Promise.all(
+        idChunks.map(ids =>
+          supabase
+            .from('companies')
+            .select('id, name, slug, cnpj, email, address, subscription_status, trial_ends_at')
+            .in('id', ids)
+        )
+      );
+      const reportsResults = await Promise.all(
+        idChunks.map(ids =>
+          supabase.from('reports').select('company_id').in('company_id', ids)
+        )
+      );
 
-      if (!reportsRes.error && reportsRes.data) {
-        const counts: Record<string, number> = {};
-        reportsRes.data.forEach(r => {
-          counts[r.company_id] = (counts[r.company_id] || 0) + 1;
-        });
-        setReportCounts(counts);
+      const allCompanies: AssignedCompany[] = [];
+      for (const r of companiesResults) {
+        if (r.error) throw r.error;
+        if (r.data) allCompanies.push(...(r.data as AssignedCompany[]));
       }
+      setCompanies(allCompanies);
+
+      const counts: Record<string, number> = {};
+      for (const r of reportsResults) {
+        if (!r.error && r.data) {
+          r.data.forEach(row => {
+            counts[row.company_id] = (counts[row.company_id] || 0) + 1;
+          });
+        }
+      }
+      setReportCounts(counts);
     } catch (error: any) {
       toast({ title: "Erro ao carregar empresas", description: error.message, variant: "destructive" });
     } finally {
