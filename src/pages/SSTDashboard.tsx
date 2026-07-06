@@ -71,7 +71,7 @@ const SSTDashboard = () => {
       const [companiesRes, reportsRes] = await Promise.all([
         supabase
           .from('companies')
-          .select('id, name, slug, cnpj, email, subscription_status, trial_ends_at')
+          .select('id, name, slug, cnpj, email, address, subscription_status, trial_ends_at')
           .in('id', companyIds),
         supabase
           .from('reports')
