@@ -69,31 +69,77 @@ const BulkAddCompaniesDialog = ({ open, onOpenChange, sstManagerId, onCompaniesA
     }
     setIsSubmitting(true);
     let created = 0;
+    let linked = 0;
+    let duplicatesInPaste = 0;
     let skipped = 0;
     const errors: string[] = [];
 
-    for (const row of validRows) {
+    // Dedupe within the paste by CNPJ
+    const seen = new Set<string>();
+    const uniqueRows = validRows.filter(r => {
+      if (seen.has(r.cnpjDigits)) { duplicatesInPaste++; return false; }
+      seen.add(r.cnpjDigits);
+      return true;
+    });
+
+    // Preload existing companies with these CNPJs (formatted or digits)
+    const cnpjVariants = uniqueRows.flatMap(r => [r.cnpj, r.cnpjDigits]);
+    const { data: existing } = await supabase
+      .from('companies')
+      .select('id, cnpj')
+      .in('cnpj', cnpjVariants);
+
+    const existingMap = new Map<string, string>();
+    (existing || []).forEach(c => {
+      if (c.cnpj) existingMap.set(c.cnpj.replace(/\D/g, ''), c.id);
+    });
+
+    // Preload existing assignments for this SST manager
+    const existingIds = Array.from(existingMap.values());
+    let alreadyAssigned = new Set<string>();
+    if (existingIds.length > 0) {
+      const { data: assigns } = await supabase
+        .from('company_sst_assignments')
+        .select('company_id')
+        .eq('sst_manager_id', sstManagerId)
+        .in('company_id', existingIds);
+      alreadyAssigned = new Set((assigns || []).map(a => a.company_id));
+    }
+
+    for (const row of uniqueRows) {
       try {
-        const fullAddress = `${row.address}, ${row.city}/${row.uf} - CEP ${row.cep}`;
-        const { data: company, error: compError } = await supabase
-          .from('companies')
-          .insert({
-            name: row.name,
-            cnpj: row.cnpj,
-            address: fullAddress,
-            slug: row.cnpjDigits,
-            subscription_status: 'pending',
-          })
-          .select('id')
-          .single();
-        if (compError) throw compError;
+        let companyId = existingMap.get(row.cnpjDigits);
+
+        if (!companyId) {
+          const fullAddress = `${row.address}, ${row.city}/${row.uf} - CEP ${row.cep}`;
+          const { data: company, error: compError } = await supabase
+            .from('companies')
+            .insert({
+              name: row.name,
+              cnpj: row.cnpj,
+              address: fullAddress,
+              slug: row.cnpjDigits,
+              subscription_status: 'pending',
+            })
+            .select('id')
+            .single();
+          if (compError) throw compError;
+          companyId = company.id;
+          created++;
+        } else if (alreadyAssigned.has(companyId)) {
+          skipped++;
+          continue;
+        }
 
         const { error: assignError } = await supabase
           .from('company_sst_assignments')
-          .insert({ company_id: company.id, sst_manager_id: sstManagerId });
-        if (assignError) throw assignError;
-
-        created++;
+          .insert({ company_id: companyId, sst_manager_id: sstManagerId });
+        if (assignError) {
+          // If already assigned (race), treat as skipped rather than error
+          if (assignError.code === '23505') { skipped++; continue; }
+          throw assignError;
+        }
+        if (existingMap.has(row.cnpjDigits)) linked++;
       } catch (e: any) {
         skipped++;
         errors.push(`${row.name}: ${e.message}`);
@@ -103,7 +149,7 @@ const BulkAddCompaniesDialog = ({ open, onOpenChange, sstManagerId, onCompaniesA
     setIsSubmitting(false);
     toast({
       title: `Cadastro concluído`,
-      description: `${created} cadastradas, ${skipped} ignoradas.${errors.length ? ' Ver console para detalhes.' : ''}`,
+      description: `${created} nova(s), ${linked} vinculada(s), ${skipped} ignorada(s)${duplicatesInPaste ? `, ${duplicatesInPaste} duplicada(s) no texto` : ''}.`,
     });
     if (errors.length) console.warn('Bulk import errors:', errors);
     setText('');
