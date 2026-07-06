@@ -381,6 +381,23 @@ const SSTDashboard = () => {
                 );
               })}
             </div>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-6">
+                <p className="text-sm text-muted-foreground">
+                  Mostrando {pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filteredCompanies.length)} de {filteredCompanies.length}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                    Anterior
+                  </Button>
+                  <span className="text-sm">Página {currentPage} de {totalPages}</span>
+                  <Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+                    Próxima
+                  </Button>
+                </div>
+              </div>
+            )}
+            </>
           )}
         </div>
       </main>
