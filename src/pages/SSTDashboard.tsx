@@ -298,8 +298,9 @@ const SSTDashboard = () => {
               </CardContent>
             </Card>
           ) : (
+            <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCompanies.map(company => {
+              {paginatedCompanies.map(company => {
                 const isPending = company.subscription_status === 'pending';
                 return (
                 <Card key={company.id} className={`hover:shadow-lg transition-shadow ${isPending ? 'border-yellow-400 border-2 bg-yellow-50/40' : ''}`}>
