@@ -289,17 +289,21 @@ const SSTDashboard = () => {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCompanies.map(company => (
-                <Card key={company.id} className="hover:shadow-lg transition-shadow">
+              {filteredCompanies.map(company => {
+                const isPending = company.subscription_status === 'pending';
+                return (
+                <Card key={company.id} className={`hover:shadow-lg transition-shadow ${isPending ? 'border-yellow-400 border-2 bg-yellow-50/40' : ''}`}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <CardTitle className="text-lg">{company.name}</CardTitle>
                       <Badge variant={
                         company.subscription_status === 'active' ? 'default' :
-                        company.subscription_status === 'trial' ? 'secondary' : 'outline'
-                      }>
+                        company.subscription_status === 'trial' ? 'secondary' :
+                        isPending ? 'outline' : 'outline'
+                      } className={isPending ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : ''}>
                         {company.subscription_status === 'active' ? 'Ativa' :
-                         company.subscription_status === 'trial' ? 'Trial' : 'Inativa'}
+                         company.subscription_status === 'trial' ? 'Trial' :
+                         isPending ? 'Pendente' : 'Inativa'}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -319,36 +323,52 @@ const SSTDashboard = () => {
                     <div className="flex items-center justify-between py-2 border-t">
                       <div className="flex items-center gap-2">
                         <Power className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{isActive(company.subscription_status) ? 'Ativa' : 'Inativa'}</span>
+                        <span className="text-sm">
+                          {isPending ? 'Aguardando cadastro' : isActive(company.subscription_status) ? 'Ativa' : 'Inativa'}
+                        </span>
                       </div>
                       <Switch
                         checked={isActive(company.subscription_status)}
                         onCheckedChange={() => toggleCompanyStatus(company)}
-                        disabled={togglingId === company.id}
+                        disabled={togglingId === company.id || isPending}
                       />
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <Button
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => setViewingCompany(company)}
-                      >
-                        Ver Dashboard
-                      </Button>
-                      {company.slug && (
+                      {isPending ? (
                         <Button
                           size="sm"
-                          variant="outline"
-                          onClick={() => window.open(`${window.location.origin}/report/${company.slug}`, '_blank')}
+                          className="flex-1"
+                          variant="default"
+                          onClick={() => setCompletingCompany(company)}
                         >
-                          <ExternalLink className="h-4 w-4" />
+                          Completar cadastro
                         </Button>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => setViewingCompany(company)}
+                          >
+                            Ver Dashboard
+                          </Button>
+                          {company.slug && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => window.open(`${window.location.origin}/report/${company.slug}`, '_blank')}
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </>
                       )}
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -356,12 +376,26 @@ const SSTDashboard = () => {
       <Footer />
 
       {profile?.sst_manager_id && (
-        <AddCompanyDialog
-          open={isAddOpen}
-          onOpenChange={setIsAddOpen}
-          sstManagerId={profile.sst_manager_id}
-          onCompanyAdded={loadCompanies}
-        />
+        <>
+          <AddCompanyDialog
+            open={isAddOpen}
+            onOpenChange={setIsAddOpen}
+            sstManagerId={profile.sst_manager_id}
+            onCompanyAdded={loadCompanies}
+          />
+          <BulkAddCompaniesDialog
+            open={isBulkOpen}
+            onOpenChange={setIsBulkOpen}
+            sstManagerId={profile.sst_manager_id}
+            onCompaniesAdded={loadCompanies}
+          />
+          <CompletePendingCompanyDialog
+            open={!!completingCompany}
+            onOpenChange={(o) => !o && setCompletingCompany(null)}
+            company={completingCompany}
+            onCompleted={loadCompanies}
+          />
+        </>
       )}
     </div>
   );
