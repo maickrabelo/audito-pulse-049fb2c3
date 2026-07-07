@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Check, Loader2, ExternalLink, Copy, FileImage, FileVideo, FileAudio, File, Download } from "lucide-react";
+import { Calendar, Check, Loader2, ExternalLink, Copy, FileImage, FileVideo, FileAudio, File, Download, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRealAuth } from "@/contexts/RealAuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -375,26 +375,27 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
     }
   };
 
-  const getUrgencyBadge = (urgency: string) => {
-    const urgencyMap: { [key: string]: string } = {
-      'high': 'Alta',
-      'medium': 'Média',
-      'low': 'Baixa'
-    };
-
-    const displayUrgency = urgencyMap[urgency] || urgency;
-
-    switch (urgency) {
-      case 'high':
-        return <Badge className="bg-red-100 text-red-800 border-red-300">{displayUrgency}</Badge>;
-      case 'medium':
-        return <Badge className="bg-orange-100 text-orange-800 border-orange-300">{displayUrgency}</Badge>;
-      case 'low':
-        return <Badge className="bg-green-100 text-green-800 border-green-300">{displayUrgency}</Badge>;
-      default:
-        return <Badge variant="outline">{displayUrgency}</Badge>;
-    }
+  const containsPersonalData = (report: any): boolean => {
+    if (!report) return false;
+    if (report.reporter_name && String(report.reporter_name).trim().length > 0) return true;
+    const text = [report.title, report.description, report.ai_summary]
+      .filter(Boolean)
+      .join(' \n ');
+    if (!text) return false;
+    if (/\b(?:me\s+chamo|meu\s+nome\s+é|sou\s+(?:o|a)\s+[A-ZÁÉÍÓÚÂÊÔÃÕÇ]|nome\s*:\s*[A-ZÁÉÍÓÚÂÊÔÃÕÇ]|cpf|rg\s*n?º?)/i.test(text)) return true;
+    // Two consecutive capitalized words (likely first + last name)
+    const nameRegex = /\b[A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]{2,}\s+(?:d[aeo]s?\s+)?[A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]{2,}\b/g;
+    const blacklist = /^(Recursos Humanos|São Paulo|Rio de|Belo Horizonte|Porto Alegre|Minas Gerais|Santa Catarina|Mato Grosso|Espírito Santo|Grupo AMO|Assédio Moral|Assédio Sexual|Meio Ambiente)/i;
+    const matches = text.match(nameRegex) || [];
+    return matches.some(m => !blacklist.test(m));
   };
+
+  const PersonalDataBadge = () => (
+    <Badge className="bg-amber-100 text-amber-900 border-amber-300 gap-1">
+      <AlertTriangle className="h-3 w-3" />
+      Contém dados pessoais
+    </Badge>
+  );
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -636,7 +637,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                   <th className="px-4 py-3 text-left font-medium">Categoria</th>
                   <th className="px-4 py-3 text-left font-medium">Status</th>
                   <th className="px-4 py-3 text-left font-medium">Data</th>
-                  <th className="px-4 py-3 text-left font-medium">Urgência</th>
+                  <th className="px-4 py-3 text-left font-medium">Alertas</th>
                   <th className="px-4 py-3 text-left font-medium">Ações</th>
                 </tr>
               </thead>
@@ -659,7 +660,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                       </td>
                       <td className="px-4 py-4">{getStatusBadge(report.status)}</td>
                       <td className="px-4 py-4">{new Date(report.created_at).toLocaleDateString('pt-BR')}</td>
-                      <td className="px-4 py-4">{getUrgencyBadge(report.urgency)}</td>
+                      <td className="px-4 py-4">{containsPersonalData(report) ? <PersonalDataBadge /> : <span className="text-gray-400 text-xs">—</span>}</td>
                       <td className="px-4 py-4">
                         <Button
                           variant="outline"
@@ -723,12 +724,14 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                     <span className="text-gray-600">Categoria:</span>
                     <p className="font-medium mt-1">{selectedReport.category}</p>
                   </div>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <span className="text-gray-600">Urgência:</span>
-                    <p className="font-medium mt-1 flex items-center gap-2">
-                      {getUrgencyBadge(selectedReport.urgency)}
-                    </p>
-                  </div>
+                  {containsPersonalData(selectedReport) && (
+                    <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg col-span-2">
+                      <span className="text-amber-900 text-sm font-medium flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        Contém dados pessoais — trate esta denúncia com sigilo reforçado (LGPD).
+                      </span>
+                    </div>
+                  )}
                   {selectedReport.reporter_name && (
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <span className="text-gray-600">Denunciante:</span>
