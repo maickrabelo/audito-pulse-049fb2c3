@@ -637,7 +637,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                   <th className="px-4 py-3 text-left font-medium">Categoria</th>
                   <th className="px-4 py-3 text-left font-medium">Status</th>
                   <th className="px-4 py-3 text-left font-medium">Data</th>
-                  <th className="px-4 py-3 text-left font-medium">Urgência</th>
+                  <th className="px-4 py-3 text-left font-medium">Alertas</th>
                   <th className="px-4 py-3 text-left font-medium">Ações</th>
                 </tr>
               </thead>
@@ -660,7 +660,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                       </td>
                       <td className="px-4 py-4">{getStatusBadge(report.status)}</td>
                       <td className="px-4 py-4">{new Date(report.created_at).toLocaleDateString('pt-BR')}</td>
-                      <td className="px-4 py-4">{getUrgencyBadge(report.urgency)}</td>
+                      <td className="px-4 py-4">{containsPersonalData(report) ? <PersonalDataBadge /> : <span className="text-gray-400 text-xs">—</span>}</td>
                       <td className="px-4 py-4">
                         <Button
                           variant="outline"
@@ -724,12 +724,14 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                     <span className="text-gray-600">Categoria:</span>
                     <p className="font-medium mt-1">{selectedReport.category}</p>
                   </div>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <span className="text-gray-600">Urgência:</span>
-                    <p className="font-medium mt-1 flex items-center gap-2">
-                      {getUrgencyBadge(selectedReport.urgency)}
-                    </p>
-                  </div>
+                  {containsPersonalData(selectedReport) && (
+                    <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg col-span-2">
+                      <span className="text-amber-900 text-sm font-medium flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        Contém dados pessoais — trate esta denúncia com sigilo reforçado (LGPD).
+                      </span>
+                    </div>
+                  )}
                   {selectedReport.reporter_name && (
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <span className="text-gray-600">Denunciante:</span>
