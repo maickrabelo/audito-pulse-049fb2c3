@@ -375,26 +375,27 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
     }
   };
 
-  const getUrgencyBadge = (urgency: string) => {
-    const urgencyMap: { [key: string]: string } = {
-      'high': 'Alta',
-      'medium': 'Média',
-      'low': 'Baixa'
-    };
-
-    const displayUrgency = urgencyMap[urgency] || urgency;
-
-    switch (urgency) {
-      case 'high':
-        return <Badge className="bg-red-100 text-red-800 border-red-300">{displayUrgency}</Badge>;
-      case 'medium':
-        return <Badge className="bg-orange-100 text-orange-800 border-orange-300">{displayUrgency}</Badge>;
-      case 'low':
-        return <Badge className="bg-green-100 text-green-800 border-green-300">{displayUrgency}</Badge>;
-      default:
-        return <Badge variant="outline">{displayUrgency}</Badge>;
-    }
+  const containsPersonalData = (report: any): boolean => {
+    if (!report) return false;
+    if (report.reporter_name && String(report.reporter_name).trim().length > 0) return true;
+    const text = [report.title, report.description, report.ai_summary]
+      .filter(Boolean)
+      .join(' \n ');
+    if (!text) return false;
+    if (/\b(?:me\s+chamo|meu\s+nome\s+é|sou\s+(?:o|a)\s+[A-ZÁÉÍÓÚÂÊÔÃÕÇ]|nome\s*:\s*[A-ZÁÉÍÓÚÂÊÔÃÕÇ]|cpf|rg\s*n?º?)/i.test(text)) return true;
+    // Two consecutive capitalized words (likely first + last name)
+    const nameRegex = /\b[A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]{2,}\s+(?:d[aeo]s?\s+)?[A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]{2,}\b/g;
+    const blacklist = /^(Recursos Humanos|São Paulo|Rio de|Belo Horizonte|Porto Alegre|Minas Gerais|Santa Catarina|Mato Grosso|Espírito Santo|Grupo AMO|Assédio Moral|Assédio Sexual|Meio Ambiente)/i;
+    const matches = text.match(nameRegex) || [];
+    return matches.some(m => !blacklist.test(m));
   };
+
+  const PersonalDataBadge = () => (
+    <Badge className="bg-amber-100 text-amber-900 border-amber-300 gap-1">
+      <AlertTriangle className="h-3 w-3" />
+      Contém dados pessoais
+    </Badge>
+  );
 
   const copyToClipboard = async (text: string) => {
     try {
