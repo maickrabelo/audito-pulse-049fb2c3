@@ -275,7 +275,6 @@ const Reports = () => {
                       <th className="px-4 py-3 text-left font-medium">Categoria</th>
                       <th className="px-4 py-3 text-left font-medium">Status</th>
                       <th className="px-4 py-3 text-left font-medium">Data</th>
-                      <th className="px-4 py-3 text-left font-medium">Urgência</th>
                       <th className="px-4 py-3 text-left font-medium">Ações</th>
                     </tr>
                   </thead>
@@ -300,15 +299,6 @@ const Reports = () => {
                             {getStatusBadge(report.status)}
                           </td>
                           <td className="px-4 py-4 text-gray-500">{report.date}</td>
-                          <td className="px-4 py-4">
-                            <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
-                              report.urgency === "Alta" ? "bg-red-100 text-red-800" : 
-                              report.urgency === "Média" ? "bg-orange-100 text-orange-800" : 
-                              "bg-green-100 text-green-800"
-                            }`}>
-                              {report.urgency}
-                            </span>
-                          </td>
                           <td className="px-4 py-4">
                             <Dialog onOpenChange={(open) => {
                               if (open) handleOpenReportDetails(report);
@@ -346,13 +336,6 @@ const Reports = () => {
                                     <div className="flex flex-wrap gap-3">
                                       <Badge variant="outline" className="bg-gray-100">
                                         Categoria: {selectedReport.category}
-                                      </Badge>
-                                      <Badge variant="outline" className={`${
-                                        selectedReport.urgency === "Alta" ? "bg-red-100 text-red-800 border-red-200" : 
-                                        selectedReport.urgency === "Média" ? "bg-orange-100 text-orange-800 border-orange-200" : 
-                                        "bg-green-100 text-green-800 border-green-200"
-                                      }`}>
-                                        Urgência: {selectedReport.urgency}
                                       </Badge>
                                     </div>
                                     
