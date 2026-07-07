@@ -1,67 +1,39 @@
-## Cadastro em Lote de Empresas (Painel SST)
+## Problema
 
-### Objetivo
-Permitir que a gestora SST cole uma tabela (copiada do Excel/Sheets) com várias empresas e cadastre todas de uma vez como "pendentes". O login da empresa só é gerado depois, quando a gestora informar o e-mail do responsável.
+Quando o denunciante informa o nome do acusado (ex: "Sandra Brito, setor de qualidade"), a IA Ana está tratando o denunciante como se fosse o acusado ("Agradeço por compartilhar, Sandra Brito..."). Isso é um erro grave de contexto que compromete a confidencialidade e a qualidade da denúncia.
 
----
+## Causa
 
-### 1. Novo botão no `SSTDashboard`
-- Adicionar botão **"Cadastrar em Lote"** ao lado do atual "Cadastrar Empresa".
-- Abre um novo dialog: `BulkAddCompaniesDialog`.
+O system prompt em `supabase/functions/chat-report/index.ts` não deixa explícito para o modelo (Gemini 2.5 Flash) que:
+- Quem escreve é sempre o DENUNCIANTE
+- Nomes citados nas mensagens são de ACUSADOS, TESTEMUNHAS ou TERCEIROS — nunca do usuário
+- A IA nunca deve se dirigir ao usuário usando um nome mencionado na conversa
 
-### 2. Dialog de colagem em lote (`BulkAddCompaniesDialog`)
-- Textarea grande onde a gestora cola o conteúdo copiado (linhas separadas por quebra, colunas por TAB — formato padrão do Excel/Sheets).
-- Formato esperado do cabeçalho (primeira linha, ignorada se presente):
-  `Endereço  Cidade  UF  CEP  CNPJ  Razão Social`
-- Parser:
-  - Split por `\n`, cada linha split por `\t`.
-  - Ignora linhas vazias e a linha de cabeçalho.
-  - Extrai: endereço, cidade, UF, CEP, CNPJ (só dígitos → também vira `slug`), razão social (nome).
-  - Monta `address` como `"{endereço}, {cidade}/{UF} - CEP {CEP}"`.
-- Preview: tabela mostrando as linhas interpretadas antes de confirmar, com status por linha (ok / erro de parsing / CNPJ duplicado).
-- Botão **"Cadastrar todas"**:
-  - Para cada linha válida, insere em `companies` com:
-    - `name`, `cnpj`, `address`, `slug` (= CNPJ só dígitos)
-    - `subscription_status: 'pending'` (novo estado, sem login criado ainda)
-    - `email: null`
-  - Cria vínculo em `company_sst_assignments` com o `sst_manager_id` da gestora.
-  - Mostra resumo ao final: X cadastradas, Y ignoradas (com motivo).
-- Fecha e recarrega a lista.
+## Correção
 
-### 3. Marcação visual "Pendente" na lista
-- No `SSTDashboard`, empresas com `subscription_status === 'pending'` ganham:
-  - Badge "Pendente cadastro" (cor de alerta).
-  - Card destacado (borda amarela) para chamar atenção.
-  - O toggle Ativa/Inativa fica desabilitado enquanto estiver pendente.
-  - Botão principal do card muda para **"Completar cadastro"** (em vez de "Ver Dashboard").
+Editar apenas o system prompt em `supabase/functions/chat-report/index.ts` reforçando regras de identidade e tratamento:
 
-### 4. Dialog de conclusão (`CompletePendingCompanyDialog`)
-- Aberto ao clicar em "Completar cadastro".
-- Mostra dados da empresa (nome, CNPJ, endereço) somente-leitura.
-- Campo obrigatório: **E-mail do responsável**.
-- Botão **"Gerar acesso"**:
-  - Atualiza `companies`: `email = <informado>`, `subscription_status = 'active'`.
-  - Chama a edge function existente `create-company-user` com `{ company_id, email, cnpj, company_name }` — ela já cria o usuário com senha = CNPJ (só dígitos) e força troca no primeiro acesso, seguindo o padrão atual do projeto.
-  - Toast de sucesso mostrando: `login: <email>` / `senha inicial: <CNPJ digits> (trocar no primeiro acesso)`.
-  - Fecha e recarrega lista.
+1. **Regra de identidade** (bem no topo, alta prioridade):
+   - "O usuário desta conversa é SEMPRE o denunciante (a vítima ou testemunha do fato)."
+   - "Qualquer nome, cargo ou setor citado pelo usuário refere-se a OUTRAS pessoas: acusados, testemunhas ou envolvidos. NUNCA são o próprio usuário."
+   - "NUNCA se dirija ao usuário usando um nome mencionado na conversa. Não use vocativos com nome próprio."
 
-### 5. Filtro/contador
-- Adicionar um card de estatística "Pendentes" ao lado de "Empresas / Denúncias / Ativas".
-- (Opcional, sem novo componente) o `filteredCompanies` já cobre a busca por nome/CNPJ, mantido igual.
+2. **Regra de tratamento**:
+   - Tratar o usuário sempre como "você", sem nome
+   - Ao confirmar informações sobre o acusado, usar formulações como "Entendi, então a pessoa envolvida seria [Nome], do setor [X]. Correto?" — deixando claro que é sobre um terceiro
 
----
+3. **Exemplos corretos e incorretos** adicionados ao prompt para reforçar (few-shot):
+   - ❌ Errado: "Agradeço por compartilhar, Sandra Brito..."
+   - ✅ Certo: "Obrigada por informar. Registrei que a conduta envolveu Sandra Brito, do setor de qualidade. Há mais algo que gostaria de acrescentar?"
 
-### Detalhes técnicos
-- **Sem migração de schema**: `subscription_status` é `text`, então o valor `'pending'` funciona sem alteração de banco. O código do dashboard trata `pending` explicitamente (não conta como ativa, badge próprio, botão diferente).
-- **Sem novas edge functions**: reaproveita `create-company-user` já existente.
-- **Sem alteração de business logic fora do fluxo SST**: nenhuma mudança em relatórios, dashboards de empresa, etc.
-- **Arquivos novos**:
-  - `src/components/sst/BulkAddCompaniesDialog.tsx`
-  - `src/components/sst/CompletePendingCompanyDialog.tsx`
-- **Arquivos alterados**:
-  - `src/pages/SSTDashboard.tsx` (botão em lote, badge/estado pendente, botão "Completar cadastro", card de contagem de pendentes).
+4. **Reforço de anonimato**: lembrar a IA de que ela não sabe (e não deve assumir) a identidade do denunciante, mesmo que a denúncia seja identificada — o nome do denunciante nunca aparece na conversa como remetente.
 
-### Fora de escopo
-- Não altera o fluxo do dialog "Cadastrar Empresa" individual atual.
-- Não altera edge functions, RLS, ou schema do banco.
-- Não altera páginas públicas de report ou dashboards da empresa final.
+## Escopo
+
+- Arquivo único: `supabase/functions/chat-report/index.ts` (apenas o bloco `content` do system message)
+- Nenhuma mudança de modelo, fluxo, UI, banco ou lógica de negócio
+- Deploy automático da edge function após a edição
+
+## Detalhes técnicos
+
+Modelo permanece `google/gemini-2.5-flash`. O prompt continuará em português, manterá o fluxo de 7 etapas já existente, e apenas ganhará uma nova seção "IDENTIDADE DO USUÁRIO" no topo + exemplos negativos. Isso é suficiente para o Gemini corrigir o comportamento sem necessidade de fine-tuning ou troca de modelo.
