@@ -383,6 +383,7 @@ export type Database = {
           cnpj: string | null
           created_at: string | null
           email: string | null
+          emergency_contacts: Json | null
           id: string
           logo_url: string | null
           max_employees: number | null
@@ -403,6 +404,7 @@ export type Database = {
           cnpj?: string | null
           created_at?: string | null
           email?: string | null
+          emergency_contacts?: Json | null
           id?: string
           logo_url?: string | null
           max_employees?: number | null
@@ -423,6 +425,7 @@ export type Database = {
           cnpj?: string | null
           created_at?: string | null
           email?: string | null
+          emergency_contacts?: Json | null
           id?: string
           logo_url?: string | null
           max_employees?: number | null
@@ -886,6 +889,48 @@ export type Database = {
           },
         ]
       }
+      report_access_audit: {
+        Row: {
+          accessed_at: string
+          id: string
+          justification: string | null
+          report_id: string
+          user_id: string
+          user_role: string | null
+        }
+        Insert: {
+          accessed_at?: string
+          id?: string
+          justification?: string | null
+          report_id: string
+          user_id: string
+          user_role?: string | null
+        }
+        Update: {
+          accessed_at?: string
+          id?: string
+          justification?: string | null
+          report_id?: string
+          user_id?: string
+          user_role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_access_audit_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_access_audit_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       report_attachments: {
         Row: {
           created_at: string
@@ -978,17 +1023,32 @@ export type Database = {
       }
       reports: {
         Row: {
+          ai_classification:
+            | Database["public"]["Enums"]["report_classification"]
+            | null
+          ai_classification_rationale: string | null
           ai_summary: string | null
+          amo_validated_at: string | null
+          amo_validated_by: string | null
+          amo_validated_classification:
+            | Database["public"]["Enums"]["report_classification"]
+            | null
+          amo_validation_notes: string | null
           category: string
           company_id: string
           created_at: string
           department: string | null
           description: string
+          escalation_sent_at: string | null
           id: string
           is_anonymous: boolean
           reporter_email: string | null
           reporter_name: string | null
           reporter_phone: string | null
+          snapshot_cargo: string | null
+          snapshot_cbo: string | null
+          snapshot_ghe: string | null
+          snapshot_unidade: string | null
           status: string
           title: string
           tracking_code: string | null
@@ -996,17 +1056,32 @@ export type Database = {
           urgency: string
         }
         Insert: {
+          ai_classification?:
+            | Database["public"]["Enums"]["report_classification"]
+            | null
+          ai_classification_rationale?: string | null
           ai_summary?: string | null
+          amo_validated_at?: string | null
+          amo_validated_by?: string | null
+          amo_validated_classification?:
+            | Database["public"]["Enums"]["report_classification"]
+            | null
+          amo_validation_notes?: string | null
           category: string
           company_id: string
           created_at?: string
           department?: string | null
           description: string
+          escalation_sent_at?: string | null
           id?: string
           is_anonymous?: boolean
           reporter_email?: string | null
           reporter_name?: string | null
           reporter_phone?: string | null
+          snapshot_cargo?: string | null
+          snapshot_cbo?: string | null
+          snapshot_ghe?: string | null
+          snapshot_unidade?: string | null
           status?: string
           title: string
           tracking_code?: string | null
@@ -1014,17 +1089,32 @@ export type Database = {
           urgency?: string
         }
         Update: {
+          ai_classification?:
+            | Database["public"]["Enums"]["report_classification"]
+            | null
+          ai_classification_rationale?: string | null
           ai_summary?: string | null
+          amo_validated_at?: string | null
+          amo_validated_by?: string | null
+          amo_validated_classification?:
+            | Database["public"]["Enums"]["report_classification"]
+            | null
+          amo_validation_notes?: string | null
           category?: string
           company_id?: string
           created_at?: string
           department?: string | null
           description?: string
+          escalation_sent_at?: string | null
           id?: string
           is_anonymous?: boolean
           reporter_email?: string | null
           reporter_name?: string | null
           reporter_phone?: string | null
+          snapshot_cargo?: string | null
+          snapshot_cbo?: string | null
+          snapshot_ghe?: string | null
+          snapshot_unidade?: string | null
           status?: string
           title?: string
           tracking_code?: string | null
@@ -1041,6 +1131,120 @@ export type Database = {
           },
           {
             foreignKeyName: "reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      soc_employees: {
+        Row: {
+          cargo: string | null
+          cbo: string | null
+          company_id: string
+          cpf_hash: string
+          cpf_last4: string | null
+          created_at: string
+          ghe: string | null
+          id: string
+          matricula: string | null
+          setor: string | null
+          situacao: string | null
+          synced_at: string
+          unidade: string | null
+          updated_at: string
+        }
+        Insert: {
+          cargo?: string | null
+          cbo?: string | null
+          company_id: string
+          cpf_hash: string
+          cpf_last4?: string | null
+          created_at?: string
+          ghe?: string | null
+          id?: string
+          matricula?: string | null
+          setor?: string | null
+          situacao?: string | null
+          synced_at?: string
+          unidade?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cargo?: string | null
+          cbo?: string | null
+          company_id?: string
+          cpf_hash?: string
+          cpf_last4?: string | null
+          created_at?: string
+          ghe?: string | null
+          id?: string
+          matricula?: string | null
+          setor?: string | null
+          situacao?: string | null
+          synced_at?: string
+          unidade?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "soc_employees_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "soc_employees_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      soc_sync_logs: {
+        Row: {
+          company_id: string
+          error_message: string | null
+          finished_at: string | null
+          id: string
+          started_at: string
+          status: string
+          total_employees: number | null
+          triggered_by: string | null
+        }
+        Insert: {
+          company_id: string
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+          total_employees?: number | null
+          triggered_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+          total_employees?: number | null
+          triggered_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "soc_sync_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "soc_sync_logs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies_public"
@@ -1620,6 +1824,15 @@ export type Database = {
         | "pending"
         | "partner"
         | "affiliate"
+        | "apurador"
+        | "comite"
+        | "dpo"
+      report_classification:
+        | "pending_ai"
+        | "4A_sst"
+        | "4B_out_of_scope"
+        | "4C_mixed"
+        | "4D_grave_immediate"
       survey_question_type:
         | "likert"
         | "single_choice"
@@ -1753,7 +1966,24 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "company", "sst", "pending", "partner", "affiliate"],
+      app_role: [
+        "admin",
+        "company",
+        "sst",
+        "pending",
+        "partner",
+        "affiliate",
+        "apurador",
+        "comite",
+        "dpo",
+      ],
+      report_classification: [
+        "pending_ai",
+        "4A_sst",
+        "4B_out_of_scope",
+        "4C_mixed",
+        "4D_grave_immediate",
+      ],
       survey_question_type: [
         "likert",
         "single_choice",
