@@ -28,7 +28,10 @@ type Company = {
   notification_email_1: string | null;
   notification_email_2: string | null;
   notification_email_3: string | null;
+  emergency_contacts?: any;
 };
+
+type EmergencyContact = { name: string; role: string; phone: string; email: string };
 
 type SSTManager = {
   id: string;
