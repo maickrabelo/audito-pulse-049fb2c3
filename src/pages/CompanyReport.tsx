@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { ReportChat } from '@/components/ReportChatContent';
+import ReportWizard from '@/components/ReportWizard';
 import TrackReportModal from '@/components/TrackReportModal';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
@@ -101,8 +101,7 @@ const CompanyReport = () => {
             </div>
           </div>
           
-          {/* Reuse the ReportChat component */}
-          <ReportChat companyId={company.id} />
+          <ReportWizard companyId={company.id} companyName={company.name} />
         </div>
       </main>
       <Footer />

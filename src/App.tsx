@@ -27,6 +27,7 @@ import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import TermosDeUso from "./pages/TermosDeUso";
 import PoliticaSeguranca from "./pages/PoliticaSeguranca";
 import PoliticaRetencao from "./pages/PoliticaRetencao";
+import TriagemAMO from "./pages/TriagemAMO";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/termos-de-uso" element={<TermosDeUso />} />
               <Route path="/politica-de-seguranca" element={<PoliticaSeguranca />} />
               <Route path="/politica-de-retencao" element={<PoliticaRetencao />} />
+              <Route path="/triagem-amo" element={<TriagemAMO />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </WhiteLabelProvider>

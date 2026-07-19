@@ -11,8 +11,17 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
+interface ReportSnapshot {
+  unidade?: string | null;
+  setor?: string | null;
+  ghe?: string | null;
+  cargo?: string | null;
+  cbo?: string | null;
+}
+
 interface ReportChatProps {
   companyId?: string;
+  snapshot?: ReportSnapshot | null;
 }
 
 interface Attachment {
@@ -30,7 +39,7 @@ const initialMessages = [
   },
 ];
 
-export const ReportChat: React.FC<ReportChatProps> = ({ companyId }) => {
+export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -407,6 +416,11 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId }) => {
           department: classification.department,
           is_anonymous: true,
           attachments: uploadedAttachments,
+          snapshot_unidade: snapshot?.unidade || null,
+          snapshot_setor: snapshot?.setor || null,
+          snapshot_ghe: snapshot?.ghe || null,
+          snapshot_cargo: snapshot?.cargo || null,
+          snapshot_cbo: snapshot?.cbo || null,
         }
       });
 
