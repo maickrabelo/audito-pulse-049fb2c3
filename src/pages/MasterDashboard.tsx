@@ -537,6 +537,7 @@ const MasterDashboard = () => {
         notification_email_1: notificationEmail1 || null,
         notification_email_2: notificationEmail2 || null,
         notification_email_3: notificationEmail3 || null,
+        emergency_contacts: emergencyContacts.filter(c => c.name || c.email || c.phone),
         logo_url: logoUrl,
       };
 
