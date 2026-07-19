@@ -18,6 +18,11 @@ interface ReportSubmission {
   reporter_phone?: string;
   department?: string;
   attachments?: { file_path: string; file_name: string; file_type: string; file_size: number }[];
+  snapshot_unidade?: string;
+  snapshot_setor?: string;
+  snapshot_ghe?: string;
+  snapshot_cargo?: string;
+  snapshot_cbo?: string;
 }
 
 // Input validation functions
@@ -115,6 +120,10 @@ serve(async (req) => {
       reporter_email: submission.reporter_email ? sanitizeInput(submission.reporter_email, 255) : null,
       reporter_phone: submission.reporter_phone ? sanitizeInput(submission.reporter_phone, 20) : null,
       department: submission.department ? sanitizeInput(submission.department, 100) : null,
+      snapshot_unidade: submission.snapshot_unidade || null,
+      snapshot_ghe: submission.snapshot_ghe || null,
+      snapshot_cargo: submission.snapshot_cargo || null,
+      snapshot_cbo: submission.snapshot_cbo || null,
     };
 
     // Insert report into database
