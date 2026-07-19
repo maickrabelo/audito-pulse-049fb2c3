@@ -164,6 +164,10 @@ serve(async (req) => {
       }
     }
 
+    // Trigger AI classification (fire-and-forget)
+    supabase.functions.invoke('classify-report-ai', { body: { report_id: data.id } })
+      .catch(err => console.error('classify-report-ai failed:', err));
+
     // Enviar notificação por email (sem aguardar para não bloquear a resposta)
     supabase.functions.invoke('send-notification-email', {
       body: {
