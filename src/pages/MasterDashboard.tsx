@@ -425,6 +425,10 @@ const MasterDashboard = () => {
   const handleOpenEditCompany = (company: Company) => {
     setEditingCompany(company);
     setLogoPreview(company.logo_url);
+    const raw = Array.isArray(company.emergency_contacts) ? company.emergency_contacts : [];
+    setEmergencyContacts(raw.map((c: any) => ({
+      name: c?.name || '', role: c?.role || '', phone: c?.phone || '', email: c?.email || '',
+    })));
     setIsEditCompanyOpen(true);
   };
 
