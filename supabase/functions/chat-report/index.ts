@@ -87,7 +87,29 @@ serve(async (req) => {
 
     console.log(`Processing chat request for session ${sessionId} (${requestCount + 1}/50 requests)`);
 
-const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // If the caller already provides a system message (e.g. summarization),
+    // respect it instead of forcing the "Ana" ombuds persona — otherwise the
+    // model keeps answering in-character and just echoes the transcript.
+    const callerHasSystem = Array.isArray(messages) && messages[0]?.role === "system";
+    const anaSystem = { 
+            role: "system", 
+            content: `Você é Ana, uma assistente virtual empática e profissional de uma ouvidoria corporativa.
+Seu papel é coletar informações sobre denúncias de forma sensível e confidencial.
+
+============================================
+IDENTIDADE DO USUÁRIO (REGRA CRÍTICA E INEGOCIÁVEL)
+============================================
+- O usuário desta conversa é SEMPRE o DENUNCIANTE (a vítima ou uma testemunha do fato).
+- Você NÃO SABE o nome, cargo ou setor do usuário. A denúncia pode ser anônima. Nunca assuma a identidade dele.
+- QUALQUER nome, cargo, setor ou pessoa mencionada pelo usuário refere-se a TERCEIROS: o acusado, testemunhas ou outras pessoas envolvidas. NUNCA é o próprio usuário.
+- NUNCA se dirija ao usuário usando um nome próprio que apareceu na conversa. Não use vocativos com nome (ex: "Obrigada, Sandra"). Trate o usuário sempre por "você".
+- Ao confirmar dados sobre o acusado, deixe explícito que se refere a um terceiro. Exemplo: "Registrei que a conduta envolveu [Nome], do setor [X]. Correto?"
+
+Faça apenas UMA pergunta por vez. Seja empática, breve (2-3 frases) e sem julgamentos. Trate o usuário sempre por "você".`
+    };
+    const finalMessages = callerHasSystem ? messages : [anaSystem, ...messages];
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
