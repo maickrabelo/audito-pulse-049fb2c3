@@ -79,6 +79,7 @@ const MasterDashboard = () => {
   const [sstLogoPreview, setSstLogoPreview] = useState<string | null>(null);
   const [isCreatingTestUsers, setIsCreatingTestUsers] = useState(false);
   const [testUsersResult, setTestUsersResult] = useState<any>(null);
+  const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
   const { toast } = useToast();
   const { session, role, isLoading: authLoading } = useRealAuth();
   
