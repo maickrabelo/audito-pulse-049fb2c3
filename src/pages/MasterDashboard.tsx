@@ -28,7 +28,10 @@ type Company = {
   notification_email_1: string | null;
   notification_email_2: string | null;
   notification_email_3: string | null;
+  emergency_contacts?: any;
 };
+
+type EmergencyContact = { name: string; role: string; phone: string; email: string };
 
 type SSTManager = {
   id: string;
@@ -76,6 +79,7 @@ const MasterDashboard = () => {
   const [sstLogoPreview, setSstLogoPreview] = useState<string | null>(null);
   const [isCreatingTestUsers, setIsCreatingTestUsers] = useState(false);
   const [testUsersResult, setTestUsersResult] = useState<any>(null);
+  const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
   const { toast } = useToast();
   const { session, role, isLoading: authLoading } = useRealAuth();
   
@@ -421,6 +425,10 @@ const MasterDashboard = () => {
   const handleOpenEditCompany = (company: Company) => {
     setEditingCompany(company);
     setLogoPreview(company.logo_url);
+    const raw = Array.isArray(company.emergency_contacts) ? company.emergency_contacts : [];
+    setEmergencyContacts(raw.map((c: any) => ({
+      name: c?.name || '', role: c?.role || '', phone: c?.phone || '', email: c?.email || '',
+    })));
     setIsEditCompanyOpen(true);
   };
 
@@ -529,6 +537,7 @@ const MasterDashboard = () => {
         notification_email_1: notificationEmail1 || null,
         notification_email_2: notificationEmail2 || null,
         notification_email_3: notificationEmail3 || null,
+        emergency_contacts: emergencyContacts.filter(c => c.name || c.email || c.phone),
         logo_url: logoUrl,
       };
 
@@ -1301,6 +1310,83 @@ const MasterDashboard = () => {
                                     defaultValue={editingCompany?.notification_email_3 || ''}
                                   />
                                 </div>
+                              </div>
+                            </div>
+
+                            <div className="border-t pt-4 mt-2">
+                              <div className="flex items-center justify-between mb-3">
+                                <div>
+                                  <Label className="text-base font-semibold flex items-center gap-2">
+                                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                                    Contatos de Emergência (Risco Grave e Iminente — 4D)
+                                  </Label>
+                                  <p className="text-sm text-gray-500 mt-1">
+                                    Estes contatos recebem alerta imediato por email quando a IA classifica uma denúncia como 4D.
+                                  </p>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setEmergencyContacts([...emergencyContacts, { name: '', role: '', phone: '', email: '' }])}
+                                >
+                                  <Plus className="h-4 w-4 mr-1" /> Adicionar
+                                </Button>
+                              </div>
+                              {emergencyContacts.length === 0 && (
+                                <p className="text-xs text-gray-400 italic">Nenhum contato de emergência cadastrado.</p>
+                              )}
+                              <div className="space-y-3">
+                                {emergencyContacts.map((c, idx) => (
+                                  <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2 border rounded-md p-3 relative">
+                                    <Input
+                                      placeholder="Nome"
+                                      value={c.name}
+                                      onChange={(e) => {
+                                        const next = [...emergencyContacts];
+                                        next[idx] = { ...next[idx], name: e.target.value };
+                                        setEmergencyContacts(next);
+                                      }}
+                                    />
+                                    <Input
+                                      placeholder="Cargo/Função"
+                                      value={c.role}
+                                      onChange={(e) => {
+                                        const next = [...emergencyContacts];
+                                        next[idx] = { ...next[idx], role: e.target.value };
+                                        setEmergencyContacts(next);
+                                      }}
+                                    />
+                                    <Input
+                                      placeholder="Telefone"
+                                      value={c.phone}
+                                      onChange={(e) => {
+                                        const next = [...emergencyContacts];
+                                        next[idx] = { ...next[idx], phone: e.target.value };
+                                        setEmergencyContacts(next);
+                                      }}
+                                    />
+                                    <Input
+                                      placeholder="Email"
+                                      type="email"
+                                      value={c.email}
+                                      onChange={(e) => {
+                                        const next = [...emergencyContacts];
+                                        next[idx] = { ...next[idx], email: e.target.value };
+                                        setEmergencyContacts(next);
+                                      }}
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="md:col-span-2 text-red-600 hover:text-red-700 justify-self-end"
+                                      onClick={() => setEmergencyContacts(emergencyContacts.filter((_, i) => i !== idx))}
+                                    >
+                                      <Trash className="h-4 w-4 mr-1" /> Remover
+                                    </Button>
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           </div>
