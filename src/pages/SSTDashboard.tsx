@@ -375,7 +375,7 @@ const SSTDashboard = () => {
                       />
                     </div>
 
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex gap-2 pt-2 flex-wrap">
                       {isPending ? (
                         <Button
                           size="sm"
@@ -403,6 +403,26 @@ const SSTDashboard = () => {
                               <ExternalLink className="h-4 w-4" />
                             </Button>
                           )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Sincronizar funcionários do SOC"
+                            onClick={async () => {
+                              const code = window.prompt("Código do relatório SOC de funcionários para esta empresa:");
+                              if (!code) return;
+                              toast({ title: "Sincronizando com SOC..." });
+                              const { data, error } = await supabase.functions.invoke("soc-sync-company", {
+                                body: { company_id: company.id, export_code: code },
+                              });
+                              if (error) {
+                                toast({ title: "Erro na sincronização", description: error.message, variant: "destructive" });
+                              } else {
+                                toast({ title: "SOC sincronizado", description: `${data?.upserted || 0} funcionários atualizados.` });
+                              }
+                            }}
+                          >
+                            Sincronizar SOC
+                          </Button>
                         </>
                       )}
                     </div>
