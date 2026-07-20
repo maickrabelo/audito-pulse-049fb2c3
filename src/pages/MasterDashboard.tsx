@@ -29,6 +29,8 @@ type Company = {
   notification_email_2: string | null;
   notification_email_3: string | null;
   emergency_contacts?: any;
+  soc_unit_code?: string | null;
+  soc_export_code?: string | null;
 };
 
 type EmergencyContact = { name: string; role: string; phone: string; email: string };
@@ -538,6 +540,8 @@ const MasterDashboard = () => {
         notification_email_2: notificationEmail2 || null,
         notification_email_3: notificationEmail3 || null,
         emergency_contacts: emergencyContacts.filter(c => c.name || c.email || c.phone),
+        soc_unit_code: ((formData.get('socUnitCode') as string) || '').trim() || null,
+        soc_export_code: ((formData.get('socExportCode') as string) || '').trim() || null,
         logo_url: logoUrl,
       };
 
@@ -1270,6 +1274,41 @@ const MasterDashboard = () => {
                               <p className="text-xs text-gray-500">
                                 Identificador único usado na URL da página de denúncias (ex: /report/nome-da-empresa)
                               </p>
+                            </div>
+
+                            <div className="border-t pt-4 mt-2">
+                              <Label className="text-base font-semibold mb-3 block">
+                                Integração SOC
+                              </Label>
+                              <p className="text-sm text-gray-500 mb-3">
+                                Configure os códigos usados para sincronizar os funcionários desta empresa via SOC.
+                              </p>
+                              <div className="grid gap-3">
+                                <div className="grid gap-2">
+                                  <Label htmlFor="socUnitCode">Código da Unidade no SOC (CODIGOUNIDADE)</Label>
+                                  <Input
+                                    id="socUnitCode"
+                                    name="socUnitCode"
+                                    placeholder="ex: 106"
+                                    defaultValue={editingCompany?.soc_unit_code || ''}
+                                  />
+                                  <p className="text-xs text-gray-500">
+                                    Usado para filtrar apenas os funcionários desta empresa dentro do Exporta Dados.
+                                  </p>
+                                </div>
+                                <div className="grid gap-2">
+                                  <Label htmlFor="socExportCode">Código do Exporta Dados (opcional)</Label>
+                                  <Input
+                                    id="socExportCode"
+                                    name="socExportCode"
+                                    placeholder="Deixe em branco para usar o padrão"
+                                    defaultValue={editingCompany?.soc_export_code || ''}
+                                  />
+                                  <p className="text-xs text-gray-500">
+                                    Sobrescreve o código global de exportação apenas para esta empresa.
+                                  </p>
+                                </div>
+                              </div>
                             </div>
 
                             <div className="border-t pt-4 mt-2">
