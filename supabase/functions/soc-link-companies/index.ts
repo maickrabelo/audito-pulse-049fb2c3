@@ -67,6 +67,7 @@ serve(async (req) => {
 
     let matched = 0, updated = 0, skipped = 0, notFound = 0;
     const notFoundList: { id: string; name: string; cnpj: string }[] = [];
+    const toUpdate: { id: string; code: string }[] = [];
 
     for (const c of companies || []) {
       const cnpj = onlyDigits(c.cnpj);
@@ -74,13 +75,17 @@ serve(async (req) => {
       const code = byCnpj.get(cnpj);
       if (!code) { notFound++; notFoundList.push({ id: c.id, name: c.name, cnpj }); continue; }
       matched++;
-      if (String(c.soc_unit_code || "") !== code) {
-        const { error: upErr } = await supabase
-          .from("companies")
-          .update({ soc_unit_code: code })
-          .eq("id", c.id);
-        if (!upErr) updated++;
-      }
+      if (String(c.soc_unit_code || "") !== code) toUpdate.push({ id: c.id, code });
+    }
+
+    // Executa updates em paralelo com concorrência limitada
+    const CONCURRENCY = 20;
+    for (let i = 0; i < toUpdate.length; i += CONCURRENCY) {
+      const batch = toUpdate.slice(i, i + CONCURRENCY);
+      const results = await Promise.all(batch.map(u =>
+        supabase.from("companies").update({ soc_unit_code: u.code }).eq("id", u.id)
+      ));
+      updated += results.filter(r => !r.error).length;
     }
 
     return new Response(JSON.stringify({
