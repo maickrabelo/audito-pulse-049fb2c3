@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search, ArrowLeft, Upload, AlertCircle } from "lucide-react";
+import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search, ArrowLeft, Upload, AlertCircle, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import AddCompanyDialog from '@/components/sst/AddCompanyDialog';
