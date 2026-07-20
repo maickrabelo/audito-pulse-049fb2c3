@@ -21,7 +21,7 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { company_id, export_code, unit_code } = await req.json();
+    const { company_id, empresa_trabalho, export_code } = await req.json();
 
     if (!company_id) {
       return new Response(JSON.stringify({ error: "company_id required" }), {
@@ -29,8 +29,9 @@ serve(async (req) => {
       });
     }
 
-    const SOC_EMPRESA = Deno.env.get("SOC_EMPRESA");
-    const SOC_CHAVE = Deno.env.get("SOC_CHAVE");
+    const SOC_EMPRESA = Deno.env.get("SOC_EMPRESA_FUNC") || Deno.env.get("SOC_EMPRESA");
+    const SOC_CHAVE = Deno.env.get("SOC_CHAVE_FUNC") || Deno.env.get("SOC_CHAVE");
+    const SOC_EXPORT_CODE = Deno.env.get("SOC_EXPORT_CODE_FUNC_EMPRESA");
     const CPF_HASH_SALT = Deno.env.get("CPF_HASH_SALT");
 
     if (!SOC_EMPRESA || !SOC_CHAVE || !CPF_HASH_SALT) {
@@ -52,16 +53,17 @@ serve(async (req) => {
       });
     }
 
-    const codigo = export_code || company.soc_export_code || Deno.env.get("SOC_EXPORT_CODE_FUNCIONARIOS");
-    const unitCode = unit_code || company.soc_unit_code;
+    const codigo = export_code || company.soc_export_code || SOC_EXPORT_CODE;
+    // soc_unit_code passa a armazenar o "empresaTrabalho" (código SOC da empresa cliente)
+    const empresaTrabalho = empresa_trabalho || company.soc_unit_code;
 
     if (!codigo) {
-      return new Response(JSON.stringify({ error: "export_code (código do relatório SOC Exporta Dados de funcionários) é obrigatório" }), {
+      return new Response(JSON.stringify({ error: "export_code (código do Exporta Dados) é obrigatório" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    if (!unitCode) {
-      return new Response(JSON.stringify({ error: "soc_unit_code (CODIGOUNIDADE no SOC) é obrigatório para esta empresa" }), {
+    if (!empresaTrabalho) {
+      return new Response(JSON.stringify({ error: "soc_unit_code (empresaTrabalho no SOC) é obrigatório para esta empresa" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -71,11 +73,8 @@ serve(async (req) => {
       codigo,
       chave: SOC_CHAVE,
       tipoSaida: "json",
-      ativo: "Sim",
-      inativo: "Sim",
-      afastado: "Sim",
-      pendente: "Sim",
-      ferias: "Sim",
+      empresaTrabalho: String(empresaTrabalho),
+      parametroData: "",
     };
     const url = `https://ws1.soc.com.br/WebSoc/exportadados?parametro=${encodeURIComponent(JSON.stringify(parametro))}`;
 
@@ -101,14 +100,10 @@ serve(async (req) => {
     let rows: any[] = [];
     try { rows = JSON.parse(raw); } catch { rows = []; }
 
-    // Filtrar por CODIGOUNIDADE da empresa (empresas clientes são unidades da conta SOC principal)
-    const unitStr = String(unitCode).trim();
-    const filtered = rows.filter((r: any) => String(r.CODIGOUNIDADE || "").trim() === unitStr);
-
     let inserted = 0;
     const errors: string[] = [];
-    for (const r of filtered) {
-      const cpfDigits = onlyDigits(r.CPF);
+    for (const r of rows) {
+      const cpfDigits = onlyDigits(r.CPFFUNCIONARIO || r.CPF);
       if (cpfDigits.length !== 11) continue;
       try {
         const cpf_hash = await hashCpf(cpfDigits, CPF_HASH_SALT);
@@ -116,7 +111,7 @@ serve(async (req) => {
           company_id,
           cpf_hash,
           cpf_last4: cpfDigits.slice(-4),
-          matricula: r.MATRICULAFUNCIONARIO || null,
+          matricula: r.MATRICULAFUNCIONARIO || r.MATRICULA || null,
           unidade: r.NOMEUNIDADE || null,
           setor: r.NOMESETOR || null,
           ghe: r.NOMEGHE || r.NOMESETOR || null,
@@ -137,7 +132,7 @@ serve(async (req) => {
       started_at: startedAt,
       finished_at: new Date().toISOString(),
       status: errors.length ? "partial" : "success",
-      rows_received: filtered.length,
+      rows_received: rows.length,
       rows_upserted: inserted,
       error_message: errors.length ? errors.slice(0, 5).join(" | ") : null,
     });
@@ -145,7 +140,6 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       success: true,
       total_rows: rows.length,
-      matched_unit: filtered.length,
       upserted: inserted,
       errors: errors.length,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
