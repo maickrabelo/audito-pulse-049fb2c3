@@ -478,22 +478,18 @@ const SSTDashboard = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            title="Sincronizar funcionários do SOC"
-                            onClick={async () => {
-                              const code = window.prompt("Código do relatório SOC de funcionários para esta empresa:");
-                              if (!code) return;
-                              toast({ title: "Sincronizando com SOC..." });
-                              const { data, error } = await supabase.functions.invoke("soc-sync-company", {
-                                body: { company_id: company.id, export_code: code },
-                              });
-                              if (error) {
-                                toast({ title: "Erro na sincronização", description: error.message, variant: "destructive" });
-                              } else {
-                                toast({ title: "SOC sincronizado", description: `${data?.upserted || 0} funcionários atualizados.` });
-                              }
-                            }}
+                            title="Resincronizar funcionários do SOC"
+                            disabled={syncingId === company.id}
+                            onClick={() => resyncCompany(company)}
                           >
-                            Sincronizar SOC
+                            {syncingId === company.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <>
+                                <RefreshCw className="h-4 w-4 mr-1" />
+                                Resincronizar
+                              </>
+                            )}
                           </Button>
                         </>
                       )}
