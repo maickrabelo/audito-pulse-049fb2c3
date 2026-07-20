@@ -427,6 +427,10 @@ const SSTDashboard = () => {
                       <FileText className="h-4 w-4 text-muted-foreground" />
                       <span>{reportCounts[company.id] || 0} denúncias</span>
                     </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span>{employeeCounts[company.id] || 0} colaboradores ativos (SOC)</span>
+                    </div>
 
                     {/* Activate/Deactivate toggle */}
                     <div className="flex items-center justify-between py-2 border-t">
