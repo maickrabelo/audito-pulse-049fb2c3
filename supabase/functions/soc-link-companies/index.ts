@@ -59,11 +59,19 @@ serve(async (req) => {
       if (cnpj && code && !byCnpj.has(cnpj)) byCnpj.set(cnpj, code);
     }
 
-    // Fetch all companies from our DB
-    const { data: companies, error } = await supabase
-      .from("companies")
-      .select("id, name, cnpj, soc_unit_code");
-    if (error) throw error;
+    // Fetch all companies (paginated, Supabase default cap is 1000)
+    const companies: any[] = [];
+    const PAGE = 1000;
+    for (let from = 0; ; from += PAGE) {
+      const { data, error } = await supabase
+        .from("companies")
+        .select("id, name, cnpj, soc_unit_code")
+        .range(from, from + PAGE - 1);
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      companies.push(...data);
+      if (data.length < PAGE) break;
+    }
 
     let matched = 0, updated = 0, skipped = 0, notFound = 0;
     const notFoundList: { id: string; name: string; cnpj: string }[] = [];
