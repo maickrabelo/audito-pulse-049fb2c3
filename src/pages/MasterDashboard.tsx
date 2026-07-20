@@ -110,6 +110,21 @@ const MasterDashboard = () => {
     }
   }, [authLoading, session, role]);
 
+  const loadReportsByCategory = async () => {
+    setReportsCatLoading(true);
+    const { data } = await supabase
+      .from('reports')
+      .select('id, tracking_code, title, status, created_at, ai_classification, amo_validated_classification, ai_classification_rationale, companies(name)')
+      .order('created_at', { ascending: false })
+      .limit(300);
+    setReportsByCategory(data || []);
+    setReportsCatLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTab === 'reports-cat' && session && role === 'admin') loadReportsByCategory();
+  }, [activeTab, session, role]);
+
   const loadData = async () => {
     setLoading(true);
     try {
