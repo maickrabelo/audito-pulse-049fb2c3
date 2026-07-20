@@ -82,6 +82,9 @@ const MasterDashboard = () => {
   const [isCreatingTestUsers, setIsCreatingTestUsers] = useState(false);
   const [testUsersResult, setTestUsersResult] = useState<any>(null);
   const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
+  const [reportsByCategory, setReportsByCategory] = useState<any[]>([]);
+  const [reportsCatFilter, setReportsCatFilter] = useState<string>('all');
+  const [reportsCatLoading, setReportsCatLoading] = useState(false);
   const { toast } = useToast();
   const { session, role, isLoading: authLoading } = useRealAuth();
   
@@ -106,6 +109,21 @@ const MasterDashboard = () => {
       loadData();
     }
   }, [authLoading, session, role]);
+
+  const loadReportsByCategory = async () => {
+    setReportsCatLoading(true);
+    const { data } = await supabase
+      .from('reports')
+      .select('id, tracking_code, title, status, created_at, ai_classification, amo_validated_classification, ai_classification_rationale, companies(name)')
+      .order('created_at', { ascending: false })
+      .limit(300);
+    setReportsByCategory(data || []);
+    setReportsCatLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTab === 'reports-cat' && session && role === 'admin') loadReportsByCategory();
+  }, [activeTab, session, role]);
 
   const loadData = async () => {
     setLoading(true);
@@ -1082,6 +1100,7 @@ const MasterDashboard = () => {
               <TabsList>
                 <TabsTrigger value="companies">Empresas</TabsTrigger>
                 <TabsTrigger value="sst">Gestoras SST</TabsTrigger>
+                <TabsTrigger value="reports-cat">Denúncias por Categoria</TabsTrigger>
               </TabsList>
               <Button variant="outline" size="sm" onClick={() => navigate('/triagem-amo')} className="ml-3">
                 <AlertTriangle className="h-4 w-4 mr-2" /> Triagem AMO
@@ -1840,6 +1859,91 @@ const MasterDashboard = () => {
                       </div>
                     )}
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="reports-cat">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Denúncias por Categoria (Triagem IA)</CardTitle>
+                  <CardDescription>
+                    Classificação automática pela IA (4A SST · 4B Fora de escopo · 4C Misto · 4D Grave/imediato). A validação humana é feita em <b>Triagem AMO</b>.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2 flex-wrap mb-4">
+                    {[
+                      { k: 'all', label: 'Todas' },
+                      { k: 'pending_ai', label: 'Pendente IA' },
+                      { k: '4A_sst', label: '4A — SST' },
+                      { k: '4B_out_of_scope', label: '4B — Fora de escopo' },
+                      { k: '4C_mixed', label: '4C — Misto' },
+                      { k: '4D_grave_immediate', label: '4D — Grave/imediato' },
+                    ].map(o => {
+                      const count = o.k === 'all'
+                        ? reportsByCategory.length
+                        : reportsByCategory.filter(r => (r.amo_validated_classification || r.ai_classification || 'pending_ai') === o.k).length;
+                      return (
+                        <Button
+                          key={o.k}
+                          size="sm"
+                          variant={reportsCatFilter === o.k ? 'default' : 'outline'}
+                          onClick={() => setReportsCatFilter(o.k)}
+                        >
+                          {o.label} <span className="ml-2 opacity-70">({count})</span>
+                        </Button>
+                      );
+                    })}
+                    <Button size="sm" variant="ghost" onClick={loadReportsByCategory} className="ml-auto">Recarregar</Button>
+                  </div>
+
+                  {reportsCatLoading ? (
+                    <div className="py-10 text-center text-muted-foreground">Carregando…</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {reportsByCategory
+                        .filter(r => reportsCatFilter === 'all' || (r.amo_validated_classification || r.ai_classification || 'pending_ai') === reportsCatFilter)
+                        .map(r => {
+                          const cls = r.amo_validated_classification || r.ai_classification || 'pending_ai';
+                          const validated = !!r.amo_validated_classification;
+                          const label = ({
+                            '4A_sst': '4A SST',
+                            '4B_out_of_scope': '4B Fora de escopo',
+                            '4C_mixed': '4C Misto',
+                            '4D_grave_immediate': '4D Grave/imediato',
+                            'pending_ai': 'Pendente IA',
+                          } as any)[cls] || cls;
+                          const color = cls === '4D_grave_immediate' ? 'bg-red-100 text-red-800 border-red-300'
+                            : cls === '4C_mixed' ? 'bg-amber-100 text-amber-800 border-amber-300'
+                            : cls === '4B_out_of_scope' ? 'bg-gray-100 text-gray-700 border-gray-300'
+                            : cls === '4A_sst' ? 'bg-blue-100 text-blue-800 border-blue-300'
+                            : 'bg-yellow-50 text-yellow-800 border-yellow-300';
+                          return (
+                            <div key={r.id} className="flex items-start justify-between gap-3 border rounded p-3 hover:bg-muted/30">
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className={`text-xs px-2 py-0.5 rounded border ${color}`}>{label}</span>
+                                  {validated && <span className="text-xs text-green-700">✓ validado AMO</span>}
+                                  <span className="text-xs text-muted-foreground">Protocolo <b>{r.tracking_code}</b></span>
+                                </div>
+                                <div className="font-medium mt-1 truncate">{r.title}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  {r.companies?.name} · {new Date(r.created_at).toLocaleString('pt-BR')} · status: {r.status}
+                                </div>
+                                {r.ai_classification_rationale && (
+                                  <div className="text-xs text-muted-foreground mt-1 line-clamp-2"><b>IA:</b> {r.ai_classification_rationale}</div>
+                                )}
+                              </div>
+                              <Button size="sm" variant="outline" onClick={() => navigate('/triagem-amo')}>Abrir triagem</Button>
+                            </div>
+                          );
+                        })}
+                      {reportsByCategory.length === 0 && (
+                        <div className="text-center text-muted-foreground py-8">Nenhuma denúncia encontrada.</div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
