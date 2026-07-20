@@ -6,7 +6,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Hash CPF with global salt (HMAC-like via SHA-256(salt + cpf))
 async function hashCpf(cpf: string, salt: string): Promise<string> {
   const data = new TextEncoder().encode(salt + cpf);
   const buf = await crypto.subtle.digest("SHA-256", data);
@@ -22,7 +21,7 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { company_id, export_code } = await req.json();
+    const { company_id, export_code, unit_code } = await req.json();
 
     if (!company_id) {
       return new Response(JSON.stringify({ error: "company_id required" }), {
@@ -31,28 +30,20 @@ serve(async (req) => {
     }
 
     const SOC_EMPRESA = Deno.env.get("SOC_EMPRESA");
-    const SOC_CODIGO = Deno.env.get("SOC_CODIGO");
     const SOC_CHAVE = Deno.env.get("SOC_CHAVE");
     const CPF_HASH_SALT = Deno.env.get("CPF_HASH_SALT");
-    const codigo = export_code || Deno.env.get("SOC_EXPORT_CODE_FUNCIONARIOS");
 
-    if (!SOC_EMPRESA || !SOC_CODIGO || !SOC_CHAVE || !CPF_HASH_SALT) {
+    if (!SOC_EMPRESA || !SOC_CHAVE || !CPF_HASH_SALT) {
       return new Response(JSON.stringify({ error: "SOC credentials not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    if (!codigo) {
-      return new Response(JSON.stringify({ error: "export_code (código do relatório SOC de funcionários) é obrigatório" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const startedAt = new Date().toISOString();
 
-    // Load company to get its CNPJ / código SOC (usamos CNPJ como filtro se necessário)
     const { data: company } = await supabase
       .from("companies")
-      .select("id, name, cnpj")
+      .select("id, name, cnpj, soc_unit_code, soc_export_code")
       .eq("id", company_id)
       .maybeSingle();
     if (!company) {
@@ -61,12 +52,30 @@ serve(async (req) => {
       });
     }
 
-    // SOC ExportaDados endpoint
+    const codigo = export_code || company.soc_export_code || Deno.env.get("SOC_EXPORT_CODE_FUNCIONARIOS");
+    const unitCode = unit_code || company.soc_unit_code;
+
+    if (!codigo) {
+      return new Response(JSON.stringify({ error: "export_code (código do relatório SOC Exporta Dados de funcionários) é obrigatório" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!unitCode) {
+      return new Response(JSON.stringify({ error: "soc_unit_code (CODIGOUNIDADE no SOC) é obrigatório para esta empresa" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const parametro = {
       empresa: SOC_EMPRESA,
       codigo,
       chave: SOC_CHAVE,
       tipoSaida: "json",
+      ativo: "Sim",
+      inativo: "",
+      afastado: "",
+      pendente: "",
+      ferias: "",
     };
     const url = `https://ws1.soc.com.br/WebSoc/exportadados?parametro=${encodeURIComponent(JSON.stringify(parametro))}`;
 
@@ -83,21 +92,23 @@ serve(async (req) => {
       });
     }
 
-    // SOC returns ISO-8859-1 sometimes; try as text and JSON.parse
-    const raw = await socRes.text();
+    // SOC pode retornar latin-1
+    const buf = new Uint8Array(await socRes.arrayBuffer());
+    let raw: string;
+    try { raw = new TextDecoder("utf-8", { fatal: true }).decode(buf); }
+    catch { raw = new TextDecoder("iso-8859-1").decode(buf); }
+
     let rows: any[] = [];
     try { rows = JSON.parse(raw); } catch { rows = []; }
 
-    // Filter for this company by CNPJ if available in row (SOC field: CODIGOEMPRESA / CNPJ)
-    const cnpjDigits = onlyDigits(company.cnpj);
-    const filtered = cnpjDigits
-      ? rows.filter((r: any) => onlyDigits(r.CNPJ || r.CNPJEMPRESA || r.cnpj) === cnpjDigits)
-      : rows;
+    // Filtrar por CODIGOUNIDADE da empresa (empresas clientes são unidades da conta SOC principal)
+    const unitStr = String(unitCode).trim();
+    const filtered = rows.filter((r: any) => String(r.CODIGOUNIDADE || "").trim() === unitStr);
 
     let inserted = 0;
     const errors: string[] = [];
     for (const r of filtered) {
-      const cpfDigits = onlyDigits(r.CPF || r.CPFFUNCIONARIO || r.cpf);
+      const cpfDigits = onlyDigits(r.CPF);
       if (cpfDigits.length !== 11) continue;
       try {
         const cpf_hash = await hashCpf(cpfDigits, CPF_HASH_SALT);
@@ -105,12 +116,12 @@ serve(async (req) => {
           company_id,
           cpf_hash,
           cpf_last4: cpfDigits.slice(-4),
-          matricula: r.MATRICULAFUNCIONARIO || r.MATRICULA || null,
-          unidade: r.NOMEUNIDADE || r.UNIDADE || null,
-          setor: r.NOMESETOR || r.SETOR || null,
-          ghe: r.NOMEGHE || r.GHE || null,
-          cargo: r.NOMECARGO || r.CARGO || null,
-          cbo: r.CBOCARGO || r.CBO || null,
+          matricula: r.MATRICULAFUNCIONARIO || null,
+          unidade: r.NOMEUNIDADE || null,
+          setor: r.NOMESETOR || null,
+          ghe: r.NOMEGHE || r.NOMESETOR || null,
+          cargo: r.NOMECARGO || null,
+          cbo: r.CBOCARGO || null,
           situacao: r.SITUACAO || null,
           synced_at: new Date().toISOString(),
         }, { onConflict: "company_id,cpf_hash" });
@@ -132,7 +143,11 @@ serve(async (req) => {
     });
 
     return new Response(JSON.stringify({
-      success: true, received: filtered.length, upserted: inserted, errors: errors.length,
+      success: true,
+      total_rows: rows.length,
+      matched_unit: filtered.length,
+      upserted: inserted,
+      errors: errors.length,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("soc-sync-company error", e);
