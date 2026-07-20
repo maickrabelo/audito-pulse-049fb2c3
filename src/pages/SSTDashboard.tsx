@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search, ArrowLeft, Upload, AlertCircle } from "lucide-react";
+import { Building2, Users, FileText, ExternalLink, Loader2, Plus, Power, Search, ArrowLeft, Upload, AlertCircle, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import AddCompanyDialog from '@/components/sst/AddCompanyDialog';
@@ -33,6 +33,8 @@ const SSTDashboard = () => {
   const [companies, setCompanies] = useState<AssignedCompany[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [reportCounts, setReportCounts] = useState<Record<string, number>>({});
+  const [employeeCounts, setEmployeeCounts] = useState<Record<string, number>>({});
+  const [syncingId, setSyncingId] = useState<string | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isBulkOpen, setIsBulkOpen] = useState(false);
   const [completingCompany, setCompletingCompany] = useState<AssignedCompany | null>(null);
@@ -108,6 +110,11 @@ const SSTDashboard = () => {
           supabase.from('reports').select('company_id').in('company_id', ids)
         )
       );
+      const employeesResults = await Promise.all(
+        idChunks.map(ids =>
+          supabase.from('soc_employees').select('company_id, situacao').in('company_id', ids)
+        )
+      );
 
       const allCompanies: AssignedCompany[] = [];
       for (const r of companiesResults) {
@@ -125,6 +132,19 @@ const SSTDashboard = () => {
         }
       }
       setReportCounts(counts);
+
+      const empCounts: Record<string, number> = {};
+      for (const r of employeesResults) {
+        if (!r.error && r.data) {
+          r.data.forEach((row: any) => {
+            const sit = (row.situacao || '').toString().toLowerCase();
+            if (sit === 'ativo' || sit === '') {
+              empCounts[row.company_id] = (empCounts[row.company_id] || 0) + 1;
+            }
+          });
+        }
+      }
+      setEmployeeCounts(empCounts);
     } catch (error: any) {
       toast({ title: "Erro ao carregar empresas", description: error.message, variant: "destructive" });
     } finally {
@@ -135,6 +155,34 @@ const SSTDashboard = () => {
   useEffect(() => {
     loadCompanies();
   }, [profile?.sst_manager_id]);
+
+  const resyncCompany = async (company: AssignedCompany) => {
+    setSyncingId(company.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("soc-sync-company", {
+        body: { company_id: company.id },
+      });
+      if (error) throw error;
+      toast({
+        title: "SOC sincronizado",
+        description: `${data?.upserted || 0} funcionários atualizados.`,
+      });
+      // Refresh employee count for this company
+      const { data: emps } = await supabase
+        .from('soc_employees')
+        .select('situacao')
+        .eq('company_id', company.id);
+      const activeCount = (emps || []).filter((e: any) => {
+        const s = (e.situacao || '').toLowerCase();
+        return s === 'ativo' || s === '';
+      }).length;
+      setEmployeeCounts(prev => ({ ...prev, [company.id]: activeCount }));
+    } catch (error: any) {
+      toast({ title: "Erro na sincronização", description: error.message, variant: "destructive" });
+    } finally {
+      setSyncingId(null);
+    }
+  };
 
   const toggleCompanyStatus = async (company: AssignedCompany) => {
     setTogglingId(company.id);
@@ -379,6 +427,10 @@ const SSTDashboard = () => {
                       <FileText className="h-4 w-4 text-muted-foreground" />
                       <span>{reportCounts[company.id] || 0} denúncias</span>
                     </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span>{employeeCounts[company.id] || 0} colaboradores ativos (SOC)</span>
+                    </div>
 
                     {/* Activate/Deactivate toggle */}
                     <div className="flex items-center justify-between py-2 border-t">
@@ -426,22 +478,18 @@ const SSTDashboard = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            title="Sincronizar funcionários do SOC"
-                            onClick={async () => {
-                              const code = window.prompt("Código do relatório SOC de funcionários para esta empresa:");
-                              if (!code) return;
-                              toast({ title: "Sincronizando com SOC..." });
-                              const { data, error } = await supabase.functions.invoke("soc-sync-company", {
-                                body: { company_id: company.id, export_code: code },
-                              });
-                              if (error) {
-                                toast({ title: "Erro na sincronização", description: error.message, variant: "destructive" });
-                              } else {
-                                toast({ title: "SOC sincronizado", description: `${data?.upserted || 0} funcionários atualizados.` });
-                              }
-                            }}
+                            title="Resincronizar funcionários do SOC"
+                            disabled={syncingId === company.id}
+                            onClick={() => resyncCompany(company)}
                           >
-                            Sincronizar SOC
+                            {syncingId === company.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <>
+                                <RefreshCw className="h-4 w-4 mr-1" />
+                                Resincronizar
+                              </>
+                            )}
                           </Button>
                         </>
                       )}
