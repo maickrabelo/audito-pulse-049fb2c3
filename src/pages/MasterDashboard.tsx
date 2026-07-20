@@ -82,6 +82,9 @@ const MasterDashboard = () => {
   const [isCreatingTestUsers, setIsCreatingTestUsers] = useState(false);
   const [testUsersResult, setTestUsersResult] = useState<any>(null);
   const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
+  const [reportsByCategory, setReportsByCategory] = useState<any[]>([]);
+  const [reportsCatFilter, setReportsCatFilter] = useState<string>('all');
+  const [reportsCatLoading, setReportsCatLoading] = useState(false);
   const { toast } = useToast();
   const { session, role, isLoading: authLoading } = useRealAuth();
   
