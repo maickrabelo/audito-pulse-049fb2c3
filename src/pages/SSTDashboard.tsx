@@ -33,6 +33,8 @@ const SSTDashboard = () => {
   const [companies, setCompanies] = useState<AssignedCompany[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [reportCounts, setReportCounts] = useState<Record<string, number>>({});
+  const [employeeCounts, setEmployeeCounts] = useState<Record<string, number>>({});
+  const [syncingId, setSyncingId] = useState<string | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isBulkOpen, setIsBulkOpen] = useState(false);
   const [completingCompany, setCompletingCompany] = useState<AssignedCompany | null>(null);
