@@ -226,6 +226,26 @@ const SSTDashboard = () => {
               <p className="text-muted-foreground mt-1">Gerencie as empresas vinculadas à sua gestão</p>
             </div>
             <div className="flex gap-2 flex-wrap">
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  if (!confirm("Vincular todas as empresas ao SOC comparando pelo CNPJ? Isso pode levar alguns segundos.")) return;
+                  toast({ title: "Vinculando empresas ao SOC..." });
+                  const { data, error } = await supabase.functions.invoke("soc-link-companies", { body: {} });
+                  if (error) {
+                    toast({ title: "Erro", description: error.message, variant: "destructive" });
+                  } else {
+                    toast({
+                      title: "Vinculação concluída",
+                      description: `${data?.matched || 0} correspondências (${data?.updated || 0} atualizadas). ${data?.not_found_in_soc || 0} sem CNPJ no SOC.`,
+                    });
+                    loadCompanies();
+                  }
+                }}
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                Vincular ao SOC
+              </Button>
               <Button variant="outline" onClick={() => setIsBulkOpen(true)}>
                 <Upload className="h-4 w-4 mr-2" />
                 Cadastrar em Lote
