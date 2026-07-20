@@ -72,10 +72,10 @@ serve(async (req) => {
       chave: SOC_CHAVE,
       tipoSaida: "json",
       ativo: "Sim",
-      inativo: "",
-      afastado: "",
-      pendente: "",
-      ferias: "",
+      inativo: "Sim",
+      afastado: "Sim",
+      pendente: "Sim",
+      ferias: "Sim",
     };
     const url = `https://ws1.soc.com.br/WebSoc/exportadados?parametro=${encodeURIComponent(JSON.stringify(parametro))}`;
 
