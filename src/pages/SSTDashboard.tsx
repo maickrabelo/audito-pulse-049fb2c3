@@ -110,6 +110,11 @@ const SSTDashboard = () => {
           supabase.from('reports').select('company_id').in('company_id', ids)
         )
       );
+      const employeesResults = await Promise.all(
+        idChunks.map(ids =>
+          supabase.from('soc_employees').select('company_id, situacao').in('company_id', ids)
+        )
+      );
 
       const allCompanies: AssignedCompany[] = [];
       for (const r of companiesResults) {
