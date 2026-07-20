@@ -132,6 +132,19 @@ const SSTDashboard = () => {
         }
       }
       setReportCounts(counts);
+
+      const empCounts: Record<string, number> = {};
+      for (const r of employeesResults) {
+        if (!r.error && r.data) {
+          r.data.forEach((row: any) => {
+            const sit = (row.situacao || '').toString().toLowerCase();
+            if (sit === 'ativo' || sit === '') {
+              empCounts[row.company_id] = (empCounts[row.company_id] || 0) + 1;
+            }
+          });
+        }
+      }
+      setEmployeeCounts(empCounts);
     } catch (error: any) {
       toast({ title: "Erro ao carregar empresas", description: error.message, variant: "destructive" });
     } finally {
