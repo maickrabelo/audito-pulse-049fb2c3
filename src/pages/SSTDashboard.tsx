@@ -156,6 +156,34 @@ const SSTDashboard = () => {
     loadCompanies();
   }, [profile?.sst_manager_id]);
 
+  const resyncCompany = async (company: AssignedCompany) => {
+    setSyncingId(company.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("soc-sync-company", {
+        body: { company_id: company.id },
+      });
+      if (error) throw error;
+      toast({
+        title: "SOC sincronizado",
+        description: `${data?.upserted || 0} funcionários atualizados.`,
+      });
+      // Refresh employee count for this company
+      const { data: emps } = await supabase
+        .from('soc_employees')
+        .select('situacao')
+        .eq('company_id', company.id);
+      const activeCount = (emps || []).filter((e: any) => {
+        const s = (e.situacao || '').toLowerCase();
+        return s === 'ativo' || s === '';
+      }).length;
+      setEmployeeCounts(prev => ({ ...prev, [company.id]: activeCount }));
+    } catch (error: any) {
+      toast({ title: "Erro na sincronização", description: error.message, variant: "destructive" });
+    } finally {
+      setSyncingId(null);
+    }
+  };
+
   const toggleCompanyStatus = async (company: AssignedCompany) => {
     setTogglingId(company.id);
     const newStatus = company.subscription_status === 'active' || company.subscription_status === 'trial'
