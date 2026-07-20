@@ -99,7 +99,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       success: true,
       soc_companies: rows.length,
-      db_companies: companies?.length || 0,
+      db_companies: companies.length,
       matched, updated, skipped_no_cnpj: skipped, not_found_in_soc: notFound,
       not_found_sample: notFoundList.slice(0, 20),
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
