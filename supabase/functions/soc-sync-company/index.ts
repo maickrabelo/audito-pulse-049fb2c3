@@ -100,31 +100,42 @@ serve(async (req) => {
     let rows: any[] = [];
     try { rows = JSON.parse(raw); } catch { rows = []; }
 
+    // Monta payloads em paralelo (hash é CPU-bound rápido)
+    const now = new Date().toISOString();
+    const payloads = (await Promise.all(rows.map(async (r: any) => {
+      const cpfDigits = onlyDigits(r.CPFFUNCIONARIO || r.CPF);
+      if (cpfDigits.length !== 11) return null;
+      const cpf_hash = await hashCpf(cpfDigits, CPF_HASH_SALT);
+      return {
+        company_id,
+        cpf_hash,
+        cpf_last4: cpfDigits.slice(-4),
+        matricula: r.MATRICULAFUNCIONARIO || r.MATRICULA || null,
+        unidade: r.NOMEUNIDADE || null,
+        setor: r.NOMESETOR || null,
+        ghe: r.NOMEGHE || r.NOMESETOR || null,
+        cargo: r.NOMECARGO || null,
+        cbo: r.CBOCARGO || null,
+        situacao: r.SITUACAO || null,
+        synced_at: now,
+      };
+    }))).filter(Boolean) as any[];
+
+    // Dedup por cpf_hash (SOC pode devolver duplicatas e quebra o ON CONFLICT no mesmo batch)
+    const dedup = new Map<string, any>();
+    for (const p of payloads) dedup.set(p.cpf_hash, p);
+    const unique = [...dedup.values()];
+
     let inserted = 0;
     const errors: string[] = [];
-    for (const r of rows) {
-      const cpfDigits = onlyDigits(r.CPFFUNCIONARIO || r.CPF);
-      if (cpfDigits.length !== 11) continue;
-      try {
-        const cpf_hash = await hashCpf(cpfDigits, CPF_HASH_SALT);
-        const { error } = await supabase.from("soc_employees").upsert({
-          company_id,
-          cpf_hash,
-          cpf_last4: cpfDigits.slice(-4),
-          matricula: r.MATRICULAFUNCIONARIO || r.MATRICULA || null,
-          unidade: r.NOMEUNIDADE || null,
-          setor: r.NOMESETOR || null,
-          ghe: r.NOMEGHE || r.NOMESETOR || null,
-          cargo: r.NOMECARGO || null,
-          cbo: r.CBOCARGO || null,
-          situacao: r.SITUACAO || null,
-          synced_at: new Date().toISOString(),
-        }, { onConflict: "company_id,cpf_hash" });
-        if (error) errors.push(error.message);
-        else inserted++;
-      } catch (e: any) {
-        errors.push(e.message);
-      }
+    const BATCH = 500;
+    for (let i = 0; i < unique.length; i += BATCH) {
+      const chunk = unique.slice(i, i + BATCH);
+      const { error } = await supabase
+        .from("soc_employees")
+        .upsert(chunk, { onConflict: "company_id,cpf_hash" });
+      if (error) errors.push(error.message);
+      else inserted += chunk.length;
     }
 
     await supabase.from("soc_sync_logs").insert({
