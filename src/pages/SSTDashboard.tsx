@@ -110,11 +110,26 @@ const SSTDashboard = () => {
           supabase.from('reports').select('company_id').in('company_id', ids)
         )
       );
-      const employeesResults = await Promise.all(
-        idChunks.map(ids =>
-          supabase.from('soc_employees').select('company_id, situacao').in('company_id', ids)
-        )
-      );
+      // Fetch active employees per company chunk, paginating to bypass the 1000-row cap
+      const empCounts: Record<string, number> = {};
+      const fetchActiveForChunk = async (ids: string[]) => {
+        const PAGE = 1000;
+        for (let from = 0; ; from += PAGE) {
+          const { data, error } = await supabase
+            .from('soc_employees')
+            .select('company_id')
+            .in('company_id', ids)
+            .ilike('situacao', 'ativo')
+            .range(from, from + PAGE - 1);
+          if (error) throw error;
+          if (!data || data.length === 0) break;
+          data.forEach((row: any) => {
+            empCounts[row.company_id] = (empCounts[row.company_id] || 0) + 1;
+          });
+          if (data.length < PAGE) break;
+        }
+      };
+      await Promise.all(idChunks.map(fetchActiveForChunk));
 
       const allCompanies: AssignedCompany[] = [];
       for (const r of companiesResults) {
@@ -133,18 +148,8 @@ const SSTDashboard = () => {
       }
       setReportCounts(counts);
 
-      const empCounts: Record<string, number> = {};
-      for (const r of employeesResults) {
-        if (!r.error && r.data) {
-          r.data.forEach((row: any) => {
-            const sit = (row.situacao || '').toString().toLowerCase();
-            if (sit === 'ativo' || sit === '') {
-              empCounts[row.company_id] = (empCounts[row.company_id] || 0) + 1;
-            }
-          });
-        }
-      }
       setEmployeeCounts(empCounts);
+
     } catch (error: any) {
       toast({ title: "Erro ao carregar empresas", description: error.message, variant: "destructive" });
     } finally {
