@@ -5,6 +5,7 @@ const PRICING: Record<string, { input: number; output: number }> = {
   "google/gemini-2.5-flash-lite": { input: 0.10, output: 0.40 },
   "google/gemini-2.5-pro": { input: 1.25, output: 10.0 },
   "google/gemini-3.6-flash": { input: 0.30, output: 2.50 },
+  "google/gemini-3.1-flash-lite": { input: 0.10, output: 0.40 },
   "openai/gpt-5-mini": { input: 0.25, output: 2.0 },
   "openai/gpt-5": { input: 1.25, output: 10.0 },
   "openai/gpt-5.6-sol": { input: 1.25, output: 10.0 },

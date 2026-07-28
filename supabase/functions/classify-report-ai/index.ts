@@ -23,7 +23,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { report_id } = await req.json();
+    const { report_id, force } = await req.json();
     if (!report_id) return json({ error: "report_id obrigatório" }, 400);
 
     const supabase = createClient(
@@ -36,12 +36,23 @@ serve(async (req) => {
       .select(
         "id, company_id, title, description, ai_summary, category, snapshot_unidade, snapshot_ghe, snapshot_cargo, " +
           "data_inicio_ocorrencia, data_fim_ocorrencia, periodo_descritivo, local_ocorrencia, pessoas_envolvidas, " +
-          "testemunhas, evidencias_disponiveis, ha_risco_imediato_informado, versao_classificacao",
+          "testemunhas, evidencias_disponiveis, ha_risco_imediato_informado, versao_classificacao, estado",
       )
       .eq("id", report_id)
       .maybeSingle();
 
     if (repErr || !report) return json({ error: "Denúncia não encontrada" }, 404);
+
+    // Evita reprocessar (e pagar) uma triagem já feita quando nada mudou.
+    // Reclassifica apenas com force=true ou quando o caso voltou para complementação.
+    if (
+      !force &&
+      (report.versao_classificacao ?? 0) > 0 &&
+      report.estado !== "AGUARDANDO_COMPLEMENTACAO" &&
+      report.estado !== "RECEBIDA"
+    ) {
+      return json({ success: true, skipped: true, motivo: "Denúncia já classificada", estado: report.estado });
+    }
 
     // Parâmetros do canal (específicos da empresa, com fallback global)
     const { data: params } = await supabase
