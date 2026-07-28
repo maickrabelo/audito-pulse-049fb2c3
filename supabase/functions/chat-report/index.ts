@@ -181,7 +181,7 @@ Faça apenas UMA pergunta por vez. Seja empática, breve (2-3 frases) e sem julg
 
     await logAiUsage({
       functionName: "chat-report",
-      model: "google/gemini-2.5-flash",
+      model: MODEL,
       usage: data?.usage,
       companyId: req.headers.get("x-company-id"),
     });
