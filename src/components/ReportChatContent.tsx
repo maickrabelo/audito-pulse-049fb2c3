@@ -19,9 +19,25 @@ interface ReportSnapshot {
   cbo?: string | null;
 }
 
+export interface ReportMetadata {
+  data_inicio_ocorrencia?: string | null;
+  data_fim_ocorrencia?: string | null;
+  periodo_descritivo?: string | null;
+  local_ocorrencia?: string | null;
+  pessoas_envolvidas?: string | null;
+  testemunhas?: string | null;
+  evidencias_disponiveis?: string | null;
+  ha_risco_imediato_informado?: boolean;
+  autorizacao_para_contato?: boolean;
+  canal_de_contato?: string | null;
+  aceite_politica_privacidade?: boolean;
+  declaracao_de_boa_fe?: boolean;
+}
+
 interface ReportChatProps {
   companyId?: string;
   snapshot?: ReportSnapshot | null;
+  metadata?: ReportMetadata | null;
 }
 
 interface Attachment {
@@ -39,7 +55,7 @@ const initialMessages = [
   },
 ];
 
-export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot }) => {
+export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, metadata }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -421,6 +437,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot }) =
           snapshot_ghe: snapshot?.ghe || null,
           snapshot_cargo: snapshot?.cargo || null,
           snapshot_cbo: snapshot?.cbo || null,
+          ...(metadata || {}),
         }
       });
 
