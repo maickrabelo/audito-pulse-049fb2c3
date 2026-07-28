@@ -134,6 +134,72 @@ export type Database = {
         }
         Relationships: []
       }
+      analises_tecnicas: {
+        Row: {
+          conclusao_tecnica: string
+          created_at: string
+          emitido_em: string
+          evidencias_avaliadas: string | null
+          fatores_identificados: string | null
+          id: string
+          necessita_monitoramento: boolean
+          necessita_pgr: boolean
+          necessita_treinamento: boolean
+          pilares_confirmados: Database["public"]["Enums"]["pilar_psicossocial"][]
+          recomendacoes: string | null
+          report_id: string
+          responsavel_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          conclusao_tecnica: string
+          created_at?: string
+          emitido_em?: string
+          evidencias_avaliadas?: string | null
+          fatores_identificados?: string | null
+          id?: string
+          necessita_monitoramento?: boolean
+          necessita_pgr?: boolean
+          necessita_treinamento?: boolean
+          pilares_confirmados?: Database["public"]["Enums"]["pilar_psicossocial"][]
+          recomendacoes?: string | null
+          report_id: string
+          responsavel_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          conclusao_tecnica?: string
+          created_at?: string
+          emitido_em?: string
+          evidencias_avaliadas?: string | null
+          fatores_identificados?: string | null
+          id?: string
+          necessita_monitoramento?: boolean
+          necessita_pgr?: boolean
+          necessita_treinamento?: boolean
+          pilares_confirmados?: Database["public"]["Enums"]["pilar_psicossocial"][]
+          recomendacoes?: string | null
+          report_id?: string
+          responsavel_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analises_tecnicas_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analises_tecnicas_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       burnout_answers: {
         Row: {
           answer_value: number
@@ -326,6 +392,87 @@ export type Database = {
         }
         Relationships: []
       }
+      classificacao_versoes: {
+        Row: {
+          autor_id: string | null
+          competencia:
+            | Database["public"]["Enums"]["competencia_denuncia"]
+            | null
+          confianca: number | null
+          created_at: string
+          id: string
+          justificativa: string | null
+          origem: string
+          parte_amo: string | null
+          parte_empresa: string | null
+          payload: Json | null
+          pilares: Database["public"]["Enums"]["pilar_psicossocial"][]
+          prioridade: Database["public"]["Enums"]["prioridade_denuncia"] | null
+          report_id: string
+          risco_grave_imediato:
+            | Database["public"]["Enums"]["risco_imediato"]
+            | null
+          versao: number
+        }
+        Insert: {
+          autor_id?: string | null
+          competencia?:
+            | Database["public"]["Enums"]["competencia_denuncia"]
+            | null
+          confianca?: number | null
+          created_at?: string
+          id?: string
+          justificativa?: string | null
+          origem: string
+          parte_amo?: string | null
+          parte_empresa?: string | null
+          payload?: Json | null
+          pilares?: Database["public"]["Enums"]["pilar_psicossocial"][]
+          prioridade?: Database["public"]["Enums"]["prioridade_denuncia"] | null
+          report_id: string
+          risco_grave_imediato?:
+            | Database["public"]["Enums"]["risco_imediato"]
+            | null
+          versao: number
+        }
+        Update: {
+          autor_id?: string | null
+          competencia?:
+            | Database["public"]["Enums"]["competencia_denuncia"]
+            | null
+          confianca?: number | null
+          created_at?: string
+          id?: string
+          justificativa?: string | null
+          origem?: string
+          parte_amo?: string | null
+          parte_empresa?: string | null
+          payload?: Json | null
+          pilares?: Database["public"]["Enums"]["pilar_psicossocial"][]
+          prioridade?: Database["public"]["Enums"]["prioridade_denuncia"] | null
+          report_id?: string
+          risco_grave_imediato?:
+            | Database["public"]["Enums"]["risco_imediato"]
+            | null
+          versao?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classificacao_versoes_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classificacao_versoes_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       climate_surveys: {
         Row: {
           company_id: string
@@ -503,6 +650,162 @@ export type Database = {
             columns: ["sst_manager_id"]
             isOneToOne: false
             referencedRelation: "sst_managers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comunicacoes: {
+        Row: {
+          assunto: string | null
+          canal: string
+          created_at: string
+          destinatario: string
+          erro: string | null
+          evento: string
+          id: string
+          report_id: string | null
+          status_entrega: string
+          template: string | null
+        }
+        Insert: {
+          assunto?: string | null
+          canal?: string
+          created_at?: string
+          destinatario: string
+          erro?: string | null
+          evento: string
+          id?: string
+          report_id?: string | null
+          status_entrega?: string
+          template?: string | null
+        }
+        Update: {
+          assunto?: string | null
+          canal?: string
+          created_at?: string
+          destinatario?: string
+          erro?: string | null
+          evento?: string
+          id?: string
+          report_id?: string | null
+          status_entrega?: string
+          template?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comunicacoes_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comunicacoes_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eventos_auditoria: {
+        Row: {
+          acao: string
+          antes: Json | null
+          ator_id: string | null
+          ator_papel: string | null
+          created_at: string
+          depois: Json | null
+          entidade: string
+          entidade_id: string | null
+          id: string
+          ip: string | null
+          justificativa: string | null
+          report_id: string | null
+        }
+        Insert: {
+          acao: string
+          antes?: Json | null
+          ator_id?: string | null
+          ator_papel?: string | null
+          created_at?: string
+          depois?: Json | null
+          entidade: string
+          entidade_id?: string | null
+          id?: string
+          ip?: string | null
+          justificativa?: string | null
+          report_id?: string | null
+        }
+        Update: {
+          acao?: string
+          antes?: Json | null
+          ator_id?: string | null
+          ator_papel?: string | null
+          created_at?: string
+          depois?: Json | null
+          entidade?: string
+          entidade_id?: string | null
+          id?: string
+          ip?: string | null
+          justificativa?: string | null
+          report_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_auditoria_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_auditoria_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feriados: {
+        Row: {
+          abrangencia: string
+          company_id: string | null
+          created_at: string
+          data: string
+          descricao: string
+          id: string
+        }
+        Insert: {
+          abrangencia?: string
+          company_id?: string | null
+          created_at?: string
+          data: string
+          descricao: string
+          id?: string
+        }
+        Update: {
+          abrangencia?: string
+          company_id?: string | null
+          created_at?: string
+          data?: string
+          descricao?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feriados_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feriados_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
             referencedColumns: ["id"]
           },
         ]
@@ -741,6 +1044,87 @@ export type Database = {
         }
         Relationships: []
       }
+      parametros_canal: {
+        Row: {
+          anexo_max_mb: number
+          anexo_max_qtd: number
+          anexo_tipos_permitidos: string[]
+          aprovadores_encerramento: number
+          canais_notificacao: string[]
+          company_id: string | null
+          confianca_minima: number
+          created_at: string
+          id: string
+          lembretes_complementacao: number
+          min_grupo_indicadores: number
+          politica_cpf: string
+          prazo_complementacao_dias: number
+          prioridade_risco_indeterminado: Database["public"]["Enums"]["prioridade_denuncia"]
+          prioridade_risco_nao: Database["public"]["Enums"]["prioridade_denuncia"]
+          retencao_cpf_hash_meses: number
+          retencao_denuncia_meses: number
+          uf_calendario: string
+          updated_at: string
+        }
+        Insert: {
+          anexo_max_mb?: number
+          anexo_max_qtd?: number
+          anexo_tipos_permitidos?: string[]
+          aprovadores_encerramento?: number
+          canais_notificacao?: string[]
+          company_id?: string | null
+          confianca_minima?: number
+          created_at?: string
+          id?: string
+          lembretes_complementacao?: number
+          min_grupo_indicadores?: number
+          politica_cpf?: string
+          prazo_complementacao_dias?: number
+          prioridade_risco_indeterminado?: Database["public"]["Enums"]["prioridade_denuncia"]
+          prioridade_risco_nao?: Database["public"]["Enums"]["prioridade_denuncia"]
+          retencao_cpf_hash_meses?: number
+          retencao_denuncia_meses?: number
+          uf_calendario?: string
+          updated_at?: string
+        }
+        Update: {
+          anexo_max_mb?: number
+          anexo_max_qtd?: number
+          anexo_tipos_permitidos?: string[]
+          aprovadores_encerramento?: number
+          canais_notificacao?: string[]
+          company_id?: string | null
+          confianca_minima?: number
+          created_at?: string
+          id?: string
+          lembretes_complementacao?: number
+          min_grupo_indicadores?: number
+          politica_cpf?: string
+          prazo_complementacao_dias?: number
+          prioridade_risco_indeterminado?: Database["public"]["Enums"]["prioridade_denuncia"]
+          prioridade_risco_nao?: Database["public"]["Enums"]["prioridade_denuncia"]
+          retencao_cpf_hash_meses?: number
+          retencao_denuncia_meses?: number
+          uf_calendario?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parametros_canal_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parametros_canal_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_prospects: {
         Row: {
           company_name: string
@@ -839,6 +1223,79 @@ export type Database = {
             columns: ["partner_id"]
             isOneToOne: false
             referencedRelation: "licensed_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planos_acao: {
+        Row: {
+          acao: string
+          concluido_em: string | null
+          created_at: string
+          evidencia_conclusao: string | null
+          id: string
+          observacoes: string | null
+          prazo: string
+          report_id: string
+          responsavel_id: string | null
+          responsavel_nome: string
+          status: string
+          subtratativa_id: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          acao: string
+          concluido_em?: string | null
+          created_at?: string
+          evidencia_conclusao?: string | null
+          id?: string
+          observacoes?: string | null
+          prazo: string
+          report_id: string
+          responsavel_id?: string | null
+          responsavel_nome: string
+          status?: string
+          subtratativa_id?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          acao?: string
+          concluido_em?: string | null
+          created_at?: string
+          evidencia_conclusao?: string | null
+          id?: string
+          observacoes?: string | null
+          prazo?: string
+          report_id?: string
+          responsavel_id?: string | null
+          responsavel_nome?: string
+          status?: string
+          subtratativa_id?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planos_acao_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planos_acao_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planos_acao_subtratativa_id_fkey"
+            columns: ["subtratativa_id"]
+            isOneToOne: false
+            referencedRelation: "subtratativas"
             referencedColumns: ["id"]
           },
         ]
@@ -1029,6 +1486,8 @@ export type Database = {
       }
       reports: {
         Row: {
+          acao_recomendada: Json
+          aceite_politica_privacidade: boolean
           ai_classification:
             | Database["public"]["Enums"]["report_classification"]
             | null
@@ -1040,28 +1499,63 @@ export type Database = {
             | Database["public"]["Enums"]["report_classification"]
             | null
           amo_validation_notes: string | null
+          autorizacao_para_contato: boolean
+          canal_de_contato: string | null
           category: string
+          classificado_em: string | null
+          classificado_por: string | null
           company_id: string
+          competencia:
+            | Database["public"]["Enums"]["competencia_denuncia"]
+            | null
+          confianca_ia: number | null
           created_at: string
+          dados_faltantes: Json
+          data_fim_ocorrencia: string | null
+          data_inicio_ocorrencia: string | null
+          declaracao_de_boa_fe: boolean
           department: string | null
           description: string
+          documentos_sugeridos: Json
+          empresa_confirmou_recebimento_em: string | null
           escalation_sent_at: string | null
+          estado: Database["public"]["Enums"]["estado_denuncia"]
+          evidencias_disponiveis: string | null
+          ha_risco_imediato_informado: boolean | null
+          ia_schema_valido: boolean
           id: string
           is_anonymous: boolean
+          justificativa_humana: string | null
+          local_ocorrencia: string | null
+          parte_amo: string | null
+          parte_empresa: string | null
+          periodo_descritivo: string | null
+          pessoas_envolvidas: string | null
+          pilares: Database["public"]["Enums"]["pilar_psicossocial"][]
+          prioridade: Database["public"]["Enums"]["prioridade_denuncia"] | null
           reporter_email: string | null
           reporter_name: string | null
           reporter_phone: string | null
+          risco_grave_imediato:
+            | Database["public"]["Enums"]["risco_imediato"]
+            | null
           snapshot_cargo: string | null
           snapshot_cbo: string | null
           snapshot_ghe: string | null
           snapshot_unidade: string | null
           status: string
+          testemunhas: string | null
           title: string
           tracking_code: string | null
+          trechos_relevantes: Json
+          triador_id: string | null
           updated_at: string
           urgency: string
+          versao_classificacao: number
         }
         Insert: {
+          acao_recomendada?: Json
+          aceite_politica_privacidade?: boolean
           ai_classification?:
             | Database["public"]["Enums"]["report_classification"]
             | null
@@ -1073,28 +1567,63 @@ export type Database = {
             | Database["public"]["Enums"]["report_classification"]
             | null
           amo_validation_notes?: string | null
+          autorizacao_para_contato?: boolean
+          canal_de_contato?: string | null
           category: string
+          classificado_em?: string | null
+          classificado_por?: string | null
           company_id: string
+          competencia?:
+            | Database["public"]["Enums"]["competencia_denuncia"]
+            | null
+          confianca_ia?: number | null
           created_at?: string
+          dados_faltantes?: Json
+          data_fim_ocorrencia?: string | null
+          data_inicio_ocorrencia?: string | null
+          declaracao_de_boa_fe?: boolean
           department?: string | null
           description: string
+          documentos_sugeridos?: Json
+          empresa_confirmou_recebimento_em?: string | null
           escalation_sent_at?: string | null
+          estado?: Database["public"]["Enums"]["estado_denuncia"]
+          evidencias_disponiveis?: string | null
+          ha_risco_imediato_informado?: boolean | null
+          ia_schema_valido?: boolean
           id?: string
           is_anonymous?: boolean
+          justificativa_humana?: string | null
+          local_ocorrencia?: string | null
+          parte_amo?: string | null
+          parte_empresa?: string | null
+          periodo_descritivo?: string | null
+          pessoas_envolvidas?: string | null
+          pilares?: Database["public"]["Enums"]["pilar_psicossocial"][]
+          prioridade?: Database["public"]["Enums"]["prioridade_denuncia"] | null
           reporter_email?: string | null
           reporter_name?: string | null
           reporter_phone?: string | null
+          risco_grave_imediato?:
+            | Database["public"]["Enums"]["risco_imediato"]
+            | null
           snapshot_cargo?: string | null
           snapshot_cbo?: string | null
           snapshot_ghe?: string | null
           snapshot_unidade?: string | null
           status?: string
+          testemunhas?: string | null
           title: string
           tracking_code?: string | null
+          trechos_relevantes?: Json
+          triador_id?: string | null
           updated_at?: string
           urgency?: string
+          versao_classificacao?: number
         }
         Update: {
+          acao_recomendada?: Json
+          aceite_politica_privacidade?: boolean
           ai_classification?:
             | Database["public"]["Enums"]["report_classification"]
             | null
@@ -1106,26 +1635,59 @@ export type Database = {
             | Database["public"]["Enums"]["report_classification"]
             | null
           amo_validation_notes?: string | null
+          autorizacao_para_contato?: boolean
+          canal_de_contato?: string | null
           category?: string
+          classificado_em?: string | null
+          classificado_por?: string | null
           company_id?: string
+          competencia?:
+            | Database["public"]["Enums"]["competencia_denuncia"]
+            | null
+          confianca_ia?: number | null
           created_at?: string
+          dados_faltantes?: Json
+          data_fim_ocorrencia?: string | null
+          data_inicio_ocorrencia?: string | null
+          declaracao_de_boa_fe?: boolean
           department?: string | null
           description?: string
+          documentos_sugeridos?: Json
+          empresa_confirmou_recebimento_em?: string | null
           escalation_sent_at?: string | null
+          estado?: Database["public"]["Enums"]["estado_denuncia"]
+          evidencias_disponiveis?: string | null
+          ha_risco_imediato_informado?: boolean | null
+          ia_schema_valido?: boolean
           id?: string
           is_anonymous?: boolean
+          justificativa_humana?: string | null
+          local_ocorrencia?: string | null
+          parte_amo?: string | null
+          parte_empresa?: string | null
+          periodo_descritivo?: string | null
+          pessoas_envolvidas?: string | null
+          pilares?: Database["public"]["Enums"]["pilar_psicossocial"][]
+          prioridade?: Database["public"]["Enums"]["prioridade_denuncia"] | null
           reporter_email?: string | null
           reporter_name?: string | null
           reporter_phone?: string | null
+          risco_grave_imediato?:
+            | Database["public"]["Enums"]["risco_imediato"]
+            | null
           snapshot_cargo?: string | null
           snapshot_cbo?: string | null
           snapshot_ghe?: string | null
           snapshot_unidade?: string | null
           status?: string
+          testemunhas?: string | null
           title?: string
           tracking_code?: string | null
+          trechos_relevantes?: Json
+          triador_id?: string | null
           updated_at?: string
           urgency?: string
+          versao_classificacao?: number
         }
         Relationships: [
           {
@@ -1140,6 +1702,69 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sla_prazos: {
+        Row: {
+          alerta_enviado_em: string | null
+          concluido_em: string | null
+          created_at: string
+          em_atraso: boolean
+          evento: string
+          id: string
+          iniciado_em: string
+          limite_em: string | null
+          motivo_pausa: string | null
+          pausado_em: string | null
+          report_id: string
+          total_pausa_segundos: number
+          updated_at: string
+        }
+        Insert: {
+          alerta_enviado_em?: string | null
+          concluido_em?: string | null
+          created_at?: string
+          em_atraso?: boolean
+          evento: string
+          id?: string
+          iniciado_em?: string
+          limite_em?: string | null
+          motivo_pausa?: string | null
+          pausado_em?: string | null
+          report_id: string
+          total_pausa_segundos?: number
+          updated_at?: string
+        }
+        Update: {
+          alerta_enviado_em?: string | null
+          concluido_em?: string | null
+          created_at?: string
+          em_atraso?: boolean
+          evento?: string
+          id?: string
+          iniciado_em?: string
+          limite_em?: string | null
+          motivo_pausa?: string | null
+          pausado_em?: string | null
+          report_id?: string
+          total_pausa_segundos?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sla_prazos_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sla_prazos_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1254,6 +1879,83 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      solicitacoes_evidencia: {
+        Row: {
+          atendida_em: string | null
+          attachment_id: string | null
+          created_at: string
+          descricao: string | null
+          destinatario: string
+          documento: string
+          id: string
+          prazo_limite: string | null
+          report_id: string
+          solicitado_por: string | null
+          status: string
+          subtratativa_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          atendida_em?: string | null
+          attachment_id?: string | null
+          created_at?: string
+          descricao?: string | null
+          destinatario?: string
+          documento: string
+          id?: string
+          prazo_limite?: string | null
+          report_id: string
+          solicitado_por?: string | null
+          status?: string
+          subtratativa_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          atendida_em?: string | null
+          attachment_id?: string | null
+          created_at?: string
+          descricao?: string | null
+          destinatario?: string
+          documento?: string
+          id?: string
+          prazo_limite?: string | null
+          report_id?: string
+          solicitado_por?: string | null
+          status?: string
+          subtratativa_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solicitacoes_evidencia_attachment_id_fkey"
+            columns: ["attachment_id"]
+            isOneToOne: false
+            referencedRelation: "report_attachments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_evidencia_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_evidencia_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_evidencia_subtratativa_id_fkey"
+            columns: ["subtratativa_id"]
+            isOneToOne: false
+            referencedRelation: "subtratativas"
             referencedColumns: ["id"]
           },
         ]
@@ -1541,6 +2243,63 @@ export type Database = {
           },
         ]
       }
+      subtratativas: {
+        Row: {
+          concluida_em: string | null
+          conclusao: string | null
+          created_at: string
+          escopo: Database["public"]["Enums"]["escopo_subtratativa"]
+          estado: Database["public"]["Enums"]["estado_denuncia"]
+          id: string
+          prazo_limite: string | null
+          report_id: string
+          responsavel_id: string | null
+          resumo: string
+          updated_at: string
+        }
+        Insert: {
+          concluida_em?: string | null
+          conclusao?: string | null
+          created_at?: string
+          escopo: Database["public"]["Enums"]["escopo_subtratativa"]
+          estado?: Database["public"]["Enums"]["estado_denuncia"]
+          id?: string
+          prazo_limite?: string | null
+          report_id: string
+          responsavel_id?: string | null
+          resumo: string
+          updated_at?: string
+        }
+        Update: {
+          concluida_em?: string | null
+          conclusao?: string | null
+          created_at?: string
+          escopo?: Database["public"]["Enums"]["escopo_subtratativa"]
+          estado?: Database["public"]["Enums"]["estado_denuncia"]
+          id?: string
+          prazo_limite?: string | null
+          report_id?: string
+          responsavel_id?: string | null
+          resumo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subtratativas_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subtratativas_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       survey_answers: {
         Row: {
           answer_text: string | null
@@ -1821,6 +2580,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_amo_team: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role:
@@ -1833,12 +2593,51 @@ export type Database = {
         | "apurador"
         | "comite"
         | "dpo"
+        | "triador_sst"
+        | "medico_trabalho"
+      competencia_denuncia:
+        | "SST_NR1"
+        | "EMPRESA_CLIENTE"
+        | "DENUNCIA_MISTA"
+        | "INFORMACOES_INSUFICIENTES"
+      escopo_subtratativa: "AMO" | "EMPRESA"
+      estado_denuncia:
+        | "RECEBIDA"
+        | "VALIDACAO_DE_VINCULO"
+        | "AGUARDANDO_TRIAGEM"
+        | "EM_TRIAGEM"
+        | "AGUARDANDO_COMPLEMENTACAO"
+        | "AGUARDANDO_VALIDACAO_HUMANA"
+        | "CLASSIFICADA"
+        | "ALERTA_CRITICO_ATIVO"
+        | "ENCAMINHADA_AMO"
+        | "ENCAMINHADA_EMPRESA"
+        | "EM_TRATATIVA_MISTA"
+        | "AGUARDANDO_EVIDENCIAS"
+        | "EM_ANALISE_TECNICA_AMO"
+        | "EM_APURACAO_EMPRESA"
+        | "MEDIDAS_DEFINIDAS"
+        | "PLANO_DE_ACAO_ABERTO"
+        | "EM_ACOMPANHAMENTO"
+        | "AGUARDANDO_VALIDACAO_DE_ENCERRAMENTO"
+        | "ENCERRADA"
+        | "ARQUIVADA"
+      pilar_psicossocial:
+        | "PT-00"
+        | "PT-01"
+        | "PT-02"
+        | "PT-03"
+        | "PT-04"
+        | "PT-05"
+        | "PT-06"
+      prioridade_denuncia: "CRITICA" | "ALTA" | "MODERADA" | "BAIXA"
       report_classification:
         | "pending_ai"
         | "4A_sst"
         | "4B_out_of_scope"
         | "4C_mixed"
         | "4D_grave_immediate"
+      risco_imediato: "SIM" | "NAO" | "INDETERMINADO"
       survey_question_type:
         | "likert"
         | "single_choice"
@@ -1982,7 +2781,48 @@ export const Constants = {
         "apurador",
         "comite",
         "dpo",
+        "triador_sst",
+        "medico_trabalho",
       ],
+      competencia_denuncia: [
+        "SST_NR1",
+        "EMPRESA_CLIENTE",
+        "DENUNCIA_MISTA",
+        "INFORMACOES_INSUFICIENTES",
+      ],
+      escopo_subtratativa: ["AMO", "EMPRESA"],
+      estado_denuncia: [
+        "RECEBIDA",
+        "VALIDACAO_DE_VINCULO",
+        "AGUARDANDO_TRIAGEM",
+        "EM_TRIAGEM",
+        "AGUARDANDO_COMPLEMENTACAO",
+        "AGUARDANDO_VALIDACAO_HUMANA",
+        "CLASSIFICADA",
+        "ALERTA_CRITICO_ATIVO",
+        "ENCAMINHADA_AMO",
+        "ENCAMINHADA_EMPRESA",
+        "EM_TRATATIVA_MISTA",
+        "AGUARDANDO_EVIDENCIAS",
+        "EM_ANALISE_TECNICA_AMO",
+        "EM_APURACAO_EMPRESA",
+        "MEDIDAS_DEFINIDAS",
+        "PLANO_DE_ACAO_ABERTO",
+        "EM_ACOMPANHAMENTO",
+        "AGUARDANDO_VALIDACAO_DE_ENCERRAMENTO",
+        "ENCERRADA",
+        "ARQUIVADA",
+      ],
+      pilar_psicossocial: [
+        "PT-00",
+        "PT-01",
+        "PT-02",
+        "PT-03",
+        "PT-04",
+        "PT-05",
+        "PT-06",
+      ],
+      prioridade_denuncia: ["CRITICA", "ALTA", "MODERADA", "BAIXA"],
       report_classification: [
         "pending_ai",
         "4A_sst",
@@ -1990,6 +2830,7 @@ export const Constants = {
         "4C_mixed",
         "4D_grave_immediate",
       ],
+      risco_imediato: ["SIM", "NAO", "INDETERMINADO"],
       survey_question_type: [
         "likert",
         "single_choice",

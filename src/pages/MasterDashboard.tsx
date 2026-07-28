@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ParametrosCanalCard from "@/components/master/ParametrosCanalCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1101,6 +1102,7 @@ const MasterDashboard = () => {
                 <TabsTrigger value="companies">Empresas</TabsTrigger>
                 <TabsTrigger value="sst">Gestoras SST</TabsTrigger>
                 <TabsTrigger value="reports-cat">Denúncias por Categoria</TabsTrigger>
+                <TabsTrigger value="parametros">Parâmetros NR-1</TabsTrigger>
               </TabsList>
               <Button variant="outline" size="sm" onClick={() => navigate('/triagem-amo')} className="ml-3">
                 <AlertTriangle className="h-4 w-4 mr-2" /> Triagem AMO
@@ -1861,6 +1863,10 @@ const MasterDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="parametros">
+              <ParametrosCanalCard />
             </TabsContent>
 
             <TabsContent value="reports-cat">

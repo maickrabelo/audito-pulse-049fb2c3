@@ -1,132 +1,84 @@
+Implementação completa da parametrização `amo_canal_denuncias_sst_nr1` v1.0.0 sobre o sistema atual.
 
-# Fluxo de Ouvidoria NR-1 / SST — Implementação Completa
-
-Reestrutura a ouvidoria para seguir o fluxograma: integração SOC → validação CPF → coleta minimizada → IA de triagem → validação humana AMO → rotas 4A/4B/4C/4D → painel executivo anonimizado.
-
-## Decisões confirmadas
-- SOC: sync **manual** por empresa via botão no painel SST.
-- Credenciais SOC: **globais** (secrets `SOC_EMPRESA`, `SOC_CODIGO`, `SOC_CHAVE`).
-- Validação AMO: reutiliza role **admin** (master dashboard ganha aba "Triagem").
-- Entrega **única**.
+## Situação atual (verificada)
+- `classify-report-ai` usa apenas 4 rótulos (`4A_sst`, `4B_out_of_scope`, `4C_mixed`, `4D_grave_immediate`) e grava em `reports.ai_classification` / `ai_classification_rationale`.
+- `reports` tem `status`/`urgency` livres em texto, sem máquina de estados, sem SLA, sem subtratativas, sem pilares psicossociais.
+- Perfis existentes: `admin`, `company`, `sst`, `pending`, `partner`, `affiliate`, `apurador`, `comite`, `dpo`.
+- Já existem: validação de vínculo por CPF (hash), `soc_employees`, `report_access_audit`, escalonamento 4D.
 
 ---
 
-## 1. Banco de dados (migração)
+## 1. Banco de dados
 
-### Novas tabelas
-- `soc_employees` — funcionários importados do SOC. Um por CPF+empresa. Campos: `company_id`, `cpf` (hash + últimos 4 dígitos para exibir), `nome_hash`, `unidade`, `ghe` (derivado de setor), `cargo`, `cbo`, `setor`, `situacao`, `matricula`, `synced_at`.
-  - CPF armazenado como hash (sha256) — nunca em claro. Coluna extra `cpf_last4` só para debug.
-- `soc_sync_logs` — histórico de sincronizações (empresa, iniciado_em, total, sucesso/erro).
-- Extensão em `reports`:
-  - `ai_classification` enum: `4A_sst`, `4B_out_of_scope`, `4C_mixed`, `4D_grave_immediate`, `pending_ai`
-  - `amo_validated_classification` (mesma enum, null até validar)
-  - `amo_validated_by` (uuid → auth.users), `amo_validated_at`
-  - `amo_validation_notes` (text)
-  - `unidade`, `ghe`, `cargo` (snapshot no momento da denúncia, minimizado)
-  - `escalation_sent_at` (timestamp para 4D)
-  - Remove/oculta uso de `reporter_name`/campos identificatórios no fluxo público.
+**Novos enums**
+- `competencia_denuncia`: SST_NR1, EMPRESA_CLIENTE, DENUNCIA_MISTA, INFORMACOES_INSUFICIENTES
+- `risco_imediato`: SIM, NAO, INDETERMINADO
+- `prioridade_denuncia`: CRITICA, ALTA, MODERADA, BAIXA
+- `pilar_psicossocial`: PT-00 … PT-06
+- `estado_denuncia`: os 20 estados da máquina (RECEBIDA … ARQUIVADA)
+- `app_role` += `triador_sst`, `medico_trabalho`
 
-### RLS
-- `soc_employees`: só admin e edge functions (service_role). Empresa **NÃO lê**.
-- `reports` painel empresa: policy passa a expor apenas colunas agregadas/minimizadas via view `reports_minimized` (sem relato bruto, sem nomes, sem anexos por padrão).
-- Nova view `reports_executive` só com contagens/status por unidade/GHE/cargo agregados.
+**Colunas novas em `reports`**
+`estado`, `competencia`, `risco_grave_imediato`, `prioridade`, `pilares` (array), `parte_amo`, `parte_empresa`, `confianca_ia`, `dados_faltantes` (jsonb), `documentos_sugeridos` (jsonb), `trechos_relevantes` (jsonb), `acao_recomendada` (jsonb), `versao_classificacao`, `classificado_por`, `classificado_em`, `justificativa_humana`, `triador_id`.
 
----
+**Tabelas novas**
+- `subtratativas` (denúncia mista: escopo AMO / EMPRESA, responsável, estado, prazo, conclusão)
+- `classificacao_versoes` (versionamento imutável de cada classificação IA/humana, com autor e justificativa)
+- `solicitacoes_evidencia` (documento pedido, responsável, prazo, status, anexo vinculado)
+- `analises_tecnicas` (parecer AMO: pilares confirmados, evidências avaliadas, conclusão, recomendações)
+- `planos_acao` (ação, responsável, prazo, status, evidência de conclusão, tipo corretivo/preventivo)
+- `sla_prazos` (evento, início, limite, pausas, retomadas, conclusão, atraso)
+- `comunicacoes` (destinatário, canal, template, data, status de entrega)
+- `eventos_auditoria` (ator, ação, entidade, antes/depois, IP, timestamp) — insert-only
+- `parametros_canal` (parametrização PD-001..PD-015 por empresa, com defaults globais)
+- `feriados` (calendário de dias úteis por empresa/UF)
 
-## 2. Secrets
-- `SOC_EMPRESA`, `SOC_CODIGO`, `SOC_CHAVE` (add_secret).
-- `CPF_HASH_SALT` (generate_secret, 64 chars).
+**Migração de dados**: 4A→SST_NR1 (PT-02 default), 4B→EMPRESA_CLIENTE (PT-00), 4C→DENUNCIA_MISTA, 4D→SST_NR1 + risco SIM + prioridade CRITICA. Status atual mapeado para estados (`pendente`→AGUARDANDO_TRIAGEM, `em_andamento`→EM_ANALISE_TECNICA_AMO, `resolvido`→ENCERRADA).
 
----
-
-## 3. Edge Functions (novas)
-
-- **`soc-sync-company`** — recebe `company_id`, chama `https://ws1.soc.com.br/WebSoc/exportadados` com `tipoSaida=json&ativo=Sim`, hasheia CPFs, faz upsert em `soc_employees`, grava log.
-- **`validate-cpf-link`** — recebe `{ cpf, company_id }`, hasheia, busca em `soc_employees`, retorna `{ valid: true, unidade, ghe, cargo }` sem devolver identidade. Rate-limited.
-- **`classify-report-ai`** — chamada após `submit-report`; usa Lovable AI (`google/gemini-2.5-flash`) com prompt de triagem retornando JSON `{ classification: 4A|4B|4C|4D, rationale, has_grave_risk }`. Grava em `ai_classification`.
-- **`escalate-report`** — disparada quando `amo_validated_classification = 4D`; envia e-mail (Resend) para lista de responsáveis da empresa + AMO.
-- Ajustes em `submit-report`: aceita `unidade/ghe/cargo` já resolvidos, nunca grava CPF, chama `classify-report-ai` em background.
+**RLS por perfil** conforme §perfis_e_permissoes: triador vê fila e classifica; comitê vê acompanhamento com log de acesso; empresa vê só a subtratativa dela e dados minimizados; médico do trabalho vê apenas casos PT-05 encaminhados; nenhum perfil não-AMO lê CPF/hash.
 
 ---
 
-## 4. Frontend
+## 2. Motor de IA (`classify-report-ai` reescrito)
 
-### Fluxo do denunciante (`/denuncia/:slug`)
-Substitui o chat atual por wizard em 4 passos:
-1. **Aviso + CPF** — banner de confidencialidade, campo CPF único, botão "Validar vínculo".
-2. **Confirmação de vínculo** — mostra "Vínculo confirmado com [Empresa]. Unidade/GHE/Cargo identificados." (sem nome).
-3. **Relato** — categoria, descrição, anexos opcionais, reforço de anonimato.
-4. **Protocolo** — número gerado, orientação de acompanhamento.
-
-Chat com Ana permanece disponível como modo alternativo dentro do passo 3.
-
-### Painel Executivo da Empresa (`/dashboard`)
-Refatora para exibir apenas:
-- Contadores por status/categoria/gravidade
-- Agregados por Unidade / GHE / Cargo (tabela e gráfico)
-- Prazos e SLAs
-Oculta: CPF, nomes, relato bruto, anexos, testemunhas. Detalhe de denúncia mostra "Relatório Confidencial Minimizado" (protocolo, resumo, gravidade, providências, prazo).
-
-Botão "Ver dados completos" só aparece para roles `dpo`/`compliance` (novo — ver §5) e exige justificativa gravada em `report_access_audit` (nova tabela leve).
-
-### Painel SST (`/sst-dashboard`)
-Adiciona:
-- Botão "Sincronizar SOC" por empresa (chama `soc-sync-company`, mostra progresso).
-- Coluna "Última sync" e "# colaboradores".
-
-### Master Dashboard (`/master-dashboard`)
-Nova aba **"Triagem AMO"**:
-- Fila de denúncias com `amo_validated_classification IS NULL`.
-- Mostra classificação da IA + rationale.
-- Ações: **Confirmar**, **Reclassificar** (4A/4B/4C/4D) com nota.
-- Após validação, executa rota:
-  - 4A → mantém no fluxo AMO, exibe para empresa como minimizado + habilita plano de ação.
-  - 4B → marca "fora de escopo", libera para empresa tratar internamente.
-  - 4C → divide em dois `reports` filhos (parte SST + parte não-SST).
-  - 4D → chama `escalate-report`.
+- **Pré-processamento** obrigatório antes do envio: remoção de CPF, telefone, e-mail, matrícula; substituição de nomes por `[GESTOR]`, `[COLEGA]`, `[DENUNCIANTE]`; sem resumo prévio.
+- **Prompt** implementando a `ordem_de_decisao` de 7 passos, as 4 classificações CL-01..CL-04, critérios de risco grave/imediato, os 7 pilares com seus limites (PT-04 nunca confirma assédio juridicamente), o `mapa_de_evidencias` (9 grupos) e a linguagem obrigatória (técnica, sem diagnóstico, sem julgamento de mérito).
+- **Saída em JSON schema estrito** exatamente igual a `schema_saida_ia` (13 campos obrigatórios, `validacao_humana: "OBRIGATORIA"`).
+- **Validador determinístico em código** aplicando o `allOf`: SST_NR1 e MISTA exigem ≥1 pilar e proíbem PT-00; EMPRESA_CLIENTE só PT-00; INFORMACOES_INSUFICIENTES exige `dados_faltantes`; risco SIM força prioridade CRITICA. Saída inválida → estado AGUARDANDO_VALIDACAO_HUMANA com flag de falha, nunca encaminhamento automático.
+- Risco SIM → `ALERTA_CRITICO_ATIVO` + `escalate-report` imediato, sem interromper a classificação.
+- Modelo: `google/gemini-3.6-flash` via Lovable AI.
 
 ---
 
-## 5. Roles adicionais (LGPD — menor privilégio)
-Extende enum `app_role` com: `apurador`, `comite`, `dpo`.
-- `apurador` — vê detalhes minimizados sem identificação.
-- `comite` — acesso adicional só com justificativa registrada.
-- `dpo` — acesso ampliado documentado.
+## 3. Máquina de estados (`report-transition`)
+Edge function única que valida cada transição contra a tabela de transições da spec e aplica os 5 bloqueios (sem encerrar com subtratativa aberta, sem validação humana, sem evidências, sem alteração silenciosa de classificação, sem reabertura sem justificativa). Toda transição grava `eventos_auditoria` e abre/fecha prazos de SLA.
 
-Painel de gestão de usuários da empresa ganha atribuição desses papéis (opcional — pode ficar como próxima fase se preferir; incluído aqui porque o fluxograma exige).
+## 4. Motor de SLA (`sla-runner`, cron)
+Prazos normativos: recebimento 2 du, triagem 5 du, empresa caso grave imediato, empresa demais 3 du, apuração AMO 15 du após evidências. Calendário de dias úteis configurável, pausa auditada, alerta pré-vencimento e marcação automática de atraso.
 
----
+## 5. Frontend
+- **Triagem (`TriagemAMO.tsx`)** reescrita: fila por prioridade, sugestão da IA lado a lado com formulário humano (competência, risco, prioridade, pilares, justificativa obrigatória), botões Confirmar / Reclassificar / Solicitar complementação. Cada gravação cria nova versão.
+- **Detalhe da denúncia**: abas Classificação, Subtratativas, Evidências, Análise técnica, Plano de ação, Linha do tempo/Auditoria.
+- **Painel empresa**: só a parte de competência da empresa, minimizada; sem CPF, sem identidade anônima; confirmação de recebimento e registro de providências.
+- **Painel psicossocial**: indicadores por pilar/unidade/GHE com supressão quando o grupo for pequeno (PD-013, mínimo 5 pessoas).
+- **Formulário do denunciante**: campos faltantes da spec (data/período, local, pessoas envolvidas, testemunhas, evidências disponíveis, risco imediato informado, autorização de contato, aceite de política e declaração de boa-fé).
+- **Master → Parametrização**: tela para os 15 itens PD-001..PD-015.
 
-## Detalhes técnicos
-
-**Hash de CPF:** `sha256(cpf_digits + CPF_HASH_SALT)` — mesmo hash em `soc_employees` e no lookup, evita armazenar CPF em claro.
-
-**Parse SOC:** SOC entrega array JSON com os campos listados na especificação. Mapeamento:
-- `unidade` ← `NOMEUNIDADE`
-- `ghe` ← `NOMESETOR` (fallback, já que Exporta Dados não expõe GHE diretamente — comentado no código para trocar por campo GHE-específico se disponível em outro Exporta Dados)
-- `cargo` ← `NOMECARGO`, `cbo` ← `CBOCARGO`
-
-**IA de triagem — prompt resumido:**
-> "Classifique a denúncia em 4A (SST/NR-1: assédio, riscos ergonômicos, psicossociais, saúde ocupacional), 4B (fora de SST: fraude financeira, questões contratuais, ética não-SST), 4C (mista) ou 4D (risco grave/imediato: violência física, ameaça, suicídio, acidente grave em curso). Retorne JSON."
-
-**Escalonamento 4D:** e-mail para `company.emergency_contacts` (novo campo jsonb) + AMO admins.
-
-**Auditoria:** nova tabela `report_access_audit` (user_id, report_id, accessed_at, justification) — obrigatória para roles `comite`/`dpo`.
+## 6. Defaults adotados (PD-001..PD-015)
+Confiança mínima 70% (abaixo disso sinaliza baixa confiança); ALTA para risco INDETERMINADO, MODERADA para NAO, BAIXA só por decisão humana; prazo de complementação 7 dias corridos com 2 lembretes; anexos até 20 MB, máx. 10, PDF/imagem/áudio/office; feriados nacionais; 1 aprovador (ADMIN_CANAL_AMO ou COMITE) para encerramento; retenção 5 anos para denúncias e 6 meses para hash de CPF; notificação por e-mail; supressão de indicadores com <5 pessoas no grupo. Todos editáveis na tela de parametrização.
 
 ---
 
 ## Ordem de execução
+1. Migração (enums, colunas, tabelas, RLS, grants, migração dos dados 4A-4D).
+2. Motor de IA + validador de schema.
+3. Máquina de estados + auditoria.
+4. SLA + notificações.
+5. Telas: triagem, detalhe, empresa, psicossocial, parametrização.
+6. Formulário do denunciante completo.
+7. Casos de teste de homologação da spec rodados sobre denúncias sintéticas.
 
-1. Migração DB (novas tabelas, enums, colunas, views, RLS).
-2. Secrets SOC + salt CPF.
-3. Edge functions (`soc-sync-company`, `validate-cpf-link`, `classify-report-ai`, `escalate-report`, ajuste em `submit-report`).
-4. Frontend denunciante (wizard CPF → validação → relato).
-5. Painel SST (botão sync).
-6. Master dashboard (aba Triagem AMO).
-7. Painel empresa (minimização + view executiva).
-8. Roles extra + auditoria de acesso.
-
-## Fora do escopo desta entrega
-- UI de gestão dos e-mails de escalonamento 4D (campo criado, edição via SQL por enquanto).
-- Sync automático agendado do SOC (só manual).
-- Painel de auditoria de acessos (dados gravados, visualização em próxima entrega).
+## Fora do escopo
+- Integração de WhatsApp/SMS (só e-mail e notificação interna).
+- Antivírus de anexos (validação de tipo/tamanho apenas).
+- MFA/provedor de identidade externo (PD-014 fica como parâmetro documentado).
