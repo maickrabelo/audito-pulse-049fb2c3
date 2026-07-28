@@ -68,26 +68,25 @@ const AiUsageCard = () => {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+        <Card className="border-audit-primary">
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" /> Custo total (USD)
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{fmtUsd(totalCost)}</div>
+            <div className="text-2xl font-bold text-audit-primary">{fmtUsd(totalCost * MULTIPLICADOR)}</div>
           </CardContent>
         </Card>
 
-        <Card className="border-audit-primary">
+        <Card>
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2">
-              <Cpu className="h-4 w-4" /> Valor faturável (×{MULTIPLICADOR})
+              <Cpu className="h-4 w-4" /> Custo do mês atual
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-audit-primary">{fmtUsd(totalCost * MULTIPLICADOR)}</div>
-            <p className="text-xs text-muted-foreground mt-1">Mês atual: {fmtUsd(mesCost * MULTIPLICADOR)}</p>
+            <div className="text-2xl font-bold">{fmtUsd(mesCost * MULTIPLICADOR)}</div>
           </CardContent>
         </Card>
 
@@ -111,6 +110,7 @@ const AiUsageCard = () => {
           </CardContent>
         </Card>
       </div>
+
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
