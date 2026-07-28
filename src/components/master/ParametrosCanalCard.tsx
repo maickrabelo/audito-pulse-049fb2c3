@@ -12,8 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 interface Parametros {
   id?: string;
   confianca_minima: number;
-  prioridade_risco_indeterminado: string;
-  prioridade_risco_nao: string;
+  prioridade_risco_indeterminado: 'CRITICA' | 'ALTA' | 'MODERADA' | 'BAIXA';
+  prioridade_risco_nao: 'CRITICA' | 'ALTA' | 'MODERADA' | 'BAIXA';
   prazo_complementacao_dias: number;
   lembretes_complementacao: number;
   politica_cpf: string;
@@ -98,7 +98,7 @@ const ParametrosCanalCard: React.FC = () => {
           {num('confianca_minima')}
           <div>
             <Label className="text-xs">{PD.prioridade_risco_indeterminado}</Label>
-            <Select value={p.prioridade_risco_indeterminado} onValueChange={v => set({ prioridade_risco_indeterminado: v })}>
+            <Select value={p.prioridade_risco_indeterminado} onValueChange={v => set({ prioridade_risco_indeterminado: v as Parametros['prioridade_risco_indeterminado'] })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {['CRITICA', 'ALTA', 'MODERADA', 'BAIXA'].map(x => <SelectItem key={x} value={x}>{x}</SelectItem>)}
@@ -107,7 +107,7 @@ const ParametrosCanalCard: React.FC = () => {
           </div>
           <div>
             <Label className="text-xs">{PD.prioridade_risco_nao}</Label>
-            <Select value={p.prioridade_risco_nao} onValueChange={v => set({ prioridade_risco_nao: v })}>
+            <Select value={p.prioridade_risco_nao} onValueChange={v => set({ prioridade_risco_nao: v as Parametros['prioridade_risco_nao'] })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {['ALTA', 'MODERADA', 'BAIXA'].map(x => <SelectItem key={x} value={x}>{x}</SelectItem>)}
