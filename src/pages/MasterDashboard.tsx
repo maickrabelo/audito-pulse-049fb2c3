@@ -1871,6 +1871,10 @@ const MasterDashboard = () => {
               <ParametrosCanalCard />
             </TabsContent>
 
+            <TabsContent value="ai-usage">
+              <AiUsageCard />
+            </TabsContent>
+
             <TabsContent value="reports-cat">
               <Card>
                 <CardHeader>
