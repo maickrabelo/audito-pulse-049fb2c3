@@ -134,6 +134,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_usage_logs: {
+        Row: {
+          company_id: string | null
+          completion_tokens: number
+          cost_usd: number
+          created_at: string
+          function_name: string
+          id: string
+          metadata: Json
+          model: string
+          prompt_tokens: number
+          report_id: string | null
+          total_tokens: number
+        }
+        Insert: {
+          company_id?: string | null
+          completion_tokens?: number
+          cost_usd?: number
+          created_at?: string
+          function_name: string
+          id?: string
+          metadata?: Json
+          model: string
+          prompt_tokens?: number
+          report_id?: string | null
+          total_tokens?: number
+        }
+        Update: {
+          company_id?: string | null
+          completion_tokens?: number
+          cost_usd?: number
+          created_at?: string
+          function_name?: string
+          id?: string
+          metadata?: Json
+          model?: string
+          prompt_tokens?: number
+          report_id?: string | null
+          total_tokens?: number
+        }
+        Relationships: []
+      }
       analises_tecnicas: {
         Row: {
           conclusao_tecnica: string
