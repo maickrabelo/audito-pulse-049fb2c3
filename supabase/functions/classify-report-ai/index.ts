@@ -23,7 +23,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { report_id } = await req.json();
+    const { report_id, force } = await req.json();
     if (!report_id) return json({ error: "report_id obrigatório" }, 400);
 
     const supabase = createClient(
