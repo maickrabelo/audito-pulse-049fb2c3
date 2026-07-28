@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { logAiUsage } from "../_shared/ai-usage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -188,6 +189,12 @@ Para cada insight:
     }
 
     const aiData = await aiResponse.json();
+    await logAiUsage({
+      functionName: "analyze-reports",
+      model: "google/gemini-2.5-flash",
+      usage: aiData?.usage,
+      companyId: company_id ?? null,
+    });
     console.log('AI response:', JSON.stringify(aiData));
 
     // Extrair insights da resposta

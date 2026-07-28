@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ParametrosCanalCard from "@/components/master/ParametrosCanalCard";
+import AiUsageCard from "@/components/master/AiUsageCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1103,6 +1104,7 @@ const MasterDashboard = () => {
                 <TabsTrigger value="sst">Gestoras SST</TabsTrigger>
                 <TabsTrigger value="reports-cat">Denúncias por Categoria</TabsTrigger>
                 <TabsTrigger value="parametros">Parâmetros NR-1</TabsTrigger>
+                <TabsTrigger value="ai-usage">Uso de IA</TabsTrigger>
               </TabsList>
               <Button variant="outline" size="sm" onClick={() => navigate('/triagem-amo')} className="ml-3">
                 <AlertTriangle className="h-4 w-4 mr-2" /> Triagem AMO
@@ -1867,6 +1869,10 @@ const MasterDashboard = () => {
 
             <TabsContent value="parametros">
               <ParametrosCanalCard />
+            </TabsContent>
+
+            <TabsContent value="ai-usage">
+              <AiUsageCard />
             </TabsContent>
 
             <TabsContent value="reports-cat">

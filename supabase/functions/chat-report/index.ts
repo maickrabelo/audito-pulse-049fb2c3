@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { logAiUsage } from "../_shared/ai-usage.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -153,6 +154,13 @@ Faça apenas UMA pergunta por vez. Seja empática, breve (2-3 frases) e sem julg
 
     const data = await response.json();
     console.log("AI response received successfully");
+
+    await logAiUsage({
+      functionName: "chat-report",
+      model: "google/gemini-2.5-flash",
+      usage: data?.usage,
+      companyId: req.headers.get("x-company-id"),
+    });
     
     // Clean up old rate limit records (optional, can be done periodically)
     if (Math.random() < 0.1) { // 10% chance to clean up

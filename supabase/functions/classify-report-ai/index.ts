@@ -9,6 +9,7 @@ import {
   addDiasUteis,
   type Prioridade,
 } from "../_shared/nr1-spec.ts";
+import { logAiUsage } from "../_shared/ai-usage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -101,6 +102,13 @@ serve(async (req) => {
     }
 
     const completion = await aiRes.json();
+    await logAiUsage({
+      functionName: "classify-report-ai",
+      model: "google/gemini-3.6-flash",
+      usage: completion?.usage,
+      companyId: report?.company_id ?? null,
+      reportId: report_id ?? null,
+    });
     const content = completion?.choices?.[0]?.message?.content ?? "{}";
     let parsed: unknown = {};
     try {
