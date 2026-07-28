@@ -117,7 +117,7 @@ const AiUsageCard = () => {
           <div>
             <CardTitle>Consumo de IA por processo</CardTitle>
             <CardDescription>
-              Custo estimado a partir dos tokens de cada modelo, multiplicado por {MULTIPLICADOR} para faturamento.
+              Custo estimado a partir dos tokens de cada modelo.
             </CardDescription>
           </div>
           <Button variant="outline" size="sm" onClick={load} disabled={loading}>
