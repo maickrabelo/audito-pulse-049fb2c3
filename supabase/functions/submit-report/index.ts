@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { addDiasUteis, SLA_REGRAS } from "../_shared/nr1-spec.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -23,6 +24,19 @@ interface ReportSubmission {
   snapshot_ghe?: string;
   snapshot_cargo?: string;
   snapshot_cbo?: string;
+  // Metadados do formulário estruturado (parametrização NR-1)
+  data_inicio_ocorrencia?: string;
+  data_fim_ocorrencia?: string;
+  periodo_descritivo?: string;
+  local_ocorrencia?: string;
+  pessoas_envolvidas?: string;
+  testemunhas?: string;
+  evidencias_disponiveis?: string;
+  ha_risco_imediato_informado?: boolean;
+  autorizacao_para_contato?: boolean;
+  canal_de_contato?: string;
+  aceite_politica_privacidade?: boolean;
+  declaracao_de_boa_fe?: boolean;
 }
 
 // Input validation functions
@@ -124,6 +138,20 @@ serve(async (req) => {
       snapshot_ghe: submission.snapshot_ghe || null,
       snapshot_cargo: submission.snapshot_cargo || null,
       snapshot_cbo: submission.snapshot_cbo || null,
+      snapshot_setor: submission.snapshot_setor || null,
+      data_inicio_ocorrencia: submission.data_inicio_ocorrencia || null,
+      data_fim_ocorrencia: submission.data_fim_ocorrencia || null,
+      periodo_descritivo: submission.periodo_descritivo ? sanitizeInput(submission.periodo_descritivo, 300) : null,
+      local_ocorrencia: submission.local_ocorrencia ? sanitizeInput(submission.local_ocorrencia, 300) : null,
+      pessoas_envolvidas: submission.pessoas_envolvidas ? sanitizeInput(submission.pessoas_envolvidas, 1000) : null,
+      testemunhas: submission.testemunhas ? sanitizeInput(submission.testemunhas, 1000) : null,
+      evidencias_disponiveis: submission.evidencias_disponiveis ? sanitizeInput(submission.evidencias_disponiveis, 1000) : null,
+      ha_risco_imediato_informado: submission.ha_risco_imediato_informado ?? null,
+      autorizacao_para_contato: submission.autorizacao_para_contato ?? false,
+      canal_de_contato: submission.canal_de_contato ? sanitizeInput(submission.canal_de_contato, 200) : null,
+      aceite_politica_privacidade: submission.aceite_politica_privacidade ?? false,
+      declaracao_de_boa_fe: submission.declaracao_de_boa_fe ?? false,
+      estado: (submission.snapshot_unidade || submission.snapshot_cargo) ? 'AGUARDANDO_TRIAGEM' : 'AGUARDANDO_TRIAGEM',
     };
 
     // Insert report into database
@@ -163,6 +191,12 @@ serve(async (req) => {
         // Don't fail the whole request, just log the error
       }
     }
+
+    // Abre os prazos normativos iniciais (dias úteis)
+    await supabase.from('sla_prazos').insert([
+      { report_id: data.id, evento: 'confirmacao_de_recebimento', iniciado_em: new Date().toISOString(), limite_em: addDiasUteis(new Date(), SLA_REGRAS.confirmacao_de_recebimento.dias).toISOString() },
+      { report_id: data.id, evento: 'triagem_inicial', iniciado_em: new Date().toISOString(), limite_em: addDiasUteis(new Date(), SLA_REGRAS.triagem_inicial.dias).toISOString() },
+    ]);
 
     // Trigger AI classification (fire-and-forget)
     supabase.functions.invoke('classify-report-ai', { body: { report_id: data.id } })
