@@ -68,26 +68,25 @@ const AiUsageCard = () => {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+        <Card className="border-audit-primary">
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" /> Custo total (USD)
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{fmtUsd(totalCost)}</div>
+            <div className="text-2xl font-bold text-audit-primary">{fmtUsd(totalCost * MULTIPLICADOR)}</div>
           </CardContent>
         </Card>
 
-        <Card className="border-audit-primary">
+        <Card>
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2">
-              <Cpu className="h-4 w-4" /> Valor faturável (×{MULTIPLICADOR})
+              <Cpu className="h-4 w-4" /> Custo do mês atual
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-audit-primary">{fmtUsd(totalCost * MULTIPLICADOR)}</div>
-            <p className="text-xs text-muted-foreground mt-1">Mês atual: {fmtUsd(mesCost * MULTIPLICADOR)}</p>
+            <div className="text-2xl font-bold">{fmtUsd(mesCost * MULTIPLICADOR)}</div>
           </CardContent>
         </Card>
 
@@ -112,6 +111,7 @@ const AiUsageCard = () => {
         </Card>
       </div>
 
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
@@ -132,13 +132,12 @@ const AiUsageCard = () => {
                 <TableHead className="text-right">Execuções</TableHead>
                 <TableHead className="text-right">Tokens</TableHead>
                 <TableHead className="text-right">Custo (USD)</TableHead>
-                <TableHead className="text-right">Valor ×{MULTIPLICADOR}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {porFuncao.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
                     {loading ? "Carregando..." : "Nenhum consumo de IA registrado ainda."}
                   </TableCell>
                 </TableRow>
@@ -148,7 +147,6 @@ const AiUsageCard = () => {
                   <TableCell className="font-medium">{LABELS[f.name] ?? f.name}</TableCell>
                   <TableCell className="text-right">{f.calls.toLocaleString("pt-BR")}</TableCell>
                   <TableCell className="text-right">{f.tokens.toLocaleString("pt-BR")}</TableCell>
-                  <TableCell className="text-right">{fmtUsd(f.cost)}</TableCell>
                   <TableCell className="text-right font-semibold">{fmtUsd(f.cost * MULTIPLICADOR)}</TableCell>
                 </TableRow>
               ))}
