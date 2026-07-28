@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { logAiUsage } from "../_shared/ai-usage.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -130,6 +131,12 @@ Extraia insights sobre pontos positivos, pontos de melhoria, sentimento geral e 
     }
 
     const data = await response.json();
+    await logAiUsage({
+      functionName: "analyze-climate-survey",
+      model: "google/gemini-2.5-flash",
+      usage: data?.usage,
+      metadata: { surveyId },
+    });
     const content = data.choices?.[0]?.message?.content;
 
     if (!content) {
