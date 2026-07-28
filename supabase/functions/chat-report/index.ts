@@ -108,8 +108,32 @@ IDENTIDADE DO USUÁRIO (REGRA CRÍTICA E INEGOCIÁVEL)
 
 Faça apenas UMA pergunta por vez. Seja empática, breve (2-3 frases) e sem julgamentos. Trate o usuário sempre por "você".`
     };
-    const finalMessages = callerHasSystem ? messages : [anaSystem, ...messages];
+    // Janela deslizante: em vez de reenviar todo o histórico (custo cresce ao
+    // quadrado), mantemos as últimas trocas e condensamos as antigas em uma
+    // nota curta de contexto.
+    const MAX_TURNS = 8;
+    const trimHistory = (msgs: any[]) => {
+      const system = msgs.filter((m) => m?.role === "system");
+      const rest = msgs.filter((m) => m?.role !== "system");
+      if (rest.length <= MAX_TURNS) return [...system, ...rest];
+      const older = rest.slice(0, rest.length - MAX_TURNS);
+      const recent = rest.slice(-MAX_TURNS);
+      const resumo = older
+        .filter((m) => m?.role === "user")
+        .map((m) => String(m.content ?? "").slice(0, 200))
+        .join(" | ")
+        .slice(0, 1500);
+      const nota = {
+        role: "system",
+        content: `Contexto anterior da conversa (pontos já relatados pelo usuário, resumidos): ${resumo}`,
+      };
+      return [...system, nota, ...recent];
+    };
 
+    const baseMessages = callerHasSystem ? messages : [anaSystem, ...messages];
+    const finalMessages = trimHistory(baseMessages);
+
+    const MODEL = "google/gemini-3.1-flash-lite";
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -117,7 +141,7 @@ Faça apenas UMA pergunta por vez. Seja empática, breve (2-3 frases) e sem julg
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: MODEL,
         messages: finalMessages,
       }),
     });
