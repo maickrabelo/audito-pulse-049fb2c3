@@ -1878,6 +1878,12 @@ const MasterDashboard = () => {
               <AiUsageCard />
             </TabsContent>
 
+            <TabsContent value="soc">
+              <SocDataCard />
+            </TabsContent>
+
+
+
             <TabsContent value="reports-cat">
               <Card>
                 <CardHeader>
