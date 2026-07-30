@@ -1105,7 +1105,9 @@ const MasterDashboard = () => {
                 <TabsTrigger value="sst">Gestoras SST</TabsTrigger>
                 <TabsTrigger value="reports-cat">Denúncias por Categoria</TabsTrigger>
                 <TabsTrigger value="parametros">Parâmetros NR-1</TabsTrigger>
+                <TabsTrigger value="ai-usage">Uso de IA</TabsTrigger>
                 <TabsTrigger value="soc">Dados SOC</TabsTrigger>
+
               </TabsList>
               <Button variant="outline" size="sm" onClick={() => navigate('/triagem-amo')} className="ml-3">
                 <AlertTriangle className="h-4 w-4 mr-2" /> Triagem AMO
