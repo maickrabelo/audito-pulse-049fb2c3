@@ -738,7 +738,16 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                   {selectedReport.reporter_name && (
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <span className="text-gray-600">Denunciante:</span>
-                      <p className="font-medium mt-1">{selectedReport.reporter_name}</p>
+                      <p className="font-medium mt-1">
+                        {hidePersonalData
+                          ? maskPersonalData(selectedReport.reporter_name)
+                          : selectedReport.reporter_name}
+                      </p>
+                      {hidePersonalData && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Dados pessoais restritos ao usuário principal e ao DPO.
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
