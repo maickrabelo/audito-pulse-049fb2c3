@@ -68,9 +68,17 @@ const Navbar = () => {
                         <DropdownMenuSeparator />
                       </>
                     )}
-                    {role === 'company' && (
+                    {isCompanyScopeRole(role) && (
                       <DropdownMenuItem asChild>
                         <Link to="/dashboard">Dashboard</Link>
+                      </DropdownMenuItem>
+                    )}
+                    {role === 'company' && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/empresa/usuarios" className="flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Usuários da empresa
+                        </Link>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem asChild>
