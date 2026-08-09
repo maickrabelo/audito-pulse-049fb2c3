@@ -807,37 +807,45 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                 </div>
               </div>
               
-              <div>
-                <h3 className="font-medium mb-3">Alterar Status</h3>
-                <Select 
-                  value={selectedStatus} 
-                  onValueChange={setSelectedStatus}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione um status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pendente</SelectItem>
-                    <SelectItem value="in_progress">Em análise</SelectItem>
-                    <SelectItem value="resolved">Resolvida</SelectItem>
-                    <SelectItem value="archived">Arquivada</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <h3 className="font-medium mb-3">Adicionar Atualização (Opcional)</h3>
-                <div className="space-y-3">
-                  <Textarea
-                    placeholder="Adicione uma atualização ou comentário (opcional)..."
-                    value={responseText}
-                    onChange={(e) => setResponseText(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Você pode salvar apenas alterando o status, sem adicionar uma nota.
-                  </p>
-                </div>
-              </div>
+              {canEditReports ? (
+                <>
+                  <div>
+                    <h3 className="font-medium mb-3">Alterar Status</h3>
+                    <Select 
+                      value={selectedStatus} 
+                      onValueChange={setSelectedStatus}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Selecione um status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">Pendente</SelectItem>
+                        <SelectItem value="in_progress">Em análise</SelectItem>
+                        <SelectItem value="resolved">Resolvida</SelectItem>
+                        <SelectItem value="archived">Arquivada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <h3 className="font-medium mb-3">Adicionar Atualização (Opcional)</h3>
+                    <div className="space-y-3">
+                      <Textarea
+                        placeholder="Adicione uma atualização ou comentário (opcional)..."
+                        value={responseText}
+                        onChange={(e) => setResponseText(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Você pode salvar apenas alterando o status, sem adicionar uma nota.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Seu perfil tem acesso somente de leitura a esta denúncia.
+                </p>
+              )}
             </div>
             
             <DialogFooter>
@@ -845,15 +853,17 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                 variant="outline" 
                 onClick={() => setIsDialogOpen(false)}
               >
-                Cancelar
+                {canEditReports ? 'Cancelar' : 'Fechar'}
               </Button>
-              <Button 
-                onClick={handleSubmitResponse}
-                disabled={selectedStatus === selectedReport.status && !responseText.trim()}
-              >
-                <Check className="mr-2 h-4 w-4" />
-                Salvar Alterações
-              </Button>
+              {canEditReports && (
+                <Button 
+                  onClick={handleSubmitResponse}
+                  disabled={selectedStatus === selectedReport.status && !responseText.trim()}
+                >
+                  <Check className="mr-2 h-4 w-4" />
+                  Salvar Alterações
+                </Button>
+              )}
             </DialogFooter>
           </DialogContent>
         )}
