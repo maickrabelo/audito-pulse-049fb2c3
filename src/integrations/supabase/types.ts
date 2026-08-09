@@ -2637,6 +2637,7 @@ export type Database = {
         | "dpo"
         | "triador_sst"
         | "medico_trabalho"
+        | "visualizador"
       competencia_denuncia:
         | "SST_NR1"
         | "EMPRESA_CLIENTE"
@@ -2825,6 +2826,7 @@ export const Constants = {
         "dpo",
         "triador_sst",
         "medico_trabalho",
+        "visualizador",
       ],
       competencia_denuncia: [
         "SST_NR1",
