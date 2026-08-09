@@ -19,6 +19,7 @@ import MasterDashboard from "./pages/MasterDashboard";
 import CompanyReport from "./pages/CompanyReport";
 import PendingApproval from "./pages/PendingApproval";
 import UserManagement from "./pages/UserManagement";
+import CompanyUsers from "./pages/CompanyUsers";
 import ChangePassword from "./pages/ChangePassword";
 import TrialSignup from "./pages/TrialSignup";
 import SSTDashboard from "./pages/SSTDashboard";
