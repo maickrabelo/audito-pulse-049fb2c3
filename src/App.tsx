@@ -61,6 +61,7 @@ const App = () => (
               <Route path="/profile" element={<CompanyProfile />} />
               <Route path="/master-dashboard" element={<MasterDashboard />} />
               <Route path="/user-management" element={<UserManagement />} />
+              <Route path="/empresa/usuarios" element={<CompanyUsers />} />
               <Route path="/company-dashboard/:id" element={<Dashboard />} />
               <Route path="/sst-dashboard" element={<SSTDashboard />} />
               <Route path="/report/:companySlug" element={<CompanyReport />} />
