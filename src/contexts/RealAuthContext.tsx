@@ -5,7 +5,18 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { sendAccessLog } from '@/hooks/useAccessLogger';
 
-type UserRole = 'admin' | 'company' | 'sst' | 'pending' | 'partner' | 'affiliate' | null;
+type UserRole =
+  | 'admin'
+  | 'company'
+  | 'sst'
+  | 'pending'
+  | 'partner'
+  | 'affiliate'
+  | 'apurador'
+  | 'comite'
+  | 'dpo'
+  | 'visualizador'
+  | null;
 
 interface Profile {
   id: string;
@@ -125,7 +136,13 @@ export const RealAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       navigate('/pending-approval');
     } else if (userRole === 'admin') {
       navigate('/master-dashboard');
-    } else if (userRole === 'company') {
+    } else if (
+      userRole === 'company' ||
+      userRole === 'apurador' ||
+      userRole === 'comite' ||
+      userRole === 'dpo' ||
+      userRole === 'visualizador'
+    ) {
       navigate('/dashboard');
     } else if (userRole === 'sst') {
       navigate('/sst-dashboard');

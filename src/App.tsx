@@ -19,6 +19,7 @@ import MasterDashboard from "./pages/MasterDashboard";
 import CompanyReport from "./pages/CompanyReport";
 import PendingApproval from "./pages/PendingApproval";
 import UserManagement from "./pages/UserManagement";
+import CompanyUsers from "./pages/CompanyUsers";
 import ChangePassword from "./pages/ChangePassword";
 import TrialSignup from "./pages/TrialSignup";
 import SSTDashboard from "./pages/SSTDashboard";
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/profile" element={<CompanyProfile />} />
               <Route path="/master-dashboard" element={<MasterDashboard />} />
               <Route path="/user-management" element={<UserManagement />} />
+              <Route path="/empresa/usuarios" element={<CompanyUsers />} />
               <Route path="/company-dashboard/:id" element={<Dashboard />} />
               <Route path="/sst-dashboard" element={<SSTDashboard />} />
               <Route path="/report/:companySlug" element={<CompanyReport />} />

@@ -2604,16 +2604,22 @@ export type Database = {
       }
     }
     Functions: {
+      can_company_write: {
+        Args: { _company_id: string; _user_id: string }
+        Returns: boolean
+      }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       count_sst_companies: {
         Args: { _sst_manager_id: string }
         Returns: number
       }
       generate_tracking_code: { Args: never; Returns: string }
+      get_company_role: { Args: { _user_id: string }; Returns: string }
       get_sst_max_companies: {
         Args: { _sst_manager_id: string }
         Returns: number
       }
+      get_user_company_id: { Args: { _user_id: string }; Returns: string }
       get_user_sst_manager_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -2623,6 +2629,11 @@ export type Database = {
         Returns: boolean
       }
       is_amo_team: { Args: { _user_id: string }; Returns: boolean }
+      is_company_member: {
+        Args: { _company_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_company_principal: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role:
@@ -2637,6 +2648,7 @@ export type Database = {
         | "dpo"
         | "triador_sst"
         | "medico_trabalho"
+        | "visualizador"
       competencia_denuncia:
         | "SST_NR1"
         | "EMPRESA_CLIENTE"
@@ -2825,6 +2837,7 @@ export const Constants = {
         "dpo",
         "triador_sst",
         "medico_trabalho",
+        "visualizador",
       ],
       competencia_denuncia: [
         "SST_NR1",
