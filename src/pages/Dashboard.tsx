@@ -32,6 +32,7 @@ import { Calendar, Check, Loader2, ExternalLink, Copy, FileImage, FileVideo, Fil
 import { useToast } from "@/hooks/use-toast";
 import { useRealAuth } from "@/contexts/RealAuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { canWriteReports, canViewPersonalData, isCompanyScopeRole, maskPersonalData } from "@/lib/companyRoles";
 import AIAnalysisCard from '@/components/AIAnalysisCard';
 import TrackReportModal from '@/components/TrackReportModal';
 import DownloadReportButton from '@/components/DownloadReportButton';
