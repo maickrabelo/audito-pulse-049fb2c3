@@ -136,7 +136,13 @@ export const RealAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       navigate('/pending-approval');
     } else if (userRole === 'admin') {
       navigate('/master-dashboard');
-    } else if (userRole === 'company') {
+    } else if (
+      userRole === 'company' ||
+      userRole === 'apurador' ||
+      userRole === 'comite' ||
+      userRole === 'dpo' ||
+      userRole === 'visualizador'
+    ) {
       navigate('/dashboard');
     } else if (userRole === 'sst') {
       navigate('/sst-dashboard');
