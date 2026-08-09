@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Bell, Shield } from "lucide-react";
 import { useRealAuth } from '@/contexts/RealAuthContext';
 import { useWhiteLabel } from '@/contexts/WhiteLabelContext';
+import { isCompanyScopeRole } from '@/lib/companyRoles';
 import {
   DropdownMenu,
   DropdownMenuContent,
