@@ -250,7 +250,7 @@ const TriagemAMO = () => {
                     </div>
                     <div className="flex gap-2 flex-wrap">
                       {r.competencia && <Badge variant={competenciaVariant(r.competencia)}>{COMPETENCIAS[r.competencia].codigo} · {COMPETENCIAS[r.competencia].label}</Badge>}
-                      {r.risco_grave_imediato && <Badge variant={r.risco_grave_imediato === 'SIM' ? 'destructive' : 'outline'}>Risco: {RISCOS[r.risco_grave_imediato]}</Badge>}
+                      {r.risco_grave_imediato && <Badge variant={r.risco_grave_imediato === 'SIM' ? 'destructive' : 'outline'}>{r.risco_grave_imediato === 'SIM' ? 'Risco Grave' : `Risco: ${RISCOS[r.risco_grave_imediato]}`}</Badge>}
                       {(r.pilares ?? []).map(p => <Badge key={p} variant="outline">{p} {PILARES[p]}</Badge>)}
                     </div>
                     {r.ai_classification_rationale && (
