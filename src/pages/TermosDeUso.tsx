@@ -9,7 +9,7 @@ const TermosDeUso = () => {
   });
 
   return (
-    <LegalLayout title="Termos de Uso" updatedAt="27 de maio de 2026">
+    <LegalLayout title="Termos de Uso" updatedAt="10 de agosto de 2026">
       <p>
         Estes Termos regem o uso da plataforma <strong>Ouvidoria AMO</strong>,
         de titularidade do <strong>Grupo AMO</strong> e desenvolvida e mantida pela{' '}
