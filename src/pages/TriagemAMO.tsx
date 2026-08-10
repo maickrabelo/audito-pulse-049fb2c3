@@ -212,9 +212,13 @@ const TriagemAMO = () => {
                     </CardDescription>
                   </div>
                   <div className="flex gap-2 flex-wrap">
+                    {r.risco_grave_imediato === 'SIM' && (
+                      <Badge variant="destructive" className="gap-1"><ShieldAlert className="h-3 w-3" /> Risco Grave</Badge>
+                    )}
                     <Badge variant="outline">{ESTADOS[r.estado] ?? r.estado}</Badge>
                     {r.prioridade && <Badge variant={prioridadeVariant(r.prioridade)}>{PRIORIDADES[r.prioridade]}</Badge>}
                   </div>
+
                 </div>
               </CardHeader>
               <CardContent className="space-y-5">
