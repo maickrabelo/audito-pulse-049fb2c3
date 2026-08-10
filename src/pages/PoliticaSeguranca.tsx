@@ -9,11 +9,11 @@ const PoliticaSeguranca = () => {
   });
 
   return (
-    <LegalLayout title="Política de Segurança da Informação" updatedAt="27 de maio de 2026">
+    <LegalLayout title="Política de Segurança da Informação" updatedAt="10 de agosto de 2026">
       <p>
-        Esta Política descreve as medidas técnicas e organizacionais adotadas pelo Grupo AMO,
-        por meio de sua desenvolvedora e mantenedora <strong>Agência Mundi</strong>, para proteger
-        as informações tratadas na plataforma Ouvidoria AMO, em conformidade com o art. 46 da LGPD.
+        Esta Política descreve as medidas técnicas e organizacionais adotadas pela{' '}
+        <strong>Agência Mundi</strong> para proteger as informações tratadas na plataforma{' '}
+        Ouvidoria AMO, em conformidade com o art. 46 da LGPD.
       </p>
 
       <h2>1. Princípios</h2>

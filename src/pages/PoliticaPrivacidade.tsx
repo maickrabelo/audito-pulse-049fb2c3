@@ -9,21 +9,19 @@ const PoliticaPrivacidade = () => {
   });
 
   return (
-    <LegalLayout title="Política de Privacidade" updatedAt="27 de maio de 2026">
+    <LegalLayout title="Política de Privacidade" updatedAt="10 de agosto de 2026">
       <p>
-        Esta Política de Privacidade descreve como o <strong>Grupo AMO</strong>, por meio da
-        plataforma <strong>Ouvidoria AMO</strong> (desenvolvida e mantida pela{' '}
-        <strong>Agência Mundi</strong>), coleta, utiliza, armazena e protege dados pessoais, em
-        conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 — LGPD).
+        Esta Política de Privacidade descreve como a <strong>Agência Mundi</strong>, por meio da
+        plataforma <strong>Ouvidoria AMO</strong>, coleta, utiliza, armazena e protege dados pessoais,
+        em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 — LGPD).
       </p>
 
       <h2>1. Papéis no tratamento</h2>
       <p>
         A empresa contratante (cliente) atua como <strong>Controladora</strong> dos dados
-        coletados em seu canal de manifestações. O <strong>Grupo AMO</strong> atua como{' '}
-        <strong>Operador</strong>, tratando dados em nome e conforme instruções da Controladora.
-        O desenvolvimento e a manutenção técnica da plataforma são realizados pela{' '}
-        <strong>Agência Mundi</strong>, na qualidade de subprocessadora.
+        coletados em seu canal de manifestações. A <strong>Agência Mundi</strong> atua como{' '}
+        <strong>Operadora</strong>, tratando dados em nome e conforme instruções da Controladora,
+        sendo também responsável pelo desenvolvimento e manutenção técnica da plataforma.
       </p>
 
       <h2>2. Dados coletados</h2>
@@ -78,12 +76,34 @@ const PoliticaPrivacidade = () => {
       </ul>
 
       <h2>7. Subprocessadores</h2>
+      <p>
+        Os dados pessoais podem ser processados fora do Brasil pelos seguintes subprocessadores,
+        contratados para garantir a operação, segurança e escalabilidade da plataforma:
+      </p>
       <ul>
-        <li><strong>Supabase / AWS</strong> — banco de dados, autenticação e storage;</li>
-        <li><strong>Lovable AI Gateway</strong> — análise inteligente de manifestações;</li>
-        <li><strong>Resend</strong> — envio de notificações por e-mail;</li>
-        <li><strong>Stripe</strong> — processamento de pagamentos de assinatura.</li>
+        <li>
+          <strong>Lovable Cloud</strong> — hospedagem, banco de dados, autenticação, armazenamento
+          de arquivos (storage) e execução de funções serverless; infraestrutura AWS, região{' '}
+          <strong>us-east-2</strong> (Estados Unidos).
+        </li>
+        <li>
+          <strong>Lovable AI Gateway</strong> — análise inteligente de manifestações, triagem e
+          assistente virtual (chatbot); processamento nos Estados Unidos.
+        </li>
+        <li>
+          <strong>Resend</strong> — envio de notificações e comunicações por e-mail; Estados
+          Unidos.
+        </li>
+        <li>
+          <strong>Stripe</strong> — processamento de pagamentos de assinatura; Estados Unidos.
+        </li>
       </ul>
+      <p>
+        A transferência internacional de dados observa as salvaguardas do art. 33 da LGPD, sendo
+        adotados instrumentos contratuais e medidas técnicas e organizacionais pelos
+        subprocessadores. O DPA (Acordo de Processamento de Dados) está disponível mediante
+        solicitação ao Encarregado.
+      </p>
 
       <h2>8. Retenção</h2>
       <p>
