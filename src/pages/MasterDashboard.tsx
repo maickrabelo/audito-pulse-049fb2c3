@@ -117,7 +117,7 @@ const MasterDashboard = () => {
     setReportsCatLoading(true);
     const { data } = await supabase
       .from('reports')
-      .select('id, tracking_code, title, status, created_at, ai_classification, amo_validated_classification, ai_classification_rationale, companies(name)')
+      .select('id, tracking_code, title, status, created_at, ai_classification, amo_validated_classification, ai_classification_rationale, risco_grave_imediato, companies(name)')
       .order('created_at', { ascending: false })
       .limit(300);
     setReportsByCategory(data || []);
@@ -1383,10 +1383,10 @@ const MasterDashboard = () => {
                                 <div>
                                   <Label className="text-base font-semibold flex items-center gap-2">
                                     <AlertTriangle className="h-4 w-4 text-red-500" />
-                                    Contatos de Emergência (Risco Grave e Iminente — 4D)
+                                    Contatos de Emergência (Risco Grave e Iminente)
                                   </Label>
                                   <p className="text-sm text-gray-500 mt-1">
-                                    Estes contatos recebem alerta imediato por email quando a IA classifica uma manifestação como 4D.
+                                    Estes contatos recebem alerta imediato por email quando a IA sinaliza uma manifestação com a tag Risco Grave.
                                   </p>
                                 </div>
                                 <Button
@@ -1889,7 +1889,7 @@ const MasterDashboard = () => {
                 <CardHeader>
                   <CardTitle>Manifestações por Categoria (Triagem IA)</CardTitle>
                   <CardDescription>
-                    Classificação automática pela IA (4A SST · 4B Fora de escopo · 4C Misto · 4D Grave/imediato). A validação humana é feita em <b>Triagem AMO</b>.
+                    Classificação automática pela IA (4A SST · 4B Fora de escopo · 4C Misto). Casos de risco grave e iminente recebem a tag <b>Risco Grave</b>. A validação humana é feita em <b>Triagem AMO</b>.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1900,11 +1900,13 @@ const MasterDashboard = () => {
                       { k: '4A_sst', label: '4A — SST' },
                       { k: '4B_out_of_scope', label: '4B — Fora de escopo' },
                       { k: '4C_mixed', label: '4C — Misto' },
-                      { k: '4D_grave_immediate', label: '4D — Grave/imediato' },
+                      { k: 'risco_grave', label: 'Risco Grave' },
                     ].map(o => {
                       const count = o.k === 'all'
                         ? reportsByCategory.length
-                        : reportsByCategory.filter(r => (r.amo_validated_classification || r.ai_classification || 'pending_ai') === o.k).length;
+                        : o.k === 'risco_grave'
+                          ? reportsByCategory.filter(r => r.risco_grave_imediato === 'SIM').length
+                          : reportsByCategory.filter(r => (r.amo_validated_classification || r.ai_classification || 'pending_ai') === o.k).length;
                       return (
                         <Button
                           key={o.k}
@@ -1924,7 +1926,7 @@ const MasterDashboard = () => {
                   ) : (
                     <div className="space-y-2">
                       {reportsByCategory
-                        .filter(r => reportsCatFilter === 'all' || (r.amo_validated_classification || r.ai_classification || 'pending_ai') === reportsCatFilter)
+                        .filter(r => reportsCatFilter === 'all' || (reportsCatFilter === 'risco_grave' ? r.risco_grave_imediato === 'SIM' : (r.amo_validated_classification || r.ai_classification || 'pending_ai') === reportsCatFilter))
                         .map(r => {
                           const cls = r.amo_validated_classification || r.ai_classification || 'pending_ai';
                           const validated = !!r.amo_validated_classification;
@@ -1932,11 +1934,9 @@ const MasterDashboard = () => {
                             '4A_sst': '4A SST',
                             '4B_out_of_scope': '4B Fora de escopo',
                             '4C_mixed': '4C Misto',
-                            '4D_grave_immediate': '4D Grave/imediato',
                             'pending_ai': 'Pendente IA',
                           } as any)[cls] || cls;
-                          const color = cls === '4D_grave_immediate' ? 'bg-red-100 text-red-800 border-red-300'
-                            : cls === '4C_mixed' ? 'bg-amber-100 text-amber-800 border-amber-300'
+                          const color = cls === '4C_mixed' ? 'bg-amber-100 text-amber-800 border-amber-300'
                             : cls === '4B_out_of_scope' ? 'bg-gray-100 text-gray-700 border-gray-300'
                             : cls === '4A_sst' ? 'bg-blue-100 text-blue-800 border-blue-300'
                             : 'bg-yellow-50 text-yellow-800 border-yellow-300';
@@ -1945,6 +1945,9 @@ const MasterDashboard = () => {
                               <div className="min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span className={`text-xs px-2 py-0.5 rounded border ${color}`}>{label}</span>
+                                  {r.risco_grave_imediato === 'SIM' && (
+                                    <span className="text-xs px-2 py-0.5 rounded border bg-red-100 text-red-800 border-red-300">⚠ Risco Grave</span>
+                                  )}
                                   {validated && <span className="text-xs text-green-700">✓ validado AMO</span>}
                                   <span className="text-xs text-muted-foreground">Protocolo <b>{r.tracking_code}</b></span>
                                 </div>
