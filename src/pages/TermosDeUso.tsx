@@ -21,7 +21,7 @@ const TermosDeUso = () => {
       <ul>
         <li><strong>Plataforma</strong>: sistema Ouvidoria AMO, incluindo site, painéis e APIs.</li>
         <li><strong>Controladora</strong>: empresa cliente que contrata o canal de manifestações.</li>
-        <li><strong>Operador</strong>: Grupo AMO, titular da plataforma.</li>
+        <li><strong>Operador</strong>: Agência Mundi, titular da plataforma.</li>
         <li><strong>Desenvolvedora/Mantenedora</strong>: Agência Mundi, responsável pelo desenvolvimento, operação técnica, segurança e manutenção da plataforma.</li>
         <li><strong>Usuário</strong>: qualquer pessoa que acesse a plataforma, incluindo manifestantes, gestores e administradores.</li>
         <li><strong>Manifestante</strong>: pessoa que envia manifestação por meio do canal, de forma anônima ou identificada.</li>
@@ -55,9 +55,9 @@ const TermosDeUso = () => {
       <h2>5. Manifestações</h2>
       <p>
         A plataforma assegura ao manifestante o direito ao anonimato e à proteção contra
-        retaliação. A Controladora é responsável pela apuração e tratamento da manifestação. O
-        Grupo AMO atua como Operador da plataforma, e a Agência Mundi atua como desenvolvedora
-        e mantenedora técnica — nenhum deles interfere no mérito das manifestações.
+        retaliação. A Controladora é responsável pela apuração e tratamento da manifestação. A
+        Agência Mundi atua como Operadora e desenvolvedora/mantenedora técnica da plataforma — não
+        interfere no mérito das manifestações.
       </p>
 
       <h2>6. Propriedade intelectual</h2>
@@ -77,14 +77,14 @@ const TermosDeUso = () => {
 
       <h2>8. Limitação de responsabilidade</h2>
       <p>
-        O Grupo AMO e a Agência Mundi não respondem por: (i) decisões tomadas pela Controladora
+        A Agência Mundi não responde por: (i) decisões tomadas pela Controladora
         a partir das manifestações; (ii) conteúdo enviado por manifestantes; (iii) danos indiretos,
         lucros cessantes ou perda de oportunidade.
       </p>
 
       <h2>9. Cancelamento e suspensão</h2>
       <p>
-        O Grupo AMO pode suspender ou encerrar o acesso de qualquer usuário em caso de
+        A Agência Mundi pode suspender ou encerrar o acesso de qualquer usuário em caso de
         descumprimento destes Termos, sem prejuízo das medidas legais cabíveis.
       </p>
 
@@ -96,7 +96,7 @@ const TermosDeUso = () => {
 
       <h2>11. Foro e legislação aplicável</h2>
       <p>
-        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede do Grupo AMO,
+        Aplica-se a legislação brasileira. Fica eleito o foro da comarca da sede da Agência Mundi,
         com renúncia a qualquer outro, por mais privilegiado que seja.
       </p>
 
