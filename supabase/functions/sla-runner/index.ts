@@ -48,8 +48,8 @@ serve(async (req) => {
           body: JSON.stringify({
             from: "Ouvidoria AMO <alertas@grupoamo.com.br>",
             to: emails,
-            subject: `Prazo vencido — denúncia ${rep?.tracking_code ?? ""}`,
-            html: `<p>O prazo <b>${(v as { evento: string }).evento}</b> da denúncia <b>${rep?.tracking_code ?? ""}</b> está vencido desde ${new Date((v as { limite_em: string }).limite_em).toLocaleString("pt-BR")}.</p>`,
+            subject: `Prazo vencido — manifestação ${rep?.tracking_code ?? ""}`,
+            html: `<p>O prazo <b>${(v as { evento: string }).evento}</b> da manifestação <b>${rep?.tracking_code ?? ""}</b> está vencido desde ${new Date((v as { limite_em: string }).limite_em).toLocaleString("pt-BR")}.</p>`,
           }),
         }).catch(console.error);
       }

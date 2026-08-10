@@ -20,12 +20,12 @@ export const COMPANY_ROLE_DESCRIPTIONS: Record<CompanyScopeRole, string> = {
   company:
     "Acesso total à empresa, inclusive dados pessoais e gestão dos demais usuários.",
   apurador:
-    "Acompanha e apura denúncias: pode alterar status e registrar atualizações. Dados pessoais mascarados.",
+    "Acompanha e apura manifestações: pode alterar status e registrar atualizações. Dados pessoais mascarados.",
   comite:
-    "Comitê de Ética: visualiza denúncias e registra pareceres/validação de encerramento. Dados pessoais mascarados.",
-  dpo: "DPO interno: leitura das denúncias com acesso a dados pessoais, sem alterar andamento.",
+    "Comitê de Ética: visualiza manifestações e registra pareceres/validação de encerramento. Dados pessoais mascarados.",
+  dpo: "DPO interno: leitura das manifestações com acesso a dados pessoais, sem alterar andamento.",
   visualizador:
-    "Somente leitura de denúncias e indicadores. Dados pessoais mascarados.",
+    "Somente leitura de manifestações e indicadores. Dados pessoais mascarados.",
 };
 
 /** Papéis que enxergam o dashboard da empresa */
@@ -36,7 +36,7 @@ export const isCompanyScopeRole = (role?: string | null): boolean =>
 export const canWriteReports = (role?: string | null): boolean =>
   role === "company" || role === "apurador" || role === "comite" || role === "admin";
 
-/** Papéis que podem ver dados pessoais do denunciante */
+/** Papéis que podem ver dados pessoais do manifestante */
 export const canViewPersonalData = (role?: string | null): boolean =>
   role === "company" || role === "dpo" || role === "admin";
 

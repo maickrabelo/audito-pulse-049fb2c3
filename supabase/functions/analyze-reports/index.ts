@@ -28,7 +28,7 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Buscar denúncias dos últimos 60 dias
+    // Buscar manifestações dos últimos 60 dias
     const sixtyDaysAgo = new Date();
     sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
@@ -51,7 +51,7 @@ serve(async (req) => {
               title: "Sem dados suficientes",
               category: "Geral",
               priority: "low",
-              description: "Não há denúncias recentes suficientes para gerar análises estratégicas. Continue monitorando o sistema."
+              description: "Não há manifestações recentes suficientes para gerar análises estratégicas. Continue monitorando o sistema."
             }
           ]
         }),
@@ -97,23 +97,23 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Você é um analista estratégico de compliance e recursos humanos. Analise os dados e identifique APENAS insights realmente críticos e importantes para tomada de decisão. Gere entre 1 e 3 insights, mas somente se forem informações estratégicas relevantes. Não force insights genéricos. IMPORTANTE: NUNCA critique a falta de informações nas denúncias, problemas no formulário ou no canal de denúncias - você está analisando PARA o próprio canal. Foque exclusivamente em padrões comportamentais, riscos organizacionais e ações estratégicas."
+            content: "Você é um analista estratégico de compliance e recursos humanos. Analise os dados e identifique APENAS insights realmente críticos e importantes para tomada de decisão. Gere entre 1 e 3 insights, mas somente se forem informações estratégicas relevantes. Não force insights genéricos. IMPORTANTE: NUNCA critique a falta de informações nas manifestações, problemas no formulário ou no canal de manifestações - você está analisando PARA o próprio canal. Foque exclusivamente em padrões comportamentais, riscos organizacionais e ações estratégicas."
           },
           {
             role: "user",
-            content: `Analise os dados de denúncias e identifique APENAS os insights mais críticos e estratégicos.
+            content: `Analise os dados de manifestações e identifique APENAS os insights mais críticos e estratégicos.
 
 IMPORTANTE: Gere entre 1 e 3 insights, mas SOMENTE se forem informações realmente importantes.
 Não force insights genéricos ou óbvios. Seja seletivo e estratégico.
 
 RESTRIÇÕES CRÍTICAS:
-- NUNCA critique a falta de detalhes nas denúncias
-- NUNCA sugira melhorias no formulário ou canal de denúncias
+- NUNCA critique a falta de detalhes nas manifestações
+- NUNCA sugira melhorias no formulário ou canal de manifestações
 - NUNCA mencione problemas de coleta de dados ou informações incompletas
 - Foque APENAS em padrões comportamentais e riscos organizacionais dos DADOS EXISTENTES
 
 Dados:
-- Total de denúncias: ${analysisData.total_reports}
+- Total de manifestações: ${analysisData.total_reports}
 - Categorias: ${JSON.stringify(analysisData.categories)}
 - Departamentos: ${JSON.stringify(analysisData.departments)}
 - Status: ${JSON.stringify(analysisData.status_distribution)}
@@ -128,7 +128,7 @@ Foque em:
 
 Para cada insight:
 - Título: Claro e direto (máximo 60 caracteres)
-- Categoria: Tipo de denúncia ou departamento
+- Categoria: Tipo de manifestação ou departamento
 - Prioridade: high, medium ou low
 - Descrição: Detalhada com dados concretos e recomendações práticas (máximo 300 caracteres)`
           }

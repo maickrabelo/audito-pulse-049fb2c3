@@ -12,7 +12,7 @@ const steps = [
   {
     icon: MessageSquare,
     title: 'Colaboradores Utilizam',
-    description: 'Canal disponível 24/7 para denúncias anônimas e pesquisas de clima.',
+    description: 'Canal disponível 24/7 para manifestações anônimas e pesquisas de clima.',
     color: 'bg-green-500'
   },
   {

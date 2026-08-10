@@ -28,9 +28,9 @@ serve(async (req) => {
         body: JSON.stringify({
           from: "Ouvidoria AMO <alertas@grupoamo.com.br>",
           to: emails,
-          subject: `🚨 ALERTA GRAVE E IMINENTE — Denúncia ${r.tracking_code}`,
+          subject: `🚨 ALERTA GRAVE E IMINENTE — Manifestação ${r.tracking_code}`,
           html: `<h2>Alerta de risco grave e iminente</h2>
-                 <p>Uma denúncia da empresa <b>${c?.name}</b> foi classificada pela IA como <b>4D — risco grave e iminente</b>.</p>
+                 <p>Uma manifestação da empresa <b>${c?.name}</b> foi classificada pela IA como <b>4D — risco grave e iminente</b>.</p>
                  <p>Protocolo: <b>${r.tracking_code}</b><br/>Título: ${r.title}</p>
                  <p><b>Ação imediata:</b> acione o protocolo interno de emergência e valide o caso.</p>`,
         }),

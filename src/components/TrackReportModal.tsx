@@ -50,11 +50,11 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
 
       if (reportError || !rawReportData) {
         setReport(null);
-        setError("Denúncia não encontrada. Verifique o código e tente novamente.");
+        setError("Manifestação não encontrada. Verifique o código e tente novamente.");
         toast({
           variant: "destructive",
           title: "Não encontrada",
-          description: "Denúncia não encontrada com o código fornecido.",
+          description: "Manifestação não encontrada com o código fornecido.",
         });
         setIsLoading(false);
         return;
@@ -84,7 +84,7 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
       const formattedReport = {
         id: reportData.tracking_code,
         title: reportData.title,
-        summary: "Detalhes da denúncia disponíveis apenas para usuários autorizados.", // Hide description from public
+        summary: "Detalhes da manifestação disponíveis apenas para usuários autorizados.", // Hide description from public
         status: reportData.status,
         date: new Date(reportData.created_at).toLocaleDateString('pt-BR'),
         updates: updatesData?.map(update => ({
@@ -98,12 +98,12 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
       setSelectedStatus(reportData.status);
       setError("");
     } catch (err) {
-      console.error('Erro ao buscar denúncia:', err);
-      setError("Erro ao buscar denúncia. Tente novamente.");
+      console.error('Erro ao buscar manifestação:', err);
+      setError("Erro ao buscar manifestação. Tente novamente.");
       toast({
         variant: "destructive",
         title: "Erro",
-        description: "Erro ao buscar denúncia. Tente novamente.",
+        description: "Erro ao buscar manifestação. Tente novamente.",
       });
     } finally {
       setIsLoading(false);
@@ -126,7 +126,7 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
         toast({
           variant: "destructive",
           title: "Erro",
-          description: "Não foi possível encontrar a denúncia.",
+          description: "Não foi possível encontrar a manifestação.",
         });
         setIsLoading(false);
         return;
@@ -212,14 +212,14 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
           className={className}
         >
           <Search className="h-4 w-4 mr-2" />
-          Acompanhar Denúncia
+          Acompanhar Manifestação
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Acompanhar Denúncia</DialogTitle>
+          <DialogTitle>Acompanhar Manifestação</DialogTitle>
           <DialogDescription>
-            Digite o ID da denúncia para visualizar seu status e atualizações.
+            Digite o ID da manifestação para visualizar seu status e atualizações.
           </DialogDescription>
         </DialogHeader>
 
@@ -261,7 +261,7 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
               <Separator />
               
               <div>
-                <h4 className="text-sm font-medium mb-1">Resumo da Denúncia</h4>
+                <h4 className="text-sm font-medium mb-1">Resumo da Manifestação</h4>
                 <p className="text-sm">{report.summary}</p>
               </div>
               

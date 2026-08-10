@@ -12,7 +12,7 @@ const AnonymousReportButton = () => {
         onClick={() => navigate('/report')}
         className="bg-audit-secondary hover:bg-audit-secondary/90 text-white font-medium py-2 px-6 rounded-md"
       >
-        Fazer Denúncia Anônima
+        Fazer Manifestação Anônima
       </Button>
       <p className="mt-2 text-sm text-muted-foreground">
         Sua identidade será completamente protegida

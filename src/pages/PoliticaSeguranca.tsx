@@ -35,7 +35,7 @@ const PoliticaSeguranca = () => {
       <ul>
         <li>Autenticação por e-mail e senha com política de complexidade;</li>
         <li>Autenticação multifator (MFA TOTP) disponível para todos os perfis privilegiados;</li>
-        <li>Segregação de papéis: Master, SST, Empresa e acesso público de denunciante;</li>
+        <li>Segregação de papéis: Master, SST, Empresa e acesso público de manifestante;</li>
         <li><strong>Row-Level Security (RLS)</strong> aplicada em todas as tabelas com dados sensíveis;</li>
         <li>Tokens JWT de curta duração e rotação de refresh tokens.</li>
       </ul>
@@ -64,12 +64,12 @@ const PoliticaSeguranca = () => {
         <li>Ambientes segregados (desenvolvimento, homologação, produção).</li>
       </ul>
 
-      <h2>7. Anonimato do denunciante</h2>
+      <h2>7. Anonimato do manifestante</h2>
       <p>
-        Quando o denunciante opta pelo modo anônimo, a aplicação não coleta nem armazena IP,
-        identificadores de dispositivo ou metadados de navegação. O vínculo com a denúncia é
+        Quando o manifestante opta pelo modo anônimo, a aplicação não coleta nem armazena IP,
+        identificadores de dispositivo ou metadados de navegação. O vínculo com a manifestação é
         feito exclusivamente pelo <strong>código de rastreamento</strong> entregue ao
-        denunciante no momento do envio.
+        manifestante no momento do envio.
       </p>
 
       <h2>8. Gestão de incidentes</h2>

@@ -30,9 +30,9 @@ const ReportSuccess = () => {
             </div>
 
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-foreground">Denúncia Registrada com Sucesso</h1>
+              <h1 className="text-2xl font-bold text-foreground">Manifestação Registrada com Sucesso</h1>
               <p className="text-muted-foreground">
-                Sua denúncia foi registrada de forma anônima e será tratada com total atenção e sigilo pelo setor responsável.
+                Sua manifestação foi registrada de forma anônima e será tratada com total atenção e sigilo pelo setor responsável.
               </p>
             </div>
 
@@ -45,18 +45,18 @@ const ReportSuccess = () => {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Guarde este código. Ele é a única forma de acompanhar o andamento da sua denúncia.
+                Guarde este código. Ele é a única forma de acompanhar o andamento da sua manifestação.
               </p>
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Através deste código você poderá consultar o status da sua denúncia a qualquer momento, sem precisar se identificar.
+              Através deste código você poderá consultar o status da sua manifestação a qualquer momento, sem precisar se identificar.
             </p>
 
             <div className="flex flex-col gap-3 pt-2">
               <Button onClick={() => navigate('/', { state: { openTrackModal: true, trackingCode } })} className="w-full gap-2">
                 <Search className="h-4 w-4" />
-                Acompanhar Denúncia
+                Acompanhar Manifestação
               </Button>
               <Button variant="outline" onClick={() => navigate('/')}>
                 Voltar à Página Inicial

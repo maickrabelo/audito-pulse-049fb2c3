@@ -89,7 +89,7 @@ const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
           <CardDescription>
             Informe seu CPF para validarmos o vínculo com <b>{companyName}</b>.
             Seu CPF <b>não fica armazenado</b> — usamos apenas para localizar seu setor/cargo e reforçar
-            que sua denúncia é procedente.
+            que sua manifestação é procedente.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -101,7 +101,7 @@ const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
             <Alert variant="destructive">
               <AlertDescription>
                 CPF não localizado no cadastro desta empresa. Verifique os dígitos ou prossiga de forma anônima
-                (a denúncia passará por triagem adicional).
+                (a manifestação passará por triagem adicional).
               </AlertDescription>
             </Alert>
           )}
@@ -134,7 +134,7 @@ const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
             {snapshot.ghe && <div className="col-span-2"><span className="text-muted-foreground">GHE:</span> <b>{snapshot.ghe}</b></div>}
           </div>
           <p className="text-xs text-muted-foreground">
-            Ao seguir, seu relato é registrado com esse contexto (sem CPF). A denúncia continua sendo tratada
+            Ao seguir, seu relato é registrado com esse contexto (sem CPF). A manifestação continua sendo tratada
             de forma confidencial.
           </p>
           <div className="flex gap-2 justify-end">
@@ -225,7 +225,7 @@ const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
               <AlertTitle>Risco imediato</AlertTitle>
               <AlertDescription>
                 Se há risco à vida agora, acione <b>SAMU 192</b>, <b>Bombeiros 193</b>, <b>Polícia 190</b> ou <b>CVV 188</b>.
-                Sua denúncia será tratada com prioridade crítica.
+                Sua manifestação será tratada com prioridade crítica.
               </AlertDescription>
             </Alert>
           )}

@@ -3,7 +3,7 @@
 export const COMPETENCIAS = {
   SST_NR1: { label: "SST / NR-1", codigo: "CL-01", desc: "Fator técnico da organização, condições, gestão ou ergonomia do trabalho. Responsável: AMO." },
   EMPRESA_CLIENTE: { label: "Empresa cliente", codigo: "CL-02", desc: "Apuração administrativa, disciplinar, jurídica, ética ou de RH. Responsável: empresa." },
-  DENUNCIA_MISTA: { label: "Denúncia mista", codigo: "CL-03", desc: "Contém simultaneamente componente SST e apuração da empresa." },
+  DENUNCIA_MISTA: { label: "Manifestação mista", codigo: "CL-03", desc: "Contém simultaneamente componente SST e apuração da empresa." },
   INFORMACOES_INSUFICIENTES: { label: "Informações insuficientes", codigo: "CL-04", desc: "Não permite identificar fato, contexto, competência ou urgência." },
 } as const;
 
@@ -104,7 +104,7 @@ export function validarClassificacao(v: {
   if (v.competencia === "DENUNCIA_MISTA") {
     if (!v.parte_amo.trim()) e.push("Descreva a parte de competência da AMO.");
     if (!v.parte_empresa.trim()) e.push("Descreva a parte de competência da empresa.");
-    if (v.pilares.length === 0 || v.pilares.includes("PT-00")) e.push("Denúncia mista exige ao menos um pilar entre PT-01 e PT-06.");
+    if (v.pilares.length === 0 || v.pilares.includes("PT-00")) e.push("Manifestação mista exige ao menos um pilar entre PT-01 e PT-06.");
   }
   if (v.justificativa.trim().length < 10) e.push("A justificativa da decisão humana é obrigatória (mín. 10 caracteres).");
   return e;

@@ -68,7 +68,7 @@ const LoginCard = () => {
       <CardHeader>
         <CardTitle className="text-audit-primary">Login</CardTitle>
         <CardDescription>
-          Acesse sua conta para gerenciar denúncias e relatórios.
+          Acesse sua conta para gerenciar manifestações e relatórios.
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>

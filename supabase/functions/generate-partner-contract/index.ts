@@ -75,7 +75,7 @@ const generatePartnerContractHTML = (partner: any, representatives: Representati
   <div class="parties">
     <h2>DAS PARTES</h2>
     <p><strong>CONTRATANTE:</strong> SOIA - Sistema de Ouvidoria Inteligente e Automatizado</p>
-    <p>Plataforma de gestão de canais de denúncia e pesquisas de clima organizacional.</p>
+    <p>Plataforma de gestão de canais de manifestação e pesquisas de clima organizacional.</p>
     
     <p style="margin-top: 20px;"><strong>CONTRATADA (PARCEIRO LICENCIADO):</strong></p>
     <p>Razão Social: <strong>${partner.razao_social}</strong></p>
@@ -174,7 +174,7 @@ const generateAffiliateContractHTML = (affiliate: any) => {
   <div class="parties">
     <h2>DAS PARTES</h2>
     <p><strong>CONTRATANTE:</strong> SOIA - Sistema de Ouvidoria Inteligente e Automatizado</p>
-    <p>Plataforma de gestão de canais de denúncia e pesquisas de clima organizacional.</p>
+    <p>Plataforma de gestão de canais de manifestação e pesquisas de clima organizacional.</p>
     
     <p style="margin-top: 20px;"><strong>AFILIADO:</strong></p>
     <p>Nome: <strong>${affiliate.nome_completo}</strong></p>

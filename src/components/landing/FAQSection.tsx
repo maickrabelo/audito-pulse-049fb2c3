@@ -14,7 +14,7 @@ export const faqs = [
   },
   {
     question: 'Como o Ouvidoria AMO funciona como sistema NR-01?',
-    answer: 'O Ouvidoria AMO é um sistema NR-01 completo que atende todas as exigências da norma regulamentadora para gestão de riscos psicossociais. A plataforma oferece: levantamento de riscos psicossociais com o questionário HSE-IT (35 indicadores em 7 categorias), geração automática de relatórios e planos de ação, canal de denúncias anônimo para reportar situações de risco, pesquisa de clima organizacional, avaliação de burnout, e dashboards com indicadores em tempo real. Tudo documentado e pronto para auditorias.'
+    answer: 'O Ouvidoria AMO é um sistema NR-01 completo que atende todas as exigências da norma regulamentadora para gestão de riscos psicossociais. A plataforma oferece: levantamento de riscos psicossociais com o questionário HSE-IT (35 indicadores em 7 categorias), geração automática de relatórios e planos de ação, canal de manifestações anônimo para reportar situações de risco, pesquisa de clima organizacional, avaliação de burnout, e dashboards com indicadores em tempo real. Tudo documentado e pronto para auditorias.'
   },
   {
     question: 'Quais riscos psicossociais a NR-01 exige mapear?',
@@ -25,8 +25,8 @@ export const faqs = [
     answer: 'A NR-01 é a Norma Regulamentadora que estabelece disposições gerais sobre segurança e saúde no trabalho, incluindo a gestão de riscos psicossociais (assédio, estresse, burnout). O Ouvidoria AMO oferece ferramentas completas para identificar, documentar e gerenciar esses riscos, garantindo conformidade total com a norma e gerando relatórios para auditorias.'
   },
   {
-    question: 'Como funciona o anonimato das denúncias?',
-    answer: 'O Ouvidoria AMO foi projetado para garantir anonimato absoluto. As denúncias são criptografadas, não armazenamos IPs ou metadados identificáveis, e o colaborador recebe um código de acompanhamento que não está vinculado a nenhuma informação pessoal. Nem mesmo os administradores podem identificar quem fez a denúncia.'
+    question: 'Como funciona o anonimato das manifestações?',
+    answer: 'O Ouvidoria AMO foi projetado para garantir anonimato absoluto. As manifestações são criptografadas, não armazenamos IPs ou metadados identificáveis, e o colaborador recebe um código de acompanhamento que não está vinculado a nenhuma informação pessoal. Nem mesmo os administradores podem identificar quem fez a manifestação.'
   },
   {
     question: 'Quanto tempo leva para implementar o sistema NR-01 do Ouvidoria AMO?',
@@ -34,7 +34,7 @@ export const faqs = [
   },
   {
     question: 'Como a inteligência artificial analisa os riscos psicossociais?',
-    answer: 'Nossa IA utiliza processamento de linguagem natural para classificar automaticamente as denúncias por categoria (assédio, discriminação, fraude, etc.), avaliar a urgência, identificar padrões recorrentes de riscos psicossociais e sugerir ações. Isso acelera a triagem e garante que casos críticos sejam priorizados imediatamente.'
+    answer: 'Nossa IA utiliza processamento de linguagem natural para classificar automaticamente as manifestações por categoria (assédio, discriminação, fraude, etc.), avaliar a urgência, identificar padrões recorrentes de riscos psicossociais e sugerir ações. Isso acelera a triagem e garante que casos críticos sejam priorizados imediatamente.'
   },
   {
     question: 'A pesquisa de clima é personalizável?',
@@ -42,7 +42,7 @@ export const faqs = [
   },
   {
     question: 'Quais relatórios de riscos psicossociais o sistema gera?',
-    answer: 'O Ouvidoria AMO gera relatórios detalhados incluindo: levantamento completo de riscos psicossociais por categoria e departamento, visão geral de denúncias por período/categoria/status, análise de clima organizacional com NPS, planos de ação conforme NR-01, identificação de áreas de risco, tendências ao longo do tempo, e relatórios de compliance para auditorias. Todos podem ser exportados em PDF ou Excel.'
+    answer: 'O Ouvidoria AMO gera relatórios detalhados incluindo: levantamento completo de riscos psicossociais por categoria e departamento, visão geral de manifestações por período/categoria/status, análise de clima organizacional com NPS, planos de ação conforme NR-01, identificação de áreas de risco, tendências ao longo do tempo, e relatórios de compliance para auditorias. Todos podem ser exportados em PDF ou Excel.'
   },
 ];
 

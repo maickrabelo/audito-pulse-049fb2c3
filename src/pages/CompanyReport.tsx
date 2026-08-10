@@ -93,7 +93,7 @@ const CompanyReport = () => {
               )}
               <h1 className="text-3xl font-bold text-audit-primary">Ouvidoria {company.name}</h1>
               <p className="text-gray-600 mt-2">
-                Aqui você pode registrar sua denúncia de forma anônima e segura.
+                Aqui você pode registrar sua manifestação de forma anônima e segura.
               </p>
               <div className="mt-4">
                 <TrackReportModal />

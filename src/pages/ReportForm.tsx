@@ -143,8 +143,8 @@ const ReportForm = () => {
       setIsSubmitting(false);
       toast({
         variant: "destructive",
-        title: "Erro ao enviar denúncia",
-        description: "Ocorreu um erro ao processar sua denúncia. Tente novamente.",
+        title: "Erro ao enviar manifestação",
+        description: "Ocorreu um erro ao processar sua manifestação. Tente novamente.",
       });
     }
   };
@@ -155,11 +155,11 @@ const ReportForm = () => {
       <main className="flex-grow bg-gray-50 py-8">
         <div className="audit-container max-w-4xl">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-audit-primary mb-2">Formulário de Denúncia</h1>
+            <h1 className="text-3xl font-bold text-audit-primary mb-2">Formulário de Manifestação</h1>
             <p className="text-lg text-gray-600">
-              Preencha o formulário abaixo para registrar uma denúncia.{" "}
+              Preencha o formulário abaixo para registrar uma manifestação.{" "}
               {formData.isAnonymous ? (
-                <span className="text-audit-secondary font-medium">Você está fazendo uma denúncia anônima.</span>
+                <span className="text-audit-secondary font-medium">Você está fazendo uma manifestação anônima.</span>
               ) : (
                 <span>Suas informações pessoais serão mantidas em sigilo.</span>
               )}
@@ -169,15 +169,15 @@ const ReportForm = () => {
           <Card className="shadow-md">
             <form onSubmit={handleSubmit}>
               <CardHeader>
-                <CardTitle>Detalhes da Denúncia</CardTitle>
+                <CardTitle>Detalhes da Manifestação</CardTitle>
                 <CardDescription>
-                  Forneça informações sobre a situação que deseja denunciar. 
+                  Forneça informações sobre a situação que deseja relatar. 
                   Os campos marcados com * são obrigatórios.
                 </CardDescription>
               </CardHeader>
               
               <CardContent className="space-y-6">
-                {/* Tipo de denúncia */}
+                {/* Tipo de manifestação */}
                 <div className="flex items-center space-x-2 pb-4 border-b">
                   <Checkbox 
                     id="isAnonymous" 
@@ -187,21 +187,21 @@ const ReportForm = () => {
                     }
                   />
                   <Label htmlFor="isAnonymous" className="font-medium">
-                    Fazer denúncia anônima
+                    Fazer manifestação anônima
                   </Label>
                 </div>
                 
-                {/* Informações da denúncia */}
+                {/* Informações da manifestação */}
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="title">
-                        Título da Denúncia *
+                        Título da Manifestação *
                       </Label>
                       <Input 
                         id="title"
                         name="title"
-                        placeholder="Resumo breve da denúncia"
+                        placeholder="Resumo breve da manifestação"
                         value={formData.title}
                         onChange={handleChange}
                         required
@@ -344,7 +344,7 @@ const ReportForm = () => {
                     className="bg-audit-primary hover:bg-audit-primary/90"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Enviando..." : "Enviar Denúncia"}
+                    {isSubmitting ? "Enviando..." : "Enviar Manifestação"}
                   </Button>
                 </div>
               </CardFooter>

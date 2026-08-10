@@ -41,7 +41,7 @@ const SEOStructuredData: React.FC<SEOStructuredDataProps> = ({ faqs = [] }) => {
     name: 'Ouvidoria AMO - Sistema NR-01',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
-    description: 'Plataforma completa para gestão de riscos psicossociais conforme NR-01, canal de denúncias anônimo, pesquisa de clima organizacional e avaliação de burnout.',
+    description: 'Plataforma completa para gestão de riscos psicossociais conforme NR-01, canal de manifestações anônimo, pesquisa de clima organizacional e avaliação de burnout.',
     offers: {
       '@type': 'Offer',
       price: '0',

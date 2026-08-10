@@ -41,7 +41,7 @@ serve(async (req) => {
       .eq("id", report_id)
       .maybeSingle();
 
-    if (repErr || !report) return json({ error: "Denúncia não encontrada" }, 404);
+    if (repErr || !report) return json({ error: "Manifestação não encontrada" }, 404);
 
     // Evita reprocessar (e pagar) uma triagem já feita quando nada mudou.
     // Reclassifica apenas com force=true ou quando o caso voltou para complementação.
@@ -51,7 +51,7 @@ serve(async (req) => {
       report.estado !== "AGUARDANDO_COMPLEMENTACAO" &&
       report.estado !== "RECEBIDA"
     ) {
-      return json({ success: true, skipped: true, motivo: "Denúncia já classificada", estado: report.estado });
+      return json({ success: true, skipped: true, motivo: "Manifestação já classificada", estado: report.estado });
     }
 
     // Parâmetros do canal (específicos da empresa, com fallback global)
@@ -82,7 +82,7 @@ serve(async (req) => {
       report.testemunhas ? `Testemunhas: ${preProcessar(report.testemunhas)}` : "",
       report.evidencias_disponiveis ? `Evidências indicadas: ${preProcessar(report.evidencias_disponiveis)}` : "",
       report.ha_risco_imediato_informado != null
-        ? `Denunciante informou risco imediato: ${report.ha_risco_imediato_informado ? "sim" : "não"}`
+        ? `Manifestante informou risco imediato: ${report.ha_risco_imediato_informado ? "sim" : "não"}`
         : "",
       report.snapshot_unidade ? `Unidade: ${report.snapshot_unidade}` : "",
       report.snapshot_ghe ? `GHE/Setor: ${report.snapshot_ghe}` : "",

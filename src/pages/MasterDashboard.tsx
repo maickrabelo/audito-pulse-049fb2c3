@@ -759,12 +759,12 @@ const MasterDashboard = () => {
                             navigator.clipboard.writeText(url);
                             toast({
                               title: "URL copiada",
-                              description: "Link para denúncias copiado."
+                              description: "Link para manifestações copiado."
                             });
                           }}
                         >
                           <Copy className="h-4 w-4 mr-2" />
-                          Copiar URL de Denúncia
+                          Copiar URL de Manifestação
                         </Button>
                       )}
                     </div>
@@ -1103,7 +1103,7 @@ const MasterDashboard = () => {
               <TabsList>
                 <TabsTrigger value="companies">Empresas</TabsTrigger>
                 <TabsTrigger value="sst">Gestoras SST</TabsTrigger>
-                <TabsTrigger value="reports-cat">Denúncias por Categoria</TabsTrigger>
+                <TabsTrigger value="reports-cat">Manifestações por Categoria</TabsTrigger>
                 <TabsTrigger value="parametros">Parâmetros NR-1</TabsTrigger>
                 <TabsTrigger value="ai-usage">Uso de IA</TabsTrigger>
                 <TabsTrigger value="soc">Dados SOC</TabsTrigger>
@@ -1212,7 +1212,7 @@ const MasterDashboard = () => {
                         <DialogHeader>
                           <DialogTitle>Editar Empresa</DialogTitle>
                           <DialogDescription>
-                            Atualize as informações da empresa, incluindo até 3 emails para notificações de denúncias.
+                            Atualize as informações da empresa, incluindo até 3 emails para notificações de manifestações.
                           </DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleEditCompany}>
@@ -1298,7 +1298,7 @@ const MasterDashboard = () => {
                                 defaultValue={editingCompany?.slug || ''}
                               />
                               <p className="text-xs text-gray-500">
-                                Identificador único usado na URL da página de denúncias (ex: /report/nome-da-empresa)
+                                Identificador único usado na URL da página de manifestações (ex: /report/nome-da-empresa)
                               </p>
                             </div>
 
@@ -1339,10 +1339,10 @@ const MasterDashboard = () => {
 
                             <div className="border-t pt-4 mt-2">
                               <Label className="text-base font-semibold mb-3 block">
-                                Emails para Notificações de Denúncias
+                                Emails para Notificações de Manifestações
                               </Label>
                               <p className="text-sm text-gray-500 mb-3">
-                                Configure até 3 emails que receberão notificações quando novas denúncias forem registradas.
+                                Configure até 3 emails que receberão notificações quando novas manifestações forem registradas.
                               </p>
                               <div className="grid gap-3">
                                 <div className="grid gap-2">
@@ -1386,7 +1386,7 @@ const MasterDashboard = () => {
                                     Contatos de Emergência (Risco Grave e Iminente — 4D)
                                   </Label>
                                   <p className="text-sm text-gray-500 mt-1">
-                                    Estes contatos recebem alerta imediato por email quando a IA classifica uma denúncia como 4D.
+                                    Estes contatos recebem alerta imediato por email quando a IA classifica uma manifestação como 4D.
                                   </p>
                                 </div>
                                 <Button
@@ -1710,7 +1710,7 @@ const MasterDashboard = () => {
                                         navigator.clipboard.writeText(url);
                                         toast({
                                           title: "URL copiada",
-                                          description: "Link para denúncias copiado."
+                                          description: "Link para manifestações copiado."
                                         });
                                       }}
                                     >
@@ -1887,7 +1887,7 @@ const MasterDashboard = () => {
             <TabsContent value="reports-cat">
               <Card>
                 <CardHeader>
-                  <CardTitle>Denúncias por Categoria (Triagem IA)</CardTitle>
+                  <CardTitle>Manifestações por Categoria (Triagem IA)</CardTitle>
                   <CardDescription>
                     Classificação automática pela IA (4A SST · 4B Fora de escopo · 4C Misto · 4D Grave/imediato). A validação humana é feita em <b>Triagem AMO</b>.
                   </CardDescription>
@@ -1961,7 +1961,7 @@ const MasterDashboard = () => {
                           );
                         })}
                       {reportsByCategory.length === 0 && (
-                        <div className="text-center text-muted-foreground py-8">Nenhuma denúncia encontrada.</div>
+                        <div className="text-center text-muted-foreground py-8">Nenhuma manifestação encontrada.</div>
                       )}
                     </div>
                   )}

@@ -65,13 +65,13 @@ serve(async (req) => {
 
     // Enviar email para todos os endereços configurados
     const emailResponse = await resend.emails.send({
-      from: "Canal de Denúncias <onboarding@resend.dev>",
+      from: "Canal de Manifestações <onboarding@resend.dev>",
       to: emailAddresses,
-      subject: `Nova Denúncia Recebida - ${tracking_code}`,
+      subject: `Nova Manifestação Recebida - ${tracking_code}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 10px;">
-            Nova Denúncia Recebida
+            Nova Manifestação Recebida
           </h1>
           
           <div style="background-color: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 5px;">
@@ -82,12 +82,12 @@ serve(async (req) => {
           </div>
           
           <p style="color: #666; margin: 20px 0;">
-            Uma nova denúncia foi registrada no sistema. 
+            Uma nova manifestação foi registrada no sistema. 
             Acesse o painel administrativo para visualizar os detalhes completos e tomar as providências necessárias.
           </p>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 12px;">
-            <p>Este é um email automático do Canal de Denúncias.</p>
+            <p>Este é um email automático do Canal de Manifestações.</p>
           </div>
         </div>
       `,

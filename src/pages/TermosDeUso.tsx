@@ -5,7 +5,7 @@ import usePageSEO from '@/hooks/usePageSEO';
 const TermosDeUso = () => {
   usePageSEO({
     title: 'Termos de Uso — Ouvidoria AMO | Agência Mundi',
-    description: 'Termos de Uso da plataforma Ouvidoria AMO, canal de denúncias e ouvidoria da Agência Mundi.',
+    description: 'Termos de Uso da plataforma Ouvidoria AMO, canal de manifestações e ouvidoria da Agência Mundi.',
   });
 
   return (
@@ -21,19 +21,19 @@ const TermosDeUso = () => {
       <h2>1. Definições</h2>
       <ul>
         <li><strong>Plataforma</strong>: sistema Ouvidoria AMO, incluindo site, painéis e APIs.</li>
-        <li><strong>Controladora</strong>: empresa cliente que contrata o canal de denúncias.</li>
+        <li><strong>Controladora</strong>: empresa cliente que contrata o canal de manifestações.</li>
         <li><strong>Operador</strong>: Grupo AMO, titular da plataforma.</li>
         <li><strong>Desenvolvedora/Mantenedora</strong>: Agência Mundi, responsável pelo desenvolvimento, operação técnica, segurança e manutenção da plataforma.</li>
-        <li><strong>Usuário</strong>: qualquer pessoa que acesse a plataforma, incluindo denunciantes, gestores e administradores.</li>
-        <li><strong>Denunciante</strong>: pessoa que envia manifestação por meio do canal, de forma anônima ou identificada.</li>
+        <li><strong>Usuário</strong>: qualquer pessoa que acesse a plataforma, incluindo manifestantes, gestores e administradores.</li>
+        <li><strong>Manifestante</strong>: pessoa que envia manifestação por meio do canal, de forma anônima ou identificada.</li>
       </ul>
 
       <h2>2. Perfis de acesso</h2>
       <ul>
         <li><strong>Administrador Master</strong>: gestão global da plataforma;</li>
         <li><strong>SST</strong>: gestores de saúde e segurança que administram empresas-cliente;</li>
-        <li><strong>Empresa</strong>: usuários da Controladora com acesso ao painel de denúncias;</li>
-        <li><strong>Denunciante anônimo</strong>: acesso público ao formulário e ao acompanhamento via código.</li>
+        <li><strong>Empresa</strong>: usuários da Controladora com acesso ao painel de manifestações;</li>
+        <li><strong>Manifestante anônimo</strong>: acesso público ao formulário e ao acompanhamento via código.</li>
       </ul>
 
       <h2>3. Cadastro e credenciais</h2>
@@ -53,12 +53,12 @@ const TermosDeUso = () => {
         <li>Violar direitos de terceiros, incluindo dados pessoais e propriedade intelectual.</li>
       </ul>
 
-      <h2>5. Denúncias</h2>
+      <h2>5. Manifestações</h2>
       <p>
-        A plataforma assegura ao denunciante o direito ao anonimato e à proteção contra
-        retaliação. A Controladora é responsável pela apuração e tratamento da denúncia. O
+        A plataforma assegura ao manifestante o direito ao anonimato e à proteção contra
+        retaliação. A Controladora é responsável pela apuração e tratamento da manifestação. O
         Grupo AMO atua como Operador da plataforma, e a Agência Mundi atua como desenvolvedora
-        e mantenedora técnica — nenhum deles interfere no mérito das denúncias.
+        e mantenedora técnica — nenhum deles interfere no mérito das manifestações.
       </p>
 
       <h2>6. Propriedade intelectual</h2>
@@ -79,7 +79,7 @@ const TermosDeUso = () => {
       <h2>8. Limitação de responsabilidade</h2>
       <p>
         O Grupo AMO e a Agência Mundi não respondem por: (i) decisões tomadas pela Controladora
-        a partir das denúncias; (ii) conteúdo enviado por denunciantes; (iii) danos indiretos,
+        a partir das manifestações; (ii) conteúdo enviado por manifestantes; (iii) danos indiretos,
         lucros cessantes ou perda de oportunidade.
       </p>
 
