@@ -100,8 +100,7 @@ serve(async (req) => {
         amo_validated_at: agora,
         amo_validation_notes: justificativa,
         amo_validated_classification:
-          saida.risco_grave_imediato === "SIM" ? "4D_grave_immediate"
-            : saida.classificacao_principal === "SST_NR1" ? "4A_sst"
+          saida.classificacao_principal === "SST_NR1" ? "4A_sst"
               : saida.classificacao_principal === "EMPRESA_CLIENTE" ? "4B_out_of_scope"
                 : saida.classificacao_principal === "DENUNCIA_MISTA" ? "4C_mixed" : "pending_ai",
       });

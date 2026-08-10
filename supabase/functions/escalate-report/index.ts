@@ -30,7 +30,7 @@ serve(async (req) => {
           to: emails,
           subject: `🚨 ALERTA GRAVE E IMINENTE — Manifestação ${r.tracking_code}`,
           html: `<h2>Alerta de risco grave e iminente</h2>
-                 <p>Uma manifestação da empresa <b>${c?.name}</b> foi classificada pela IA como <b>4D — risco grave e iminente</b>.</p>
+                 <p>Uma manifestação da empresa <b>${c?.name}</b> foi sinalizada pela IA com a tag <b>Risco Grave</b> (risco grave e iminente).</p>
                  <p>Protocolo: <b>${r.tracking_code}</b><br/>Título: ${r.title}</p>
                  <p><b>Ação imediata:</b> acione o protocolo interno de emergência e valide o caso.</p>`,
         }),
