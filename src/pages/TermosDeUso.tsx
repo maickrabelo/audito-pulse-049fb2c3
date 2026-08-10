@@ -12,8 +12,7 @@ const TermosDeUso = () => {
     <LegalLayout title="Termos de Uso" updatedAt="10 de agosto de 2026">
       <p>
         Estes Termos regem o uso da plataforma <strong>Ouvidoria AMO</strong>,
-        de titularidade do <strong>Grupo AMO</strong> e desenvolvida e mantida pela{' '}
-        <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
+        de titularidade da <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
         concorda integralmente com estes Termos e com a{' '}
         <a href="/politica-de-privacidade">Política de Privacidade</a>.
       </p>
