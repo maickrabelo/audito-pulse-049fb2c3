@@ -546,7 +546,7 @@ async function seedReports(supabaseAdmin: any, companyId: string) {
         old_status: "pending",
         new_status: matchingDemo.status,
         notes: matchingDemo.status === "in_progress"
-          ? "Denúncia recebida e encaminhada para investigação interna."
+          ? "Manifestação recebida e encaminhada para investigação interna."
           : "Caso investigado e medidas corretivas aplicadas.",
         created_at: new Date(new Date(report.created_at).getTime() + 24 * 60 * 60 * 1000).toISOString(),
       });

@@ -5,7 +5,7 @@ import usePageSEO from '@/hooks/usePageSEO';
 const PoliticaPrivacidade = () => {
   usePageSEO({
     title: 'Política de Privacidade — Ouvidoria AMO | Agência Mundi',
-    description: 'Política de Privacidade do canal de denúncias Ouvidoria AMO da Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
+    description: 'Política de Privacidade do canal de manifestações Ouvidoria AMO da Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
   });
 
   return (
@@ -20,23 +20,23 @@ const PoliticaPrivacidade = () => {
       <h2>1. Papéis no tratamento</h2>
       <p>
         A empresa contratante (cliente) atua como <strong>Controladora</strong> dos dados
-        coletados em seu canal de denúncias. O <strong>Grupo AMO</strong> atua como{' '}
+        coletados em seu canal de manifestações. O <strong>Grupo AMO</strong> atua como{' '}
         <strong>Operador</strong>, tratando dados em nome e conforme instruções da Controladora.
         O desenvolvimento e a manutenção técnica da plataforma são realizados pela{' '}
         <strong>Agência Mundi</strong>, na qualidade de subprocessadora.
       </p>
 
       <h2>2. Dados coletados</h2>
-      <h3>2.1 Denúncias anônimas</h3>
+      <h3>2.1 Manifestações anônimas</h3>
       <ul>
         <li>Conteúdo do relato (título, descrição, categoria);</li>
-        <li>Anexos voluntariamente enviados pelo denunciante;</li>
+        <li>Anexos voluntariamente enviados pelo manifestante;</li>
         <li>Código de rastreamento (tracking code) gerado automaticamente;</li>
         <li>Data e hora do envio.</li>
       </ul>
-      <h3>2.2 Denúncias identificadas (opcional)</h3>
+      <h3>2.2 Manifestações identificadas (opcional)</h3>
       <ul>
-        <li>Nome, e-mail e telefone do denunciante, quando voluntariamente informados.</li>
+        <li>Nome, e-mail e telefone do manifestante, quando voluntariamente informados.</li>
       </ul>
       <h3>2.3 Usuários gestores (empresa, SST, administradores)</h3>
       <ul>
@@ -47,24 +47,24 @@ const PoliticaPrivacidade = () => {
 
       <h2>3. Finalidades</h2>
       <ul>
-        <li>Receber, registrar e tratar denúncias e manifestações;</li>
-        <li>Permitir o acompanhamento da denúncia pelo denunciante por meio do código de rastreamento;</li>
-        <li>Permitir a gestão das denúncias pelos responsáveis designados pela Controladora;</li>
+        <li>Receber, registrar e tratar manifestações e manifestações;</li>
+        <li>Permitir o acompanhamento da manifestação pelo manifestante por meio do código de rastreamento;</li>
+        <li>Permitir a gestão das manifestações pelos responsáveis designados pela Controladora;</li>
         <li>Cumprir obrigações legais e regulatórias, inclusive a NR-01 quanto a riscos psicossociais;</li>
         <li>Garantir a segurança da plataforma e prevenir fraudes.</li>
       </ul>
 
       <h2>4. Bases legais (art. 7º e 11 da LGPD)</h2>
       <ul>
-        <li><strong>Cumprimento de obrigação legal/regulatória</strong> — canal de denúncias, NR-01;</li>
+        <li><strong>Cumprimento de obrigação legal/regulatória</strong> — canal de manifestações, NR-01;</li>
         <li><strong>Execução de contrato</strong> — entre Controladora e Operador;</li>
         <li><strong>Legítimo interesse</strong> — apuração de irregularidades e segurança;</li>
-        <li><strong>Consentimento</strong> — quando o denunciante opta por se identificar.</li>
+        <li><strong>Consentimento</strong> — quando o manifestante opta por se identificar.</li>
       </ul>
 
       <h2>5. Anonimato</h2>
       <p>
-        Quando o denunciante opta pela denúncia anônima, a plataforma <strong>não coleta</strong>{' '}
+        Quando o manifestante opta pela manifestação anônima, a plataforma <strong>não coleta</strong>{' '}
         IP, identificadores de dispositivo ou metadados que permitam sua identificação. O
         acompanhamento ocorre exclusivamente por meio de código de rastreamento gerado no envio.
       </p>
@@ -80,7 +80,7 @@ const PoliticaPrivacidade = () => {
       <h2>7. Subprocessadores</h2>
       <ul>
         <li><strong>Supabase / AWS</strong> — banco de dados, autenticação e storage;</li>
-        <li><strong>Lovable AI Gateway</strong> — análise inteligente de denúncias;</li>
+        <li><strong>Lovable AI Gateway</strong> — análise inteligente de manifestações;</li>
         <li><strong>Resend</strong> — envio de notificações por e-mail;</li>
         <li><strong>Stripe</strong> — processamento de pagamentos de assinatura.</li>
       </ul>

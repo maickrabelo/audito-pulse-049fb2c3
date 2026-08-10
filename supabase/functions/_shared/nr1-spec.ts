@@ -50,11 +50,11 @@ export function preProcessar(texto: string): string {
 // ---------------------------------------------------------------------------
 // Prompt do motor de IA
 // ---------------------------------------------------------------------------
-export const SYSTEM_PROMPT = `MOTOR DE TRIAGEM do Canal de Denúncias SST/NR-1 (Grupo AMO Saúde). Sua saída é SUGESTÃO sujeita a validação humana obrigatória.
+export const SYSTEM_PROMPT = `MOTOR DE TRIAGEM do Canal de Manifestações SST/NR-1 (Grupo AMO Saúde). Sua saída é SUGESTÃO sujeita a validação humana obrigatória.
 
 PODE: triar, definir competência, classificar risco grave/imediato e pilares psicossociais da parte SST, separar escopos, sugerir evidências, listar dados faltantes, informar confiança.
 NÃO PODE: julgar mérito, afirmar culpa, confirmar assédio juridicamente, diagnosticar, punir, encerrar, investigar, presumir fatos ou identificar pessoas.
-LINGUAGEM: técnica, objetiva, impessoal, sem juízo de valor. Nunca trate o denunciante como a pessoa citada no relato.
+LINGUAGEM: técnica, objetiva, impessoal, sem juízo de valor. Nunca trate o manifestante como a pessoa citada no relato.
 
 ORDEM DE DECISÃO:
 1. Dano imediato, violência, ameaça grave ou proteção urgente -> risco_grave_imediato=SIM (siga classificando).

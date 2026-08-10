@@ -32,7 +32,7 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// Dados simulados de denúncias
+// Dados simulados de manifestações
 const reportData = [
   {
     id: "REP-2025-042",
@@ -44,7 +44,7 @@ const reportData = [
     description: "Funcionário relata comportamento inadequado de supervisor, incluindo gritos e humilhação pública durante reuniões de equipe. Incidentes ocorreram múltiplas vezes nas últimas semanas.",
     department: "Atendimento ao Cliente",
     updates: [
-      { date: "23/04/2025", note: "Denúncia recebida e registrada no sistema.", author: "Sistema" },
+      { date: "23/04/2025", note: "Manifestação recebida e registrada no sistema.", author: "Sistema" },
       { date: "24/04/2025", note: "Análise inicial concluída. Encaminhado para RH para investigação.", author: "Admin" }
     ]
   },
@@ -55,10 +55,10 @@ const reportData = [
     status: "Aberta",
     date: "22/04/2025",
     urgency: "Média",
-    description: "Denúncia sobre materiais tóxicos sendo descartados incorretamente, sem seguir os protocolos ambientais da empresa. Situação observada no setor de produção, área B.",
+    description: "Manifestação sobre materiais tóxicos sendo descartados incorretamente, sem seguir os protocolos ambientais da empresa. Situação observada no setor de produção, área B.",
     department: "Produção",
     updates: [
-      { date: "22/04/2025", note: "Denúncia recebida e registrada no sistema.", author: "Sistema" }
+      { date: "22/04/2025", note: "Manifestação recebida e registrada no sistema.", author: "Sistema" }
     ]
   },
   {
@@ -71,7 +71,7 @@ const reportData = [
     description: "Identificadas divergências significativas entre os valores reportados internamente e os apresentados aos investidores no último trimestre. Possível manipulação de dados financeiros.",
     department: "Financeiro",
     updates: [
-      { date: "20/04/2025", note: "Denúncia recebida e registrada no sistema.", author: "Sistema" },
+      { date: "20/04/2025", note: "Manifestação recebida e registrada no sistema.", author: "Sistema" },
       { date: "21/04/2025", note: "Análise preliminar indica possíveis inconsistências nos relatórios. Investigação aprofundada necessária.", author: "Admin" }
     ]
   },
@@ -85,7 +85,7 @@ const reportData = [
     description: "Uso de equipamentos da empresa (laptops e servidores) para mineração de criptomoedas durante o horário de trabalho, causando lentidão na rede e alto consumo de energia.",
     department: "TI",
     updates: [
-      { date: "18/04/2025", note: "Denúncia recebida e registrada no sistema.", author: "Sistema" },
+      { date: "18/04/2025", note: "Manifestação recebida e registrada no sistema.", author: "Sistema" },
       { date: "19/04/2025", note: "Verificação técnica iniciada nos equipamentos mencionados.", author: "Suporte TI" },
       { date: "20/04/2025", note: "Confirmado o uso indevido. Medidas disciplinares aplicadas e software de monitoramento atualizado.", author: "Gerente TI" },
       { date: "21/04/2025", note: "Caso encerrado. Novas políticas de uso implementadas.", author: "Admin" }
@@ -101,7 +101,7 @@ const reportData = [
     description: "Suspeita de vazamento de informações sobre novos produtos para concorrentes. Estratégias de preço e lançamento foram aparentemente divulgadas antes do anúncio oficial.",
     department: "Marketing e Vendas",
     updates: [
-      { date: "17/04/2025", note: "Denúncia recebida e registrada no sistema.", author: "Sistema" },
+      { date: "17/04/2025", note: "Manifestação recebida e registrada no sistema.", author: "Sistema" },
       { date: "18/04/2025", note: "Iniciada análise de acessos a documentos confidenciais nos últimos 30 dias.", author: "Segurança da Informação" }
     ]
   },
@@ -159,7 +159,7 @@ const Reports = () => {
     
     toast({
       title: "Atualização salva",
-      description: "A denúncia foi atualizada com sucesso.",
+      description: "A manifestação foi atualizada com sucesso.",
       variant: "default",
     });
   };
@@ -199,14 +199,14 @@ const Reports = () => {
       <Navbar />
       <main className="flex-grow bg-gray-50 py-8">
         <div className="audit-container">
-          <h1 className="text-3xl font-bold text-audit-primary mb-8">Gerenciamento de Denúncias</h1>
+          <h1 className="text-3xl font-bold text-audit-primary mb-8">Gerenciamento de Manifestações</h1>
           
           {/* Filtros */}
           <Card className="mb-8">
             <CardHeader className="pb-3">
               <CardTitle>Filtros</CardTitle>
               <CardDescription>
-                Refine a lista de denúncias usando os filtros abaixo
+                Refine a lista de manifestações usando os filtros abaixo
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -257,12 +257,12 @@ const Reports = () => {
             </CardContent>
           </Card>
           
-          {/* Lista de Denúncias */}
+          {/* Lista de Manifestações */}
           <Card>
             <CardHeader>
-              <CardTitle>Denúncias</CardTitle>
+              <CardTitle>Manifestações</CardTitle>
               <CardDescription>
-                {filteredReports.length} {filteredReports.length === 1 ? "denúncia encontrada" : "denúncias encontradas"}
+                {filteredReports.length} {filteredReports.length === 1 ? "manifestação encontrada" : "manifestações encontradas"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -282,7 +282,7 @@ const Reports = () => {
                     {filteredReports.length === 0 ? (
                       <tr>
                         <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
-                          Nenhuma denúncia encontrada com os filtros selecionados.
+                          Nenhuma manifestação encontrada com os filtros selecionados.
                         </td>
                       </tr>
                     ) : (
@@ -329,7 +329,7 @@ const Reports = () => {
                                   
                                   <div className="space-y-6 my-4">
                                     <div>
-                                      <h3 className="font-medium mb-2">Descrição da Denúncia</h3>
+                                      <h3 className="font-medium mb-2">Descrição da Manifestação</h3>
                                       <p className="text-gray-700">{selectedReport.description}</p>
                                     </div>
                                     

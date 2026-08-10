@@ -128,7 +128,7 @@ const CompanyProfile = () => {
 
               <Card className="mt-6">
                 <CardHeader>
-                  <CardTitle className="text-lg">Página de Denúncias</CardTitle>
+                  <CardTitle className="text-lg">Página de Manifestações</CardTitle>
                   <CardDescription>Link e QR Code personalizados</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -137,12 +137,12 @@ const CompanyProfile = () => {
                       <div className="bg-gray-100 p-3 rounded-md">
                         {/* QR Code placeholder - in a real app you would generate this */}
                         <div className="w-32 h-32 bg-gray-800 rounded-md flex items-center justify-center text-white text-xs text-center">
-                          QR Code para<br/>página de denúncias
+                          QR Code para<br/>página de manifestações
                         </div>
                       </div>
                     </div>
                     <div className="text-sm">
-                      <p className="font-medium mb-1">Link para denúncias:</p>
+                      <p className="font-medium mb-1">Link para manifestações:</p>
                       <p className="text-blue-600 break-all">{reportUrl}</p>
                     </div>
                   </div>
@@ -150,7 +150,7 @@ const CompanyProfile = () => {
                     navigator.clipboard.writeText(reportUrl);
                     toast({
                       title: "Link copiado",
-                      description: "Link para denúncias copiado para área de transferência."
+                      description: "Link para manifestações copiado para área de transferência."
                     });
                   }}>
                     Copiar link

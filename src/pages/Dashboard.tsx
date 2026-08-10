@@ -338,7 +338,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
 
       toast({
         title: "Atualização salva",
-        description: "A denúncia foi atualizada com sucesso.",
+        description: "A manifestação foi atualizada com sucesso.",
       });
 
       setResponseText("");
@@ -349,7 +349,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
       toast({
         variant: "destructive",
         title: "Erro ao atualizar",
-        description: error.message || "Não foi possível atualizar a denúncia."
+        description: error.message || "Não foi possível atualizar a manifestação."
       });
     }
   };
@@ -461,7 +461,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
           
           {companySlug && (
             <div className="mt-4 p-4 bg-muted rounded-lg space-y-3">
-              <p className="text-sm font-medium text-muted-foreground">Canal de Denúncias:</p>
+              <p className="text-sm font-medium text-muted-foreground">Canal de Manifestações:</p>
               <div className="flex items-center gap-2">
                 <a 
                   href={`${window.location.origin}/report/${companySlug}`}
@@ -497,8 +497,8 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
           
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[
-          { title: "Total de Denúncias", value: stats.total.toString(), color: "bg-audit-primary" },
-          { title: "Denúncias Pendentes", value: stats.pending.toString(), color: "bg-audit-secondary" },
+          { title: "Total de Manifestações", value: stats.total.toString(), color: "bg-audit-primary" },
+          { title: "Manifestações Pendentes", value: stats.pending.toString(), color: "bg-audit-secondary" },
           { title: "Em Análise", value: stats.inProgress.toString(), color: "bg-audit-accent" },
           { title: "Resolvidas", value: stats.resolved.toString(), color: "bg-green-600" },
         ].map((stat, idx) => (
@@ -530,8 +530,8 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
             <TabsContent value="overview" forceMount className="data-[state=inactive]:hidden">
               <Card>
                 <CardHeader>
-                  <CardTitle>Denúncias por Mês</CardTitle>
-                  <CardDescription>Distribuição de denúncias ao longo do último ano</CardDescription>
+                  <CardTitle>Manifestações por Mês</CardTitle>
+                  <CardDescription>Distribuição de manifestações ao longo do último ano</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-2">
                   <div className="h-80">
@@ -556,8 +556,8 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
             <TabsContent value="departments" forceMount className="data-[state=inactive]:hidden">
               <Card>
                 <CardHeader>
-                  <CardTitle>Denúncias por Departamento</CardTitle>
-                  <CardDescription>Distribuição do total de denúncias por área</CardDescription>
+                  <CardTitle>Manifestações por Departamento</CardTitle>
+                  <CardDescription>Distribuição do total de manifestações por área</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-2">
                   <div className="h-80">
@@ -571,7 +571,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="value" name="Denúncias">
+                        <Bar dataKey="value" name="Manifestações">
                           {departmentData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
@@ -586,8 +586,8 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
             <TabsContent value="status" forceMount className="data-[state=inactive]:hidden">
               <Card>
                 <CardHeader>
-                  <CardTitle>Status das Denúncias</CardTitle>
-                  <CardDescription>Distribuição do status atual das denúncias</CardDescription>
+                  <CardTitle>Status das Manifestações</CardTitle>
+                  <CardDescription>Distribuição do status atual das manifestações</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-2">
                   <div className="h-80">
@@ -625,9 +625,9 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
       
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl">Denúncias Recentes</CardTitle>
+          <CardTitle className="text-xl">Manifestações Recentes</CardTitle>
           <CardDescription>
-            Últimas denúncias registradas no sistema
+            Últimas manifestações registradas no sistema
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -648,7 +648,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                 {reports.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
-                      Nenhuma denúncia registrada ainda
+                      Nenhuma manifestação registrada ainda
                     </td>
                   </tr>
                 ) : (
@@ -700,7 +700,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
             
             <div className="space-y-6 my-4 overflow-y-auto flex-1 pr-2">
               <div>
-                <h3 className="font-medium mb-2">Resumo da Denúncia (IA)</h3>
+                <h3 className="font-medium mb-2">Resumo da Manifestação (IA)</h3>
                 <p className="text-sm text-gray-700 leading-relaxed bg-blue-50 p-4 rounded-lg border border-blue-200">
                   {selectedReport.ai_summary || selectedReport.description}
                 </p>
@@ -731,13 +731,13 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                     <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg col-span-2">
                       <span className="text-amber-900 text-sm font-medium flex items-center gap-2">
                         <AlertTriangle className="h-4 w-4" />
-                        Contém dados pessoais — trate esta denúncia com sigilo reforçado (LGPD).
+                        Contém dados pessoais — trate esta manifestação com sigilo reforçado (LGPD).
                       </span>
                     </div>
                   )}
                   {selectedReport.reporter_name && (
                     <div className="bg-gray-50 p-3 rounded-lg">
-                      <span className="text-gray-600">Denunciante:</span>
+                      <span className="text-gray-600">Manifestante:</span>
                       <p className="font-medium mt-1">
                         {hidePersonalData
                           ? maskPersonalData(selectedReport.reporter_name)
@@ -852,7 +852,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  Seu perfil tem acesso somente de leitura a esta denúncia.
+                  Seu perfil tem acesso somente de leitura a esta manifestação.
                 </p>
               )}
             </div>

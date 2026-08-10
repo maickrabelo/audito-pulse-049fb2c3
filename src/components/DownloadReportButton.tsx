@@ -66,7 +66,7 @@ const DownloadReportButton = () => {
       // Calcular data inicial
       const startDateObj = getDateRange(startDate);
       
-      // Buscar denúncias
+      // Buscar manifestações
       let query = supabase
         .from('reports')
         .select('*')
@@ -91,7 +91,7 @@ const DownloadReportButton = () => {
       // Cabeçalho
       doc.setFontSize(20);
       doc.setFont('helvetica', 'bold');
-      doc.text('Relatório de Denúncias', pageWidth / 2, yPosition, { align: 'center' });
+      doc.text('Relatório de Manifestações', pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 10;
 
       doc.setFontSize(12);
@@ -125,7 +125,7 @@ const DownloadReportButton = () => {
 
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Total de denúncias: ${total}`, margin, yPosition);
+      doc.text(`Total de manifestações: ${total}`, margin, yPosition);
       yPosition += 7;
       doc.text(`Pendentes: ${pending}`, margin, yPosition);
       yPosition += 7;
@@ -134,11 +134,11 @@ const DownloadReportButton = () => {
       doc.text(`Resolvidas: ${resolved}`, margin, yPosition);
       yPosition += 15;
 
-      // Lista de denúncias
+      // Lista de manifestações
       if (reports && reports.length > 0) {
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.text('Denúncias Registradas', margin, yPosition);
+        doc.text('Manifestações Registradas', margin, yPosition);
         yPosition += 10;
 
         doc.setFontSize(10);
@@ -183,7 +183,7 @@ const DownloadReportButton = () => {
           yPosition += 8;
         });
       } else {
-        doc.text('Nenhuma denúncia encontrada no período selecionado.', margin, yPosition);
+        doc.text('Nenhuma manifestação encontrada no período selecionado.', margin, yPosition);
       }
 
       // Salvar PDF
@@ -218,7 +218,7 @@ const DownloadReportButton = () => {
         <DialogHeader>
           <DialogTitle>Gerar Relatório PDF</DialogTitle>
           <DialogDescription>
-            Selecione o período para gerar o relatório com estatísticas e denúncias.
+            Selecione o período para gerar o relatório com estatísticas e manifestações.
           </DialogDescription>
         </DialogHeader>
 

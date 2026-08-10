@@ -145,7 +145,7 @@ const TriagemAMO = () => {
       });
     }
     setSaving(null);
-    toast({ title: 'Classificação validada', description: `Denúncia encaminhada: ${ESTADOS[destino] ?? destino}` });
+    toast({ title: 'Classificação validada', description: `Manifestação encaminhada: ${ESTADOS[destino] ?? destino}` });
     setEdits(prev => { const n = { ...prev }; delete n[r.id]; return n; });
     load();
   };
@@ -193,7 +193,7 @@ const TriagemAMO = () => {
         {loading ? (
           <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin" /></div>
         ) : lista.length === 0 ? (
-          <Card><CardContent className="py-16 text-center text-muted-foreground">Nenhuma denúncia pendente de triagem.</CardContent></Card>
+          <Card><CardContent className="py-16 text-center text-muted-foreground">Nenhuma manifestação pendente de triagem.</CardContent></Card>
         ) : lista.map(r => {
           const e = edicao(r);
           const baixa = (r.confianca_ia ?? 0) < confiancaMinima;
@@ -212,9 +212,13 @@ const TriagemAMO = () => {
                     </CardDescription>
                   </div>
                   <div className="flex gap-2 flex-wrap">
+                    {r.risco_grave_imediato === 'SIM' && (
+                      <Badge variant="destructive" className="gap-1"><ShieldAlert className="h-3 w-3" /> Risco Grave</Badge>
+                    )}
                     <Badge variant="outline">{ESTADOS[r.estado] ?? r.estado}</Badge>
                     {r.prioridade && <Badge variant={prioridadeVariant(r.prioridade)}>{PRIORIDADES[r.prioridade]}</Badge>}
                   </div>
+
                 </div>
               </CardHeader>
               <CardContent className="space-y-5">
@@ -246,7 +250,7 @@ const TriagemAMO = () => {
                     </div>
                     <div className="flex gap-2 flex-wrap">
                       {r.competencia && <Badge variant={competenciaVariant(r.competencia)}>{COMPETENCIAS[r.competencia].codigo} · {COMPETENCIAS[r.competencia].label}</Badge>}
-                      {r.risco_grave_imediato && <Badge variant={r.risco_grave_imediato === 'SIM' ? 'destructive' : 'outline'}>Risco: {RISCOS[r.risco_grave_imediato]}</Badge>}
+                      {r.risco_grave_imediato && <Badge variant={r.risco_grave_imediato === 'SIM' ? 'destructive' : 'outline'}>{r.risco_grave_imediato === 'SIM' ? 'Risco Grave' : `Risco: ${RISCOS[r.risco_grave_imediato]}`}</Badge>}
                       {(r.pilares ?? []).map(p => <Badge key={p} variant="outline">{p} {PILARES[p]}</Badge>)}
                     </div>
                     {r.ai_classification_rationale && (

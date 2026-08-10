@@ -166,7 +166,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: "Erro ao salvar denúncia" 
+          error: "Erro ao salvar manifestação" 
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
       );
@@ -222,7 +222,7 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         tracking_code: data.tracking_code,
-        message: "Denúncia enviada com sucesso",
+        message: "Manifestação enviada com sucesso",
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -234,7 +234,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: "Erro ao processar denúncia",
+        error: "Erro ao processar manifestação",
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

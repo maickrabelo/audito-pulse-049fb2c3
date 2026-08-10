@@ -41,7 +41,7 @@ serve(async (req) => {
       .eq("id", report_id)
       .maybeSingle();
 
-    if (repErr || !report) return json({ error: "Denúncia não encontrada" }, 404);
+    if (repErr || !report) return json({ error: "Manifestação não encontrada" }, 404);
 
     // Evita reprocessar (e pagar) uma triagem já feita quando nada mudou.
     // Reclassifica apenas com force=true ou quando o caso voltou para complementação.
@@ -51,7 +51,7 @@ serve(async (req) => {
       report.estado !== "AGUARDANDO_COMPLEMENTACAO" &&
       report.estado !== "RECEBIDA"
     ) {
-      return json({ success: true, skipped: true, motivo: "Denúncia já classificada", estado: report.estado });
+      return json({ success: true, skipped: true, motivo: "Manifestação já classificada", estado: report.estado });
     }
 
     // Parâmetros do canal (específicos da empresa, com fallback global)
@@ -82,7 +82,7 @@ serve(async (req) => {
       report.testemunhas ? `Testemunhas: ${preProcessar(report.testemunhas)}` : "",
       report.evidencias_disponiveis ? `Evidências indicadas: ${preProcessar(report.evidencias_disponiveis)}` : "",
       report.ha_risco_imediato_informado != null
-        ? `Denunciante informou risco imediato: ${report.ha_risco_imediato_informado ? "sim" : "não"}`
+        ? `Manifestante informou risco imediato: ${report.ha_risco_imediato_informado ? "sim" : "não"}`
         : "",
       report.snapshot_unidade ? `Unidade: ${report.snapshot_unidade}` : "",
       report.snapshot_ghe ? `GHE/Setor: ${report.snapshot_ghe}` : "",
@@ -158,16 +158,14 @@ serve(async (req) => {
       acao_recomendada: saida.acao_recomendada,
       ai_classification_rationale: saida.justificativa_classificacao,
       versao_classificacao: versao,
-      // compatibilidade com a classificação legada 4A/4B/4C/4D
-      ai_classification: critico
-        ? "4D_grave_immediate"
-        : saida.classificacao_principal === "SST_NR1"
-          ? "4A_sst"
-          : saida.classificacao_principal === "EMPRESA_CLIENTE"
-            ? "4B_out_of_scope"
-            : saida.classificacao_principal === "DENUNCIA_MISTA"
-              ? "4C_mixed"
-              : "pending_ai",
+      // classificação por competência (4A/4B/4C). Risco grave é uma tag separada.
+      ai_classification: saida.classificacao_principal === "SST_NR1"
+        ? "4A_sst"
+        : saida.classificacao_principal === "EMPRESA_CLIENTE"
+          ? "4B_out_of_scope"
+          : saida.classificacao_principal === "DENUNCIA_MISTA"
+            ? "4C_mixed"
+            : "pending_ai",
     }).eq("id", report_id);
 
     await supabase.from("classificacao_versoes").insert({

@@ -34,17 +34,17 @@ const PoliticaRetencao = () => {
         </thead>
         <tbody>
           <tr>
-            <td>Denúncias (relato, categoria, status)</td>
+            <td>Manifestações (relato, categoria, status)</td>
             <td>Apuração e cumprimento de obrigação legal</td>
             <td>Conforme definido pela Controladora — mínimo recomendado: 5 anos após o encerramento</td>
           </tr>
           <tr>
-            <td>Anexos de denúncias</td>
+            <td>Anexos de manifestações</td>
             <td>Prova documental da apuração</td>
-            <td>Mesmo prazo da denúncia associada</td>
+            <td>Mesmo prazo da manifestação associada</td>
           </tr>
           <tr>
-            <td>Dados de denunciante identificado</td>
+            <td>Dados de manifestante identificado</td>
             <td>Comunicação e retorno</td>
             <td>A definir pela Controladora — recomenda-se anonimização após o encerramento</td>
           </tr>

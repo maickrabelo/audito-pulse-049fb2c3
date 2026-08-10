@@ -17,7 +17,7 @@ const Footer = () => {
               <img src="/lovable-uploads/Logo_GrupoAMO.png" alt="Grupo AMO" className="h-10 brightness-0 invert mb-4" />
             )}
             <p className="text-white/60 text-sm mb-6">
-              Sistema completo de canal de denúncias e ouvidoria inteligente para empresas.
+              Sistema completo de canal de manifestações e ouvidoria inteligente para empresas.
             </p>
             <div className="flex gap-4">
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" aria-label="LinkedIn">
@@ -32,9 +32,9 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Soluções</h3>
             <ul className="space-y-3 text-sm">
-              <li><a href="/#beneficios" className="text-white/60 hover:text-white transition-colors">Canal de Denúncias</a></li>
+              <li><a href="/#beneficios" className="text-white/60 hover:text-white transition-colors">Canal de Manifestações</a></li>
               <li><a href="/#como-funciona" className="text-white/60 hover:text-white transition-colors">Ouvidoria Inteligente</a></li>
-              <li><a href="/#beneficios" className="text-white/60 hover:text-white transition-colors">Gestão de Denúncias</a></li>
+              <li><a href="/#beneficios" className="text-white/60 hover:text-white transition-colors">Gestão de Manifestações</a></li>
             </ul>
           </div>
 

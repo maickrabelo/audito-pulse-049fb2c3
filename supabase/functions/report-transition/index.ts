@@ -51,7 +51,7 @@ serve(async (req) => {
       .select("id, company_id, estado, competencia, risco_grave_imediato, prioridade, pilares, parte_amo, parte_empresa, versao_classificacao, tracking_code")
       .eq("id", report_id)
       .maybeSingle();
-    if (!report) return json({ error: "Denúncia não encontrada" }, 404);
+    if (!report) return json({ error: "Manifestação não encontrada" }, 404);
 
     // Autorização: equipe AMO ou usuário da própria empresa
     if (!equipeAmo) {
@@ -100,8 +100,7 @@ serve(async (req) => {
         amo_validated_at: agora,
         amo_validation_notes: justificativa,
         amo_validated_classification:
-          saida.risco_grave_imediato === "SIM" ? "4D_grave_immediate"
-            : saida.classificacao_principal === "SST_NR1" ? "4A_sst"
+          saida.classificacao_principal === "SST_NR1" ? "4A_sst"
               : saida.classificacao_principal === "EMPRESA_CLIENTE" ? "4B_out_of_scope"
                 : saida.classificacao_principal === "DENUNCIA_MISTA" ? "4C_mixed" : "pending_ai",
       });
@@ -122,7 +121,7 @@ serve(async (req) => {
         autor_id: user.id,
       });
 
-      // Denúncia mista: cria as duas subtratativas independentes
+      // Manifestação mista: cria as duas subtratativas independentes
       if (saida.classificacao_principal === "DENUNCIA_MISTA") {
         const { data: existentes } = await admin.from("subtratativas").select("escopo").eq("report_id", report_id);
         const jaTem = new Set((existentes || []).map((s: { escopo: string }) => s.escopo));
@@ -146,7 +145,7 @@ serve(async (req) => {
       }
     }
     if (estado_destino === "ENCERRADA") {
-      if (!equipeAmo) return json({ error: "Somente a equipe AMO encerra a denúncia" }, 403);
+      if (!equipeAmo) return json({ error: "Somente a equipe AMO encerra a manifestação" }, 403);
       if (!justificativa) return json({ error: "Justificativa de encerramento obrigatória" }, 400);
       update.status = "resolved";
       update.justificativa_humana = justificativa;
@@ -185,7 +184,7 @@ serve(async (req) => {
       await admin.from("sla_prazos").update({ concluido_em: agora }).eq("report_id", report_id).is("concluido_em", null);
     }
     if (estado_destino === "AGUARDANDO_COMPLEMENTACAO") {
-      await admin.from("sla_prazos").update({ pausado_em: agora, motivo_pausa: "Aguardando complementação do denunciante" })
+      await admin.from("sla_prazos").update({ pausado_em: agora, motivo_pausa: "Aguardando complementação do manifestante" })
         .eq("report_id", report_id).is("concluido_em", null).is("pausado_em", null);
     }
     if (atual === "AGUARDANDO_COMPLEMENTACAO") {

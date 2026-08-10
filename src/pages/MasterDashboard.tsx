@@ -117,7 +117,7 @@ const MasterDashboard = () => {
     setReportsCatLoading(true);
     const { data } = await supabase
       .from('reports')
-      .select('id, tracking_code, title, status, created_at, ai_classification, amo_validated_classification, ai_classification_rationale, companies(name)')
+      .select('id, tracking_code, title, status, created_at, ai_classification, amo_validated_classification, ai_classification_rationale, risco_grave_imediato, companies(name)')
       .order('created_at', { ascending: false })
       .limit(300);
     setReportsByCategory(data || []);
@@ -759,12 +759,12 @@ const MasterDashboard = () => {
                             navigator.clipboard.writeText(url);
                             toast({
                               title: "URL copiada",
-                              description: "Link para denúncias copiado."
+                              description: "Link para manifestações copiado."
                             });
                           }}
                         >
                           <Copy className="h-4 w-4 mr-2" />
-                          Copiar URL de Denúncia
+                          Copiar URL de Manifestação
                         </Button>
                       )}
                     </div>
@@ -1103,7 +1103,7 @@ const MasterDashboard = () => {
               <TabsList>
                 <TabsTrigger value="companies">Empresas</TabsTrigger>
                 <TabsTrigger value="sst">Gestoras SST</TabsTrigger>
-                <TabsTrigger value="reports-cat">Denúncias por Categoria</TabsTrigger>
+                <TabsTrigger value="reports-cat">Manifestações por Categoria</TabsTrigger>
                 <TabsTrigger value="parametros">Parâmetros NR-1</TabsTrigger>
                 <TabsTrigger value="ai-usage">Uso de IA</TabsTrigger>
                 <TabsTrigger value="soc">Dados SOC</TabsTrigger>
@@ -1212,7 +1212,7 @@ const MasterDashboard = () => {
                         <DialogHeader>
                           <DialogTitle>Editar Empresa</DialogTitle>
                           <DialogDescription>
-                            Atualize as informações da empresa, incluindo até 3 emails para notificações de denúncias.
+                            Atualize as informações da empresa, incluindo até 3 emails para notificações de manifestações.
                           </DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleEditCompany}>
@@ -1298,7 +1298,7 @@ const MasterDashboard = () => {
                                 defaultValue={editingCompany?.slug || ''}
                               />
                               <p className="text-xs text-gray-500">
-                                Identificador único usado na URL da página de denúncias (ex: /report/nome-da-empresa)
+                                Identificador único usado na URL da página de manifestações (ex: /report/nome-da-empresa)
                               </p>
                             </div>
 
@@ -1339,10 +1339,10 @@ const MasterDashboard = () => {
 
                             <div className="border-t pt-4 mt-2">
                               <Label className="text-base font-semibold mb-3 block">
-                                Emails para Notificações de Denúncias
+                                Emails para Notificações de Manifestações
                               </Label>
                               <p className="text-sm text-gray-500 mb-3">
-                                Configure até 3 emails que receberão notificações quando novas denúncias forem registradas.
+                                Configure até 3 emails que receberão notificações quando novas manifestações forem registradas.
                               </p>
                               <div className="grid gap-3">
                                 <div className="grid gap-2">
@@ -1383,10 +1383,10 @@ const MasterDashboard = () => {
                                 <div>
                                   <Label className="text-base font-semibold flex items-center gap-2">
                                     <AlertTriangle className="h-4 w-4 text-red-500" />
-                                    Contatos de Emergência (Risco Grave e Iminente — 4D)
+                                    Contatos de Emergência (Risco Grave e Iminente)
                                   </Label>
                                   <p className="text-sm text-gray-500 mt-1">
-                                    Estes contatos recebem alerta imediato por email quando a IA classifica uma denúncia como 4D.
+                                    Estes contatos recebem alerta imediato por email quando a IA sinaliza uma manifestação com a tag Risco Grave.
                                   </p>
                                 </div>
                                 <Button
@@ -1710,7 +1710,7 @@ const MasterDashboard = () => {
                                         navigator.clipboard.writeText(url);
                                         toast({
                                           title: "URL copiada",
-                                          description: "Link para denúncias copiado."
+                                          description: "Link para manifestações copiado."
                                         });
                                       }}
                                     >
@@ -1887,9 +1887,9 @@ const MasterDashboard = () => {
             <TabsContent value="reports-cat">
               <Card>
                 <CardHeader>
-                  <CardTitle>Denúncias por Categoria (Triagem IA)</CardTitle>
+                  <CardTitle>Manifestações por Categoria (Triagem IA)</CardTitle>
                   <CardDescription>
-                    Classificação automática pela IA (4A SST · 4B Fora de escopo · 4C Misto · 4D Grave/imediato). A validação humana é feita em <b>Triagem AMO</b>.
+                    Classificação automática pela IA (4A SST · 4B Fora de escopo · 4C Misto). Casos de risco grave e iminente recebem a tag <b>Risco Grave</b>. A validação humana é feita em <b>Triagem AMO</b>.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1900,11 +1900,13 @@ const MasterDashboard = () => {
                       { k: '4A_sst', label: '4A — SST' },
                       { k: '4B_out_of_scope', label: '4B — Fora de escopo' },
                       { k: '4C_mixed', label: '4C — Misto' },
-                      { k: '4D_grave_immediate', label: '4D — Grave/imediato' },
+                      { k: 'risco_grave', label: 'Risco Grave' },
                     ].map(o => {
                       const count = o.k === 'all'
                         ? reportsByCategory.length
-                        : reportsByCategory.filter(r => (r.amo_validated_classification || r.ai_classification || 'pending_ai') === o.k).length;
+                        : o.k === 'risco_grave'
+                          ? reportsByCategory.filter(r => r.risco_grave_imediato === 'SIM').length
+                          : reportsByCategory.filter(r => (r.amo_validated_classification || r.ai_classification || 'pending_ai') === o.k).length;
                       return (
                         <Button
                           key={o.k}
@@ -1924,7 +1926,7 @@ const MasterDashboard = () => {
                   ) : (
                     <div className="space-y-2">
                       {reportsByCategory
-                        .filter(r => reportsCatFilter === 'all' || (r.amo_validated_classification || r.ai_classification || 'pending_ai') === reportsCatFilter)
+                        .filter(r => reportsCatFilter === 'all' || (reportsCatFilter === 'risco_grave' ? r.risco_grave_imediato === 'SIM' : (r.amo_validated_classification || r.ai_classification || 'pending_ai') === reportsCatFilter))
                         .map(r => {
                           const cls = r.amo_validated_classification || r.ai_classification || 'pending_ai';
                           const validated = !!r.amo_validated_classification;
@@ -1932,11 +1934,9 @@ const MasterDashboard = () => {
                             '4A_sst': '4A SST',
                             '4B_out_of_scope': '4B Fora de escopo',
                             '4C_mixed': '4C Misto',
-                            '4D_grave_immediate': '4D Grave/imediato',
                             'pending_ai': 'Pendente IA',
                           } as any)[cls] || cls;
-                          const color = cls === '4D_grave_immediate' ? 'bg-red-100 text-red-800 border-red-300'
-                            : cls === '4C_mixed' ? 'bg-amber-100 text-amber-800 border-amber-300'
+                          const color = cls === '4C_mixed' ? 'bg-amber-100 text-amber-800 border-amber-300'
                             : cls === '4B_out_of_scope' ? 'bg-gray-100 text-gray-700 border-gray-300'
                             : cls === '4A_sst' ? 'bg-blue-100 text-blue-800 border-blue-300'
                             : 'bg-yellow-50 text-yellow-800 border-yellow-300';
@@ -1945,6 +1945,9 @@ const MasterDashboard = () => {
                               <div className="min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span className={`text-xs px-2 py-0.5 rounded border ${color}`}>{label}</span>
+                                  {r.risco_grave_imediato === 'SIM' && (
+                                    <span className="text-xs px-2 py-0.5 rounded border bg-red-100 text-red-800 border-red-300">⚠ Risco Grave</span>
+                                  )}
                                   {validated && <span className="text-xs text-green-700">✓ validado AMO</span>}
                                   <span className="text-xs text-muted-foreground">Protocolo <b>{r.tracking_code}</b></span>
                                 </div>
@@ -1961,7 +1964,7 @@ const MasterDashboard = () => {
                           );
                         })}
                       {reportsByCategory.length === 0 && (
-                        <div className="text-center text-muted-foreground py-8">Nenhuma denúncia encontrada.</div>
+                        <div className="text-center text-muted-foreground py-8">Nenhuma manifestação encontrada.</div>
                       )}
                     </div>
                   )}

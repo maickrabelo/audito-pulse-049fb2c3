@@ -38,7 +38,7 @@ const ReportChat = () => {
       <main className="flex-grow bg-gray-50 py-8">
         <div className="audit-container max-w-4xl">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-audit-primary mb-2">Nova Denúncia</h1>
+            <h1 className="text-3xl font-bold text-audit-primary mb-2">Nova Manifestação</h1>
           </div>
           
           {!selectedCompany ? (
@@ -46,7 +46,7 @@ const ReportChat = () => {
               <CardHeader>
                 <CardTitle>Selecione a Empresa</CardTitle>
                 <CardDescription>
-                  Para iniciar sua denúncia, primeiro selecione a empresa relacionada.
+                  Para iniciar sua manifestação, primeiro selecione a empresa relacionada.
                 </CardDescription>
               </CardHeader>
               <CardContent>

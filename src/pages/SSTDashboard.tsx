@@ -332,7 +332,7 @@ const SSTDashboard = () => {
                     <FileText className="h-6 w-6 text-orange-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Total de Denúncias</p>
+                    <p className="text-sm text-muted-foreground">Total de Manifestações</p>
                     <p className="text-2xl font-bold">
                       {Object.values(reportCounts).reduce((a, b) => a + b, 0)}
                     </p>
@@ -430,7 +430,7 @@ const SSTDashboard = () => {
                     )}
                     <div className="flex items-center gap-2 text-sm">
                       <FileText className="h-4 w-4 text-muted-foreground" />
-                      <span>{reportCounts[company.id] || 0} denúncias</span>
+                      <span>{reportCounts[company.id] || 0} manifestações</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Users className="h-4 w-4 text-muted-foreground" />

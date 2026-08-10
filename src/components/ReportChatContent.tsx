@@ -51,7 +51,7 @@ interface Attachment {
 const initialMessages = [
   {
     role: "system",
-    content: "Olá, sou Ana, assistente virtual da ouvidoria. Estou aqui para ouvir sua denúncia de forma confidencial. Pode me contar o que aconteceu com detalhes. Em que posso ajudar?",
+    content: "Olá, sou Ana, assistente virtual da ouvidoria. Estou aqui para ouvir sua manifestação de forma confidencial. Pode me contar o que aconteceu com detalhes. Em que posso ajudar?",
   },
 ];
 
@@ -249,7 +249,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
         setTimeout(() => {
           setMessages(prev => [...prev, {
             role: "system",
-            content: "Para finalizar a denúncia e gerar o relatório, clique no botão 'Finalizar Denúncia' abaixo."
+            content: "Para finalizar a manifestação e gerar o relatório, clique no botão 'Finalizar Manifestação' abaixo."
           }]);
         }, 1000);
       }
@@ -279,7 +279,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       // Extract only the conversation between user and assistant
       const conversationText = messages
         .filter(m => m.role !== "system")
-        .map(m => `${m.role === "user" ? "Denunciante" : "Ouvidoria"}: ${m.content}`)
+        .map(m => `${m.role === "user" ? "Manifestante" : "Ouvidoria"}: ${m.content}`)
         .join("\n\n");
       
       console.log("Conversation text:", conversationText);
@@ -290,20 +290,20 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
           messages: [
             {
               role: "system",
-              content: `Você é um analista de ouvidoria especializado em criar resumos executivos de denúncias.
+              content: `Você é um analista de ouvidoria especializado em criar resumos executivos de manifestações.
               Sua tarefa é analisar a conversa completa e criar um resumo profissional e imparcial.
               
               O resumo deve conter:
-              1. Natureza da denúncia (tipo de incidente)
+              1. Natureza da manifestação (tipo de incidente)
               2. Quando e onde ocorreu
-              3. Pessoas envolvidas (sem nomes, use "denunciante", "superior", "colega", etc)
+              3. Pessoas envolvidas (sem nomes, use "manifestante", "superior", "colega", etc)
               4. Gravidade e impacto
               
               Use linguagem formal, objetiva e imparcial. Máximo de 4-5 frases.`
             },
             {
               role: "user",
-              content: `Analise esta conversa de denúncia e crie um resumo executivo:\n\n${conversationText}`
+              content: `Analise esta conversa de manifestação e crie um resumo executivo:\n\n${conversationText}`
             }
           ]
         },
@@ -337,7 +337,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
           messages: [
             {
               role: "system",
-              content: `Você é um classificador de denúncias. Analise a conversa e retorne APENAS um JSON válido (sem markdown) com:
+              content: `Você é um classificador de manifestações. Analise a conversa e retorne APENAS um JSON válido (sem markdown) com:
               {
                 "category": "uma das opções: Assédio, Discriminação, Fraude, Segurança, Conflito, Produção, RH, TI, Financeiro, Comercial, Outro",
                 "department": "nome do departamento/setor mencionado ou null se não mencionado"
@@ -345,7 +345,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
             },
             {
               role: "user",
-              content: `Classifique esta denúncia:\n\n${conversationText}`
+              content: `Classifique esta manifestação:\n\n${conversationText}`
             }
           ]
         },
@@ -412,7 +412,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       // Extract conversation for description
       const conversationText = messages
         .filter(m => m.role !== "system")
-        .map(m => `${m.role === "user" ? "Denunciante" : "Ouvidoria"}: ${m.content}`)
+        .map(m => `${m.role === "user" ? "Manifestante" : "Ouvidoria"}: ${m.content}`)
         .join("\n\n");
 
       // Get classification from previous analysis
@@ -425,7 +425,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       const { data, error } = await supabase.functions.invoke('submit-report', {
         body: {
           company_id: companyId,
-          title: summary.substring(0, 100) || "Denúncia via chat",
+          title: summary.substring(0, 100) || "Manifestação via chat",
           description: conversationText,
           ai_summary: summary,
           category: classification.category,
@@ -447,7 +447,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       }
 
       if (!data || !data.success) {
-        throw new Error(data?.error || "Erro ao salvar denúncia");
+        throw new Error(data?.error || "Erro ao salvar manifestação");
       }
 
       // Update the reportId with the one generated by the database
@@ -461,8 +461,8 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
     } catch (error: any) {
       console.error('Error in handleSaveReport:', error);
       toast({
-        title: "Erro ao salvar denúncia",
-        description: error?.message || "Não foi possível salvar a denúncia. Por favor, tente novamente.",
+        title: "Erro ao salvar manifestação",
+        description: error?.message || "Não foi possível salvar a manifestação. Por favor, tente novamente.",
         variant: "destructive",
       });
     } finally {
@@ -516,7 +516,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
             <TrackReportModal />
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Guarde este ID para acompanhar sua denúncia posteriormente.
+            Guarde este ID para acompanhar sua manifestação posteriormente.
           </p>
         </div>
       )}
@@ -528,7 +528,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
             {isComplete && <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300">Finalizado</Badge>}
           </CardTitle>
           <CardDescription>
-            Converse com nossa assistente virtual para registrar sua denúncia.
+            Converse com nossa assistente virtual para registrar sua manifestação.
           </CardDescription>
         </CardHeader>
         
@@ -545,7 +545,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
           
           {isComplete && (
             <div className="border rounded-lg p-4 bg-gray-50 mb-4">
-              <h3 className="font-medium text-lg mb-2">Resumo da Denúncia</h3>
+              <h3 className="font-medium text-lg mb-2">Resumo da Manifestação</h3>
               <p className="text-gray-700">{summary}</p>
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex items-center">
@@ -633,7 +633,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
                 {isLoading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
-                Finalizar Denúncia
+                Finalizar Manifestação
               </Button>
             </div>
           ) : (
@@ -643,7 +643,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
                   setIsComplete(false);
                   setMessages(prev => [...prev, {
                     role: "system",
-                    content: "Você pode continuar conversando para fazer ajustes no relato. Quando terminar, clique novamente em 'Finalizar Denúncia'."
+                    content: "Você pode continuar conversando para fazer ajustes no relato. Quando terminar, clique novamente em 'Finalizar Manifestação'."
                   }]);
                 }}
                 variant="outline"
@@ -677,9 +677,9 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       <Dialog open={showIdDialog} onOpenChange={setShowIdDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Denúncia Registrada</DialogTitle>
+            <DialogTitle>Manifestação Registrada</DialogTitle>
             <DialogDescription>
-              Guarde o código de acompanhamento para consultar o status de sua denúncia no futuro.
+              Guarde o código de acompanhamento para consultar o status de sua manifestação no futuro.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center space-y-4 p-4">
@@ -688,7 +688,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
               <p className="text-2xl font-bold text-audit-primary">{reportId}</p>
             </div>
             <p className="text-sm text-center text-muted-foreground">
-              Anote este código em um local seguro. Você precisará dele para acompanhar o status da denúncia.
+              Anote este código em um local seguro. Você precisará dele para acompanhar o status da manifestação.
             </p>
           </div>
           <DialogFooter className="sm:justify-center">

@@ -32,7 +32,7 @@ const PD: Record<string, string> = {
   confianca_minima: 'PD-005 · Confiança mínima da IA (%) para dispensar revisão reforçada',
   prioridade_risco_indeterminado: 'PD-004 · Prioridade quando o risco é indeterminado',
   prioridade_risco_nao: 'PD-004 · Prioridade quando não há risco imediato',
-  prazo_complementacao_dias: 'PD-006 · Prazo para complementação pelo denunciante (dias)',
+  prazo_complementacao_dias: 'PD-006 · Prazo para complementação pelo manifestante (dias)',
   lembretes_complementacao: 'PD-006 · Quantidade de lembretes de complementação',
   politica_cpf: 'PD-002 · Política de coleta de CPF',
   anexo_max_mb: 'PD-008 · Tamanho máximo por anexo (MB)',
@@ -40,7 +40,7 @@ const PD: Record<string, string> = {
   anexo_tipos_permitidos: 'PD-008 · Tipos de arquivo permitidos',
   aprovadores_encerramento: 'PD-011 · Aprovadores necessários para encerrar',
   min_grupo_indicadores: 'PD-012 · Tamanho mínimo de grupo para exibir indicadores',
-  retencao_denuncia_meses: 'PD-013 · Retenção da denúncia (meses)',
+  retencao_denuncia_meses: 'PD-013 · Retenção da manifestação (meses)',
   retencao_cpf_hash_meses: 'PD-013 · Retenção do hash de CPF (meses)',
   canais_notificacao: 'PD-010 · Canais de notificação',
   uf_calendario: 'PD-015 · Calendário de feriados aplicado aos prazos',
@@ -125,7 +125,7 @@ const ParametrosCanalCard: React.FC = () => {
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="opcional">Opcional (anonimato preservado)</SelectItem>
-                <SelectItem value="obrigatorio">Obrigatório para abrir denúncia</SelectItem>
+                <SelectItem value="obrigatorio">Obrigatório para abrir manifestação</SelectItem>
                 <SelectItem value="desativado">Não coletar CPF</SelectItem>
               </SelectContent>
             </Select>

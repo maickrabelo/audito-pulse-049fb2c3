@@ -59,9 +59,9 @@ const AiUsageCard = () => {
   ).sort((a, b) => b.cost - a.cost);
 
   const LABELS: Record<string, string> = {
-    "chat-report": "Chat de denúncia (Ana)",
+    "chat-report": "Chat de manifestação (Ana)",
     "classify-report-ai": "Triagem / classificação NR-1",
-    "analyze-reports": "Análise de denúncias",
+    "analyze-reports": "Análise de manifestações",
     "analyze-climate-survey": "Análise de pesquisa de clima",
   };
 
