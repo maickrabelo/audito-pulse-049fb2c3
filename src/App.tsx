@@ -49,6 +49,7 @@ const App = () => (
         <RealAuthProvider>
           <WhiteLabelProvider>
             <AppContent />
+            <TermsGate>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/teste-gratis" element={<TrialSignup />} />
@@ -71,9 +72,11 @@ const App = () => (
               <Route path="/termos-de-uso" element={<TermosDeUso />} />
               <Route path="/politica-de-seguranca" element={<PoliticaSeguranca />} />
               <Route path="/politica-de-retencao" element={<PoliticaRetencao />} />
+              <Route path="/aviso-de-privacidade-canal" element={<AvisoPrivacidadeCanal />} />
               <Route path="/triagem-amo" element={<TriagemAMO />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </TermsGate>
           </WhiteLabelProvider>
         </RealAuthProvider>
       </BrowserRouter>
