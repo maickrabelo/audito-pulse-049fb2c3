@@ -1108,6 +1108,7 @@ const MasterDashboard = () => {
                 <TabsTrigger value="parametros">Parâmetros NR-1</TabsTrigger>
                 <TabsTrigger value="ai-usage">Uso de IA</TabsTrigger>
                 <TabsTrigger value="soc">Dados SOC</TabsTrigger>
+                <TabsTrigger value="aceites">Aceites Legais</TabsTrigger>
 
               </TabsList>
               <Button variant="outline" size="sm" onClick={() => navigate('/triagem-amo')} className="ml-3">
