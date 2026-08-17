@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ParametrosCanalCard from "@/components/master/ParametrosCanalCard";
 import AiUsageCard from "@/components/master/AiUsageCard";
 import SocDataCard from "@/components/master/SocDataCard";
+import LegalAcceptancesCard from "@/components/master/LegalAcceptancesCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
