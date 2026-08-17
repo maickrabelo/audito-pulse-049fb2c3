@@ -9,18 +9,24 @@ import { supabase } from '@/integrations/supabase/client';
 import { ReportChat, type ReportMetadata } from '@/components/ReportChatContent';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { getLegalDocument, DOC_PRIVACY_NOTICE } from '@/legal/documents';
 
 interface Props { companyId: string; companyName: string; }
 
 type Snapshot = { unidade?: string | null; setor?: string | null; ghe?: string | null; cargo?: string | null; cbo?: string | null };
 
+const privacyNotice = getLegalDocument(DOC_PRIVACY_NOTICE);
+
 const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
-  const [step, setStep] = useState<'aviso' | 'cpf' | 'confirm' | 'dados' | 'chat'>('aviso');
+  const [step, setStep] = useState<'aviso' | 'privacidade' | 'cpf' | 'confirm' | 'dados' | 'chat'>('aviso');
+  const [cienciaAviso, setCienciaAviso] = useState(false);
   const [meta, setMeta] = useState<ReportMetadata>({
     ha_risco_imediato_informado: false,
     autorizacao_para_contato: false,
     aceite_politica_privacidade: false,
     declaracao_de_boa_fe: false,
+    privacy_notice_version: privacyNotice?.version ?? null,
+    privacy_notice_hash: privacyNotice?.content_hash ?? null,
   });
   const setM = (patch: Partial<ReportMetadata>) => setMeta(prev => ({ ...prev, ...patch }));
   const [cpf, setCpf] = useState('');
@@ -74,12 +80,66 @@ const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
             </AlertDescription>
           </Alert>
           <div className="flex gap-2 justify-end">
-            <Button onClick={() => setStep('cpf')}>Entendi, continuar</Button>
+            <Button onClick={() => setStep('privacidade')}>Entendi, continuar</Button>
           </div>
         </CardContent>
       </Card>
     );
   }
+
+  if (step === 'privacidade' && privacyNotice) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Aviso de Privacidade</CardTitle>
+          <CardDescription>
+            Versão {privacyNotice.version} • Vigência{' '}
+            {new Date(`${privacyNotice.effective_date}T12:00:00`).toLocaleDateString('pt-BR')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
+            {(privacyNotice.summary ?? []).map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+
+          <Alert>
+            <ShieldCheck className="h-4 w-4" />
+            <AlertTitle>Informe apenas o necessário</AlertTitle>
+            <AlertDescription>
+              Descreva a situação com o mínimo de dados pessoais. Evite incluir CPF, documentos pessoais,
+              diagnósticos, informações excessivas ou dados pessoais de terceiros. Refira-se às pessoas pelo
+              papel funcional (ex.: "meu supervisor").
+            </AlertDescription>
+          </Alert>
+
+          <a
+            href="/aviso-de-privacidade-canal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm underline text-primary"
+          >
+            Ler o Aviso de Privacidade na íntegra
+          </a>
+
+          <label className="flex items-start gap-2 text-sm cursor-pointer rounded-md border p-4">
+            <Checkbox checked={cienciaAviso} onCheckedChange={(v) => setCienciaAviso(v === true)} />
+            <span>
+              Estou ciente do Aviso de Privacidade (versão {privacyNotice.version}) e de como meus dados
+              poderão ser tratados neste canal. Esta ciência não é consentimento geral para tratamento de dados.
+            </span>
+          </label>
+
+          <div className="flex gap-2 justify-between">
+            <Button variant="outline" onClick={() => setStep('aviso')}>Voltar</Button>
+            <Button onClick={() => setStep('cpf')} disabled={!cienciaAviso}>Continuar</Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
 
   if (step === 'cpf') {
     return (

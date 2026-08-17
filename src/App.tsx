@@ -29,6 +29,8 @@ import TermosDeUso from "./pages/TermosDeUso";
 import PoliticaSeguranca from "./pages/PoliticaSeguranca";
 import PoliticaRetencao from "./pages/PoliticaRetencao";
 import TriagemAMO from "./pages/TriagemAMO";
+import AvisoPrivacidadeCanal from "./pages/AvisoPrivacidadeCanal";
+import TermsGate from "./components/legal/TermsGate";
 
 const queryClient = new QueryClient();
 

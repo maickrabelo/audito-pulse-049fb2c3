@@ -37,6 +37,8 @@ interface ReportSubmission {
   canal_de_contato?: string;
   aceite_politica_privacidade?: boolean;
   declaracao_de_boa_fe?: boolean;
+  privacy_notice_version?: string;
+  privacy_notice_hash?: string;
 }
 
 // Input validation functions
@@ -151,6 +153,8 @@ serve(async (req) => {
       canal_de_contato: submission.canal_de_contato ? sanitizeInput(submission.canal_de_contato, 200) : null,
       aceite_politica_privacidade: submission.aceite_politica_privacidade ?? false,
       declaracao_de_boa_fe: submission.declaracao_de_boa_fe ?? false,
+      privacy_notice_version: submission.privacy_notice_version ?? null,
+      privacy_notice_hash: submission.privacy_notice_hash ?? null,
       estado: (submission.snapshot_unidade || submission.snapshot_cargo) ? 'AGUARDANDO_TRIAGEM' : 'AGUARDANDO_TRIAGEM',
     };
 

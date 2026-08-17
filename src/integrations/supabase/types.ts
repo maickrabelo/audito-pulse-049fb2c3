@@ -407,6 +407,57 @@ export type Database = {
           },
         ]
       }
+      case_conflict_declarations: {
+        Row: {
+          created_at: string
+          has_conflict: boolean
+          id: string
+          ip: string | null
+          justification: string | null
+          report_id: string
+          user_agent: string | null
+          user_id: string
+          user_role: string | null
+        }
+        Insert: {
+          created_at?: string
+          has_conflict: boolean
+          id?: string
+          ip?: string | null
+          justification?: string | null
+          report_id: string
+          user_agent?: string | null
+          user_id: string
+          user_role?: string | null
+        }
+        Update: {
+          created_at?: string
+          has_conflict?: boolean
+          id?: string
+          ip?: string | null
+          justification?: string | null
+          report_id?: string
+          user_agent?: string | null
+          user_id?: string
+          user_role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_conflict_declarations_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_conflict_declarations_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_rate_limits: {
         Row: {
           company_id: string | null
@@ -1011,6 +1062,164 @@ export type Database = {
           },
         ]
       }
+      legal_acceptances: {
+        Row: {
+          accepted_at: string
+          company_id: string | null
+          created_at: string
+          declarations: Json
+          document_code: string
+          document_effective_date: string
+          document_hash: string
+          document_id: string
+          document_title: string
+          document_version: string
+          id: string
+          ip: string | null
+          permissions: Json
+          reason: string | null
+          result: string
+          role: string | null
+          session_id: string | null
+          sst_manager_id: string | null
+          timezone: string | null
+          user_agent: string | null
+          user_email: string | null
+          user_id: string
+          user_name: string | null
+        }
+        Insert: {
+          accepted_at?: string
+          company_id?: string | null
+          created_at?: string
+          declarations?: Json
+          document_code: string
+          document_effective_date: string
+          document_hash: string
+          document_id: string
+          document_title: string
+          document_version: string
+          id?: string
+          ip?: string | null
+          permissions?: Json
+          reason?: string | null
+          result: string
+          role?: string | null
+          session_id?: string | null
+          sst_manager_id?: string | null
+          timezone?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id: string
+          user_name?: string | null
+        }
+        Update: {
+          accepted_at?: string
+          company_id?: string | null
+          created_at?: string
+          declarations?: Json
+          document_code?: string
+          document_effective_date?: string
+          document_hash?: string
+          document_id?: string
+          document_title?: string
+          document_version?: string
+          id?: string
+          ip?: string | null
+          permissions?: Json
+          reason?: string | null
+          result?: string
+          role?: string | null
+          session_id?: string | null
+          sst_manager_id?: string | null
+          timezone?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string
+          user_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_acceptances_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legal_acceptances_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legal_acceptances_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "legal_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legal_acceptances_sst_manager_id_fkey"
+            columns: ["sst_manager_id"]
+            isOneToOne: false
+            referencedRelation: "sst_managers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_documents: {
+        Row: {
+          audience: string
+          code: string
+          content: string
+          content_hash: string
+          created_at: string
+          declarations: Json
+          effective_date: string
+          id: string
+          is_active: boolean
+          subtitle: string | null
+          summary: string | null
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          audience: string
+          code: string
+          content: string
+          content_hash: string
+          created_at?: string
+          declarations?: Json
+          effective_date: string
+          id?: string
+          is_active?: boolean
+          subtitle?: string | null
+          summary?: string | null
+          title: string
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          audience?: string
+          code?: string
+          content?: string
+          content_hash?: string
+          created_at?: string
+          declarations?: Json
+          effective_date?: string
+          id?: string
+          is_active?: boolean
+          subtitle?: string | null
+          summary?: string | null
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
       licensed_partners: {
         Row: {
           approved_at: string | null
@@ -1575,6 +1784,8 @@ export type Database = {
           pessoas_envolvidas: string | null
           pilares: Database["public"]["Enums"]["pilar_psicossocial"][]
           prioridade: Database["public"]["Enums"]["prioridade_denuncia"] | null
+          privacy_notice_hash: string | null
+          privacy_notice_version: string | null
           reporter_email: string | null
           reporter_name: string | null
           reporter_phone: string | null
@@ -1643,6 +1854,8 @@ export type Database = {
           pessoas_envolvidas?: string | null
           pilares?: Database["public"]["Enums"]["pilar_psicossocial"][]
           prioridade?: Database["public"]["Enums"]["prioridade_denuncia"] | null
+          privacy_notice_hash?: string | null
+          privacy_notice_version?: string | null
           reporter_email?: string | null
           reporter_name?: string | null
           reporter_phone?: string | null
@@ -1711,6 +1924,8 @@ export type Database = {
           pessoas_envolvidas?: string | null
           pilares?: Database["public"]["Enums"]["pilar_psicossocial"][]
           prioridade?: Database["public"]["Enums"]["prioridade_denuncia"] | null
+          privacy_notice_hash?: string | null
+          privacy_notice_version?: string | null
           reporter_email?: string | null
           reporter_name?: string | null
           reporter_phone?: string | null
