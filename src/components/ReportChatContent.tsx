@@ -32,6 +32,8 @@ export interface ReportMetadata {
   canal_de_contato?: string | null;
   aceite_politica_privacidade?: boolean;
   declaracao_de_boa_fe?: boolean;
+  privacy_notice_version?: string | null;
+  privacy_notice_hash?: string | null;
 }
 
 interface ReportChatProps {

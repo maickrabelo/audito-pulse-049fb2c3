@@ -39,15 +39,17 @@ import DownloadReportButton from '@/components/DownloadReportButton';
 import { QRCodeDownloader } from "@/components/QRCodeDownloader";
 import TrialBanner from '@/components/TrialBanner';
 import TrialExpiredOverlay from '@/components/TrialExpiredOverlay';
+import ConflictOfInterestDialog from '@/components/legal/ConflictOfInterestDialog';
 
 const COLORS = ['#0F3460', '#1A97B9', '#1E6F5C', '#D32626', '#E97E00', '#777777'];
 
 const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: string; hideNavigation?: boolean } = {}) => {
   const { id: urlCompanyParam } = useParams();
-  const { profile, role, isTrialExpired, trialEndsAt } = useRealAuth();
+  const { user, profile, role, isTrialExpired, trialEndsAt } = useRealAuth();
   const canEditReports = canWriteReports(role) || role === 'sst';
   const hidePersonalData = isCompanyScopeRole(role) && !canViewPersonalData(role);
   const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [conflictReport, setConflictReport] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [responseText, setResponseText] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -206,7 +208,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
     }
   };
 
-  const handleOpenReportDetails = async (report: any) => {
+  const loadReportDetails = async (report: any) => {
     // Fetch report updates
     const { data: updates } = await supabase
       .from('report_updates')
@@ -228,6 +230,37 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
     });
     setSelectedStatus(report.status);
     setIsDialogOpen(true);
+  };
+
+  const handleOpenReportDetails = async (report: any) => {
+    if (!user?.id) {
+      await loadReportDetails(report);
+      return;
+    }
+
+    const { data: declaration } = await supabase
+      .from('case_conflict_declarations')
+      .select('has_conflict')
+      .eq('report_id', report.id)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (declaration?.has_conflict) {
+      toast({
+        variant: 'destructive',
+        title: 'Caso bloqueado',
+        description:
+          'Você declarou impedimento nesta manifestação. O caso foi sinalizado para redirecionamento.',
+      });
+      return;
+    }
+
+    if (!declaration) {
+      setConflictReport(report);
+      return;
+    }
+
+    await loadReportDetails(report);
   };
 
   const getFileIcon = (type: string) => {
@@ -681,6 +714,21 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
           </div>
         </CardContent>
       </Card>
+
+      <ConflictOfInterestDialog
+        open={!!conflictReport}
+        reportId={conflictReport?.id ?? null}
+        trackingCode={conflictReport?.tracking_code}
+        userId={user?.id}
+        role={role}
+        onCancel={() => setConflictReport(null)}
+        onCleared={async () => {
+          const report = conflictReport;
+          setConflictReport(null);
+          if (report) await loadReportDetails(report);
+        }}
+        onConflict={() => setConflictReport(null)}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         {selectedReport && (

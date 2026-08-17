@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ParametrosCanalCard from "@/components/master/ParametrosCanalCard";
 import AiUsageCard from "@/components/master/AiUsageCard";
 import SocDataCard from "@/components/master/SocDataCard";
+import LegalAcceptancesCard from "@/components/master/LegalAcceptancesCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1107,6 +1108,7 @@ const MasterDashboard = () => {
                 <TabsTrigger value="parametros">Parâmetros NR-1</TabsTrigger>
                 <TabsTrigger value="ai-usage">Uso de IA</TabsTrigger>
                 <TabsTrigger value="soc">Dados SOC</TabsTrigger>
+                <TabsTrigger value="aceites">Aceites Legais</TabsTrigger>
 
               </TabsList>
               <Button variant="outline" size="sm" onClick={() => navigate('/triagem-amo')} className="ml-3">
@@ -1880,6 +1882,10 @@ const MasterDashboard = () => {
 
             <TabsContent value="soc">
               <SocDataCard />
+            </TabsContent>
+
+            <TabsContent value="aceites">
+              <LegalAcceptancesCard />
             </TabsContent>
 
 
