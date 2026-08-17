@@ -1884,6 +1884,10 @@ const MasterDashboard = () => {
               <SocDataCard />
             </TabsContent>
 
+            <TabsContent value="aceites">
+              <LegalAcceptancesCard />
+            </TabsContent>
+
 
 
             <TabsContent value="reports-cat">
