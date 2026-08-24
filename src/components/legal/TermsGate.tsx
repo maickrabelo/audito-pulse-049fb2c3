@@ -100,7 +100,7 @@ const TermsGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </DialogDescription>
               </DialogHeader>
 
-              <ScrollArea className="flex-1 min-h-0 border rounded-md p-4">
+              <ScrollArea className="flex-1 min-h-0 max-h-[55vh] border rounded-md p-4 overflow-y-auto">
                 <LegalDocumentContent document={document} />
               </ScrollArea>
 
