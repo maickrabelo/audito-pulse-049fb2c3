@@ -16,7 +16,93 @@ const splitRow = (line: string) =>
     .split('|')
     .map((c) => c.trim());
 
+const isDashLine = (line: string) => /^\s*-{3,}[-\s]*$/.test(line) && line.trim().length > 0;
+const hasColumnGaps = (line: string) => /-\s{1,}-/.test(line.trim());
+
+/** Limites das colunas a partir da linha de traços com espaços */
+const columnRanges = (line: string): Array<[number, number]> => {
+  const ranges: Array<[number, number]> = [];
+  const re = /-+/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(line))) ranges.push([m.index, m.index + m[0].length]);
+  return ranges;
+};
+
+const sliceRow = (line: string, ranges: Array<[number, number]>) =>
+  ranges.map(([start, end], idx) =>
+    (idx === ranges.length - 1 ? line.slice(start) : line.slice(start, end)).trim(),
+  );
+
+/** Tabela "simples/múltiplas linhas" do pandoc (bordas com traços) */
+const parseSimpleTable = (
+  lines: string[],
+  start: number,
+): { block: Block; next: number } | null => {
+  let i = start;
+  let ranges: Array<[number, number]> | null = null;
+  const headerLines: string[] = [];
+
+  if (hasColumnGaps(lines[i])) {
+    ranges = columnRanges(lines[i]);
+    i++;
+  } else {
+    i++;
+    while (i < lines.length && !isDashLine(lines[i])) {
+      headerLines.push(lines[i]);
+      i++;
+    }
+    if (i >= lines.length || !hasColumnGaps(lines[i])) return null;
+    ranges = columnRanges(lines[i]);
+    i++;
+  }
+
+  if (!ranges || ranges.length < 2) return null;
+
+  const rows: string[][] = [];
+  let current: string[] | null = null;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    if (isDashLine(line)) {
+      i++;
+      break;
+    }
+    if (!line.trim()) {
+      if (current) {
+        rows.push(current);
+        current = null;
+      }
+      i++;
+      continue;
+    }
+    const cells = sliceRow(line, ranges);
+    if (!current) current = cells;
+    else current = current.map((c, idx) => (cells[idx] ? (c ? `${c} ${cells[idx]}` : cells[idx]) : c));
+    i++;
+  }
+  if (current) rows.push(current);
+
+  const header = headerLines.length
+    ? headerLines
+        .filter((l) => l.trim())
+        .map((l) => sliceRow(l, ranges!))
+        .reduce((acc, cells) =>
+          acc.map((c, idx) => (cells[idx] ? `${c} ${cells[idx]}` : c)),
+        )
+    : null;
+
+  const all = header ? [header, ...rows] : rows;
+  const cleanedRows = all.filter((r) => r.some((c) => c.length > 0));
+  if (!cleanedRows.length) return null;
+
+  return {
+    block: { kind: 'table', rows: cleanedRows, hasHeader: !!header },
+    next: i,
+  };
+};
+
 /** Converte tabelas em grade (pandoc) e linhas de texto em blocos renderizáveis */
+
 const parseBlocks = (content: string): Block[] => {
   const lines = content.split('\n');
   const blocks: Block[] = [];
