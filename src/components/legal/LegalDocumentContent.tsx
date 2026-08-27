@@ -67,6 +67,16 @@ const parseBlocks = (content: string): Block[] => {
       continue;
     }
 
+    if (isDashLine(line)) {
+      const parsed = parseSimpleTable(lines, i);
+      if (parsed) {
+        blocks.push(parsed.block);
+        i = parsed.next;
+        continue;
+      }
+    }
+
+
     if (line.trim().length > 0) blocks.push({ kind: 'text', line: line.trim() });
     i++;
   }
