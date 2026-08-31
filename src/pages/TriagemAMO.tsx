@@ -41,7 +41,7 @@ interface Edicao {
 
 const FILA = ['AGUARDANDO_TRIAGEM', 'EM_TRIAGEM', 'AGUARDANDO_VALIDACAO_HUMANA', 'ALERTA_CRITICO_ATIVO', 'AGUARDANDO_COMPLEMENTACAO'] as const;
 
-const TriagemAMO = () => {
+const TriagemAMO = ({ embedded = false }: { embedded?: boolean }) => {
   const { role } = useRealAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -53,8 +53,9 @@ const TriagemAMO = () => {
   const [edits, setEdits] = useState<Record<string, Edicao>>({});
 
   useEffect(() => {
+    if (embedded) return;
     if (role && !['admin', 'triador_sst', 'dpo'].includes(role)) navigate('/dashboard');
-  }, [role, navigate]);
+  }, [role, navigate, embedded]);
 
   const load = async () => {
     setLoading(true);
@@ -368,7 +369,7 @@ const TriagemAMO = () => {
           );
         })}
       </main>
-      <Footer />
+      {!embedded && <Footer />}
     </div>
   );
 };
