@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import InternalUsersCard from "@/components/master/InternalUsersCard";
 import ParametrosCanalCard from "@/components/master/ParametrosCanalCard";
 import AiUsageCard from "@/components/master/AiUsageCard";
 import SocDataCard from "@/components/master/SocDataCard";
@@ -1109,6 +1110,7 @@ const MasterDashboard = () => {
                 <TabsTrigger value="ai-usage">Uso de IA</TabsTrigger>
                 <TabsTrigger value="soc">Dados SOC</TabsTrigger>
                 <TabsTrigger value="aceites">Aceites Legais</TabsTrigger>
+                <TabsTrigger value="internos">Usuários Internos</TabsTrigger>
 
               </TabsList>
               <Button variant="outline" size="sm" onClick={() => navigate('/triagem-amo')} className="ml-3">
@@ -1889,6 +1891,10 @@ const MasterDashboard = () => {
             </TabsContent>
 
 
+
+            <TabsContent value="internos">
+              <InternalUsersCard />
+            </TabsContent>
 
             <TabsContent value="reports-cat">
               <Card>
