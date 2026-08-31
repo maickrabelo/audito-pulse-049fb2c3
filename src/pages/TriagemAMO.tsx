@@ -41,7 +41,7 @@ interface Edicao {
 
 const FILA = ['AGUARDANDO_TRIAGEM', 'EM_TRIAGEM', 'AGUARDANDO_VALIDACAO_HUMANA', 'ALERTA_CRITICO_ATIVO', 'AGUARDANDO_COMPLEMENTACAO'] as const;
 
-const TriagemAMO = () => {
+const TriagemAMO = ({ embedded = false }: { embedded?: boolean }) => {
   const { role } = useRealAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -53,8 +53,9 @@ const TriagemAMO = () => {
   const [edits, setEdits] = useState<Record<string, Edicao>>({});
 
   useEffect(() => {
+    if (embedded) return;
     if (role && !['admin', 'triador_sst', 'dpo'].includes(role)) navigate('/dashboard');
-  }, [role, navigate]);
+  }, [role, navigate, embedded]);
 
   const load = async () => {
     setLoading(true);
@@ -159,14 +160,17 @@ const TriagemAMO = () => {
   const baixaConf = reports.filter(r => (r.confianca_ia ?? 0) < confiancaMinima).length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 space-y-6">
+    <div className={embedded ? '' : 'min-h-screen flex flex-col bg-background'}>
+      {!embedded && <Navbar />}
+      <main className={embedded ? 'space-y-6' : 'flex-1 container mx-auto px-4 py-8 space-y-6'}>
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/master-dashboard')} className="mb-2">
-              <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
-            </Button>
+            {!embedded && (
+              <Button variant="ghost" size="sm" onClick={() => navigate('/master-dashboard')} className="mb-2">
+                <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
+              </Button>
+            )}
+
             <h1 className="text-2xl font-bold">Triagem e validação humana</h1>
             <p className="text-sm text-muted-foreground">
               A saída da IA é sempre uma sugestão. A decisão final é sempre humana e registrada com versionamento.
@@ -365,7 +369,7 @@ const TriagemAMO = () => {
           );
         })}
       </main>
-      <Footer />
+      {!embedded && <Footer />}
     </div>
   );
 };

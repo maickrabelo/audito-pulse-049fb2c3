@@ -16,6 +16,7 @@ type UserRole =
   | 'comite'
   | 'dpo'
   | 'visualizador'
+  | 'triador_sst'
   | null;
 
 interface Profile {
@@ -144,6 +145,8 @@ export const RealAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       userRole === 'visualizador'
     ) {
       navigate('/dashboard');
+    } else if (userRole === 'triador_sst') {
+      navigate('/triagem-dashboard');
     } else if (userRole === 'sst') {
       navigate('/sst-dashboard');
     } else if (userRole === 'partner') {
