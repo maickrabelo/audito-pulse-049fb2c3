@@ -1,210 +1,289 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { logAiUsage } from "../_shared/ai-usage.ts";
+import {
+  aplicarGuardrailsSaida,
+  buildAnaSystemPrompt,
+  exigirEscopo,
+  neutralizarInjection,
+  SUMMARY_SYSTEM_PROMPT,
+  TenantScopeError,
+  TEMPLATES,
+  validarAnalysisResult,
+  CLASSE_TO_COMPETENCIA,
+  CLASSE_TO_AI_CLASSIFICATION,
+} from "../_shared/canal-escuta.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-session-id, x-company-id',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-session-id, x-company-id, x-case-id",
 };
 
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+
+const MODEL = "google/gemini-3.1-flash-lite";
+const MAX_TURNS = 8;
+const TIMEOUT_MS = 45_000;
+
+/** Só mensagens de usuário/assistente do próprio caso entram no contexto. */
+function prepararHistorico(messages: unknown): { role: string; content: string }[] {
+  if (!Array.isArray(messages)) return [];
+  const limpos = messages
+    .filter((m: any) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
+    .map((m: any) => ({ role: m.role as string, content: String(m.content).slice(0, 6000) }));
+  return limpos.slice(-MAX_TURNS);
+}
+
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  const inicio = Date.now();
+  let escopo: ReturnType<typeof exigirEscopo> | null = null;
 
   try {
-    const { messages } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const mode: "chat" | "summary" = body?.mode === "summary" ? "summary" : "chat";
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
+    if (!LOVABLE_API_KEY) return json({ error: "Serviço de IA indisponível no momento." }, 503);
 
-    // Get session ID and company ID from headers
-    const sessionId = req.headers.get('x-session-id');
-    const companyId = req.headers.get('x-company-id');
-
-    if (!sessionId) {
-      return new Response(
-        JSON.stringify({ error: "Session ID required" }), 
-        {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    // Initialize Supabase client with service role for rate limiting
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Check rate limit - 50 requests per hour per session
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    
-    const { data: rateLimitData, error: rateLimitError } = await supabase
-      .from('chat_rate_limits')
-      .select('request_count')
-      .eq('session_id', sessionId)
-      .gte('created_at', oneHourAgo)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (rateLimitError) {
-      console.error('Rate limit check error:', rateLimitError);
-    }
-
-    // Calculate total requests in the last hour
-    const { count } = await supabase
-      .from('chat_rate_limits')
-      .select('*', { count: 'exact', head: true })
-      .eq('session_id', sessionId)
-      .gte('created_at', oneHourAgo);
-
-    const requestCount = count || 0;
-
-    if (requestCount >= 50) {
-      console.log(`Rate limit exceeded for session ${sessionId}: ${requestCount} requests`);
-      return new Response(
-        JSON.stringify({ 
-          error: "Limite de requisições excedido. Por favor, aguarde antes de enviar mais mensagens." 
-        }), 
-        {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    // Record this request
-    await supabase
-      .from('chat_rate_limits')
-      .insert({
-        session_id: sessionId,
-        company_id: companyId,
-        request_count: 1,
+    // ---------------------------------------------------------------------
+    // Isolamento obrigatório: tenant + sessão + caso
+    // ---------------------------------------------------------------------
+    try {
+      escopo = exigirEscopo({
+        tenant_id: req.headers.get("x-company-id") || body?.company_id || "",
+        session_id: req.headers.get("x-session-id") || body?.session_id || "",
+        case_id: req.headers.get("x-case-id") || body?.case_id || "",
       });
+    } catch (e) {
+      if (e instanceof TenantScopeError) return json({ error: e.message }, 400);
+      throw e;
+    }
 
-    console.log(`Processing chat request for session ${sessionId} (${requestCount + 1}/50 requests)`);
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
 
-    // If the caller already provides a system message (e.g. summarization),
-    // respect it instead of forcing the "Ana" ombuds persona — otherwise the
-    // model keeps answering in-character and just echoes the transcript.
-    const callerHasSystem = Array.isArray(messages) && messages[0]?.role === "system";
-    const anaSystem = { 
-            role: "system", 
-            content: `Você é Ana, uma assistente virtual empática e profissional de uma ouvidoria corporativa.
-Seu papel é coletar informações sobre manifestações de forma sensível e confidencial.
+    // Tenant precisa existir — nunca aceitar company_id arbitrário.
+    const { data: tenant } = await supabase
+      .from("companies")
+      .select("id")
+      .eq("id", escopo.tenant_id)
+      .maybeSingle();
+    if (!tenant) return json({ error: "Empresa inválida para esta conversa." }, 403);
 
-============================================
-IDENTIDADE DO USUÁRIO (REGRA CRÍTICA E INEGOCIÁVEL)
-============================================
-- O usuário desta conversa é SEMPRE o MANIFESTANTE (a vítima ou uma testemunha do fato).
-- Você NÃO SABE o nome, cargo ou setor do usuário. A manifestação pode ser anônima. Nunca assuma a identidade dele.
-- QUALQUER nome, cargo, setor ou pessoa mencionada pelo usuário refere-se a TERCEIROS: o acusado, testemunhas ou outras pessoas envolvidas. NUNCA é o próprio usuário.
-- NUNCA se dirija ao usuário usando um nome próprio que apareceu na conversa. Não use vocativos com nome (ex: "Obrigada, Sandra"). Trate o usuário sempre por "você".
-- Ao confirmar dados sobre o acusado, deixe explícito que se refere a um terceiro. Exemplo: "Registrei que a conduta envolveu [Nome], do setor [X]. Correto?"
+    // ---------------------------------------------------------------------
+    // Rate limit por sessão (50/h)
+    // ---------------------------------------------------------------------
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count } = await supabase
+      .from("chat_rate_limits")
+      .select("*", { count: "exact", head: true })
+      .eq("session_id", escopo.session_id)
+      .gte("created_at", oneHourAgo);
 
-Faça apenas UMA pergunta por vez. Seja empática, breve (2-3 frases) e sem julgamentos. Trate o usuário sempre por "você".`
-    };
-    // Janela deslizante: em vez de reenviar todo o histórico (custo cresce ao
-    // quadrado), mantemos as últimas trocas e condensamos as antigas em uma
-    // nota curta de contexto.
-    const MAX_TURNS = 8;
-    const trimHistory = (msgs: any[]) => {
-      const system = msgs.filter((m) => m?.role === "system");
-      const rest = msgs.filter((m) => m?.role !== "system");
-      if (rest.length <= MAX_TURNS) return [...system, ...rest];
-      const older = rest.slice(0, rest.length - MAX_TURNS);
-      const recent = rest.slice(-MAX_TURNS);
-      const resumo = older
-        .filter((m) => m?.role === "user")
-        .map((m) => String(m.content ?? "").slice(0, 200))
-        .join(" | ")
-        .slice(0, 1500);
-      const nota = {
-        role: "system",
-        content: `Contexto anterior da conversa (pontos já relatados pelo usuário, resumidos): ${resumo}`,
-      };
-      return [...system, nota, ...recent];
-    };
+    if ((count || 0) >= 50) {
+      return json({ error: "Limite de mensagens atingido. Aguarde alguns minutos antes de continuar." }, 429);
+    }
 
-    const baseMessages = callerHasSystem ? messages : [anaSystem, ...messages];
-    const finalMessages = trimHistory(baseMessages);
-
-    const MODEL = "google/gemini-3.1-flash-lite";
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: finalMessages,
-      }),
+    await supabase.from("chat_rate_limits").insert({
+      session_id: escopo.session_id,
+      company_id: escopo.tenant_id,
+      request_count: 1,
     });
 
+    // ---------------------------------------------------------------------
+    // Sanitização de prompt injection (o relato legítimo é preservado)
+    // ---------------------------------------------------------------------
+    const historico = prepararHistorico(body?.messages);
+    const injectionPatterns: string[] = [];
+    const historicoSeguro = historico.map((m) => {
+      if (m.role !== "user") return m;
+      const r = neutralizarInjection(m.content);
+      if (r.detected) injectionPatterns.push(...r.patterns);
+      return { role: m.role, content: r.sanitized };
+    });
+
+    if (historicoSeguro.length === 0) {
+      return json({ error: "Nenhuma mensagem válida recebida." }, 400);
+    }
+
+    // Data/hora sempre do backend
+    const nowIso = new Date().toISOString();
+
+    const systemPrompt = mode === "summary"
+      ? SUMMARY_SYSTEM_PROMPT
+      : buildAnaSystemPrompt({ nowIso, timezone: "America/Sao_Paulo", caseId: escopo.case_id });
+
+    const userPayload = mode === "summary"
+      ? [{
+        role: "user",
+        content: "Transcrição da conversa (relatos, não fatos comprovados):\n\n" +
+          historicoSeguro
+            .map((m) => `${m.role === "user" ? "Manifestante" : "Ana"}: ${m.content}`)
+            .join("\n\n"),
+      }]
+      : historicoSeguro;
+
+    // ---------------------------------------------------------------------
+    // Chamada ao gateway com timeout controlado
+    // ---------------------------------------------------------------------
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    let response: Response;
+    try {
+      response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "Lovable-API-Key": LOVABLE_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages: [{ role: "system", content: systemPrompt }, ...userPayload],
+          ...(mode === "chat" ? { response_format: { type: "json_object" } } : {}),
+        }),
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      const abortado = (e as Error)?.name === "AbortError";
+      console.error("chat-report gateway failure", e);
+      return json({
+        error: abortado
+          ? "Não consegui concluir o processamento neste momento. Tente novamente."
+          : "Não consegui processar sua mensagem agora.",
+        timeout: abortado,
+      }, 504);
+    }
+    clearTimeout(timer);
+
     if (!response.ok) {
+      const texto = await response.text();
+      console.error("AI gateway error", response.status, texto);
       if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Limite de requisições excedido. Por favor, tente novamente em alguns instantes." }), 
-          {
-            status: 429,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
+        return json({ error: "Muitas solicitações no momento. Tente novamente em instantes." }, 429);
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Serviço temporariamente indisponível. Por favor, tente novamente mais tarde." }), 
-          {
-            status: 402,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
+      if (response.status === 402 || response.status === 403) {
+        return json({ error: "Serviço de IA temporariamente indisponível. Tente novamente mais tarde." }, 503);
       }
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
-      return new Response(
-        JSON.stringify({ error: "Erro ao processar mensagem" }), 
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+      return json({ error: "Não consegui processar sua mensagem agora." }, 502);
     }
 
     const data = await response.json();
-    console.log("AI response received successfully");
-
     await logAiUsage({
       functionName: "chat-report",
       model: MODEL,
       usage: data?.usage,
-      companyId: req.headers.get("x-company-id"),
+      companyId: escopo.tenant_id,
+      metadata: { mode, case_id: escopo.case_id },
     });
-    
-    // Clean up old rate limit records (optional, can be done periodically)
-    if (Math.random() < 0.1) { // 10% chance to clean up
-      const { error: cleanupError } = await supabase.rpc('cleanup_old_rate_limits');
-      if (cleanupError) {
-        console.error('Cleanup error:', cleanupError);
-      }
+
+    const bruto: string = data?.choices?.[0]?.message?.content ?? "";
+
+    // -------------------------- modo resumo ------------------------------
+    if (mode === "summary") {
+      const { text, violations } = aplicarGuardrailsSaida(
+        bruto.replace(/[*#`]/g, ""),
+      );
+      await registrarAuditoria(supabase, {
+        escopo,
+        mode,
+        injectionPatterns,
+        violations,
+        analysis: null,
+        latency: Date.now() - inicio,
+      });
+      return json({ success: true, summary: text });
     }
-    
-    return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+
+    // --------------------------- modo chat -------------------------------
+    let parsed: any = {};
+    try {
+      parsed = JSON.parse(bruto.replace(/^```json\s*/i, "").replace(/```$/, "").trim());
+    } catch {
+      parsed = {};
+    }
+
+    const { valid, errors, analysis } = validarAnalysisResult(parsed?.analysis_result);
+    const respostaBruta = typeof parsed?.reply === "string" && parsed.reply.trim()
+      ? parsed.reply
+      : TEMPLATES.insuficiente;
+
+    const { text: reply, violations } = aplicarGuardrailsSaida(
+      respostaBruta.replace(/[*#`]/g, ""),
+      { confirmedActions: [] }, // nenhuma integração de ação confirmada existe hoje
+    );
+
+    await registrarAuditoria(supabase, {
+      escopo,
+      mode,
+      injectionPatterns,
+      violations,
+      analysis,
+      schemaValido: valid,
+      schemaErros: errors,
+      latency: Date.now() - inicio,
+    });
+
+    // O analysis_result completo é interno; o cliente recebe apenas o controle de UI.
+    return json({
+      success: true,
+      reply,
+      server_time: nowIso,
+      control: {
+        can_finalize: analysis.can_finalize,
+        critical_crisis: analysis.critical_crisis,
+        urgencia_preliminar: analysis.urgencia,
+        information_sufficient: analysis.information_sufficient,
+        human_review_required: true,
+      },
+      // Classificação preliminar (sujeita a validação humana) para o submit.
+      preliminary: {
+        class_principal: analysis.class_principal,
+        competencia: CLASSE_TO_COMPETENCIA[analysis.class_principal],
+        ai_classification: CLASSE_TO_AI_CLASSIFICATION[analysis.class_principal],
+      },
     });
   } catch (error) {
-    console.error("Error in chat-report function:", error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Erro desconhecido" }), 
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    console.error("chat-report error", error);
+    return json({ error: "Não consegui processar sua mensagem agora." }, 500);
   }
 });
+
+async function registrarAuditoria(supabase: any, p: {
+  escopo: { tenant_id: string; session_id: string; case_id: string };
+  mode: string;
+  injectionPatterns: string[];
+  violations: string[];
+  analysis: unknown;
+  schemaValido?: boolean;
+  schemaErros?: string[];
+  latency: number;
+}) {
+  try {
+    await supabase.from("chat_ai_audit").insert({
+      company_id: p.escopo.tenant_id,
+      session_id: p.escopo.session_id,
+      case_id: p.escopo.case_id,
+      mode: p.mode,
+      model: MODEL,
+      injection_detected: p.injectionPatterns.length > 0,
+      injection_patterns: p.injectionPatterns,
+      guardrail_violations: p.violations,
+      schema_valid: p.schemaValido ?? true,
+      schema_errors: p.schemaErros ?? [],
+      analysis_result: p.analysis,
+      latency_ms: p.latency,
+    });
+  } catch (e) {
+    console.error("chat_ai_audit insert failed", e);
+  }
+}
