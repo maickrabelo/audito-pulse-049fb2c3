@@ -307,11 +307,9 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
         .map(m => `${m.role === "user" ? "Manifestante" : "Ouvidoria"}: ${m.content}`)
         .join("\n\n");
 
-      // Get classification from previous analysis
-      const classification = (window as any).__reportClassification || { 
-        category: "Outros", 
-        department: null 
-      };
+      // Classificação preliminar da taxonomia oficial (sujeita a validação humana).
+      const categoria = TAXONOMIA_LABELS[preliminary?.class_principal ?? "INSUFICIENTE"] ??
+        TAXONOMIA_LABELS.INSUFICIENTE;
 
       // Use the submit-report edge function instead of direct insert
       const { data, error } = await supabase.functions.invoke('submit-report', {
@@ -320,8 +318,9 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
           title: summary.substring(0, 100) || "Manifestação via chat",
           description: conversationText,
           ai_summary: summary,
-          category: classification.category,
-          department: classification.department,
+          category: categoria,
+          department: null,
+
           is_anonymous: true,
           attachments: uploadedAttachments,
           snapshot_unidade: snapshot?.unidade || null,
