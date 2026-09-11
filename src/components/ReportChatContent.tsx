@@ -11,6 +11,16 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
+// Taxonomia oficial do Canal de Escuta (rótulos de exibição).
+const TAXONOMIA_LABELS: Record<string, string> = {
+  "4A": "SST/NR-1",
+  "4B": "Fora do escopo SST",
+  "4B-CR": "Possível âmbito criminal",
+  "4C": "Mista",
+  INSUFICIENTE: "Informações Insuficientes",
+};
+
+
 interface ReportSnapshot {
   unidade?: string | null;
   setor?: string | null;
