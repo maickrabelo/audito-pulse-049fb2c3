@@ -524,12 +524,22 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
         
         <CardFooter className="flex justify-between border-t pt-4">
           {!isComplete ? (
-            <div className="w-full flex justify-end">
-              <Button 
+            <div className="w-full flex flex-col gap-2 items-end">
+              {criticalCrisis && (
+                <p className="text-sm text-destructive text-left w-full">
+                  Se houver risco imediato à sua segurança ou à de alguém, procure ajuda imediata
+                  pelos serviços de emergência. Este canal não substitui atendimento de emergência.
+                </p>
+              )}
+              {!criticalCrisis && !canFinalize && (
+                <p className="text-xs text-muted-foreground text-left w-full">
+                  Continue o relato: a finalização é liberada quando houver informações mínimas suficientes.
+                </p>
+              )}
+              <Button
                 onClick={handleFinishReport}
-                disabled={isLoading || messages.length < 5}
-                variant={messages.length < 5 ? "outline" : "default"}
-                className="ml-auto"
+                disabled={isLoading || criticalCrisis || !canFinalize}
+                variant={!canFinalize ? "outline" : "default"}
               >
                 {isLoading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -537,6 +547,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
                 Finalizar Manifestação
               </Button>
             </div>
+
           ) : (
             <div className="w-full flex justify-between">
               <Button 
