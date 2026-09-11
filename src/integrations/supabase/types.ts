@@ -458,6 +458,72 @@ export type Database = {
           },
         ]
       }
+      chat_ai_audit: {
+        Row: {
+          analysis_result: Json | null
+          case_id: string
+          company_id: string
+          created_at: string
+          guardrail_violations: Json
+          id: string
+          injection_detected: boolean
+          injection_patterns: Json
+          latency_ms: number | null
+          mode: string
+          model: string
+          schema_errors: Json
+          schema_valid: boolean
+          session_id: string
+        }
+        Insert: {
+          analysis_result?: Json | null
+          case_id: string
+          company_id: string
+          created_at?: string
+          guardrail_violations?: Json
+          id?: string
+          injection_detected?: boolean
+          injection_patterns?: Json
+          latency_ms?: number | null
+          mode?: string
+          model: string
+          schema_errors?: Json
+          schema_valid?: boolean
+          session_id: string
+        }
+        Update: {
+          analysis_result?: Json | null
+          case_id?: string
+          company_id?: string
+          created_at?: string
+          guardrail_violations?: Json
+          id?: string
+          injection_detected?: boolean
+          injection_patterns?: Json
+          latency_ms?: number | null
+          mode?: string
+          model?: string
+          schema_errors?: Json
+          schema_valid?: boolean
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_ai_audit_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_ai_audit_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_rate_limits: {
         Row: {
           company_id: string | null
@@ -2939,6 +3005,7 @@ export type Database = {
         | "4B_out_of_scope"
         | "4C_mixed"
         | "4D_grave_immediate"
+        | "4B_cr"
       risco_imediato: "SIM" | "NAO" | "INDETERMINADO"
       survey_question_type:
         | "likert"
@@ -3132,6 +3199,7 @@ export const Constants = {
         "4B_out_of_scope",
         "4C_mixed",
         "4D_grave_immediate",
+        "4B_cr",
       ],
       risco_imediato: ["SIM", "NAO", "INDETERMINADO"],
       survey_question_type: [
