@@ -53,7 +53,7 @@ interface Attachment {
 const initialMessages = [
   {
     role: "system",
-    content: "Olá, sou Ana, assistente virtual da ouvidoria. Estou aqui para ouvir sua manifestação de forma confidencial. Pode me contar o que aconteceu com detalhes. Em que posso ajudar?",
+    content: "Olá, sou Ana, assistente do Canal de Escuta. Estou aqui para ouvir seu relato com confidencialidade e identidade protegida, conforme o Aviso de Privacidade. Pode me contar o que aconteceu.",
   },
 ];
 
@@ -65,6 +65,11 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
   const [summary, setSummary] = useState("");
   const [reportId, setReportId] = useState("");
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substring(7)}`);
+  const [caseId] = useState(() => (globalThis.crypto?.randomUUID?.() ?? `case_${Date.now()}`));
+  // Gating de finalização: só o backend decide quando é seguro finalizar.
+  const [canFinalize, setCanFinalize] = useState(false);
+  const [criticalCrisis, setCriticalCrisis] = useState(false);
+  const [preliminary, setPreliminary] = useState<{ class_principal?: string } | null>(null);
   const [showIdDialog, setShowIdDialog] = useState(false);
   const [showTrackingDialog, setShowTrackingDialog] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -74,6 +79,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
 
   // Removed automatic scrolling - user can scroll manually if needed
 
