@@ -26,6 +26,7 @@ interface ReportRow {
 const LABELS: Record<string, string> = {
   '4A_sst': '4A SST',
   '4B_out_of_scope': '4B Fora de escopo',
+  '4B_cr': '4B-CR Possível âmbito criminal',
   '4C_mixed': '4C Misto',
   pending_ai: 'Pendente IA',
 };
@@ -97,6 +98,7 @@ const TriadorDashboard = () => {
                     { k: 'pending_ai', label: 'Pendente IA' },
                     { k: '4A_sst', label: '4A — SST' },
                     { k: '4B_out_of_scope', label: '4B — Fora de escopo' },
+                    { k: '4B_cr', label: '4B-CR — Possível âmbito criminal' },
                     { k: '4C_mixed', label: '4C — Misto' },
                     { k: 'risco_grave', label: 'Risco Grave' },
                   ].map(o => {
@@ -125,6 +127,7 @@ const TriadorDashboard = () => {
                       const validated = !!r.amo_validated_classification;
                       const color = cls === '4C_mixed' ? 'bg-amber-100 text-amber-800 border-amber-300'
                         : cls === '4B_out_of_scope' ? 'bg-gray-100 text-gray-700 border-gray-300'
+                        : cls === '4B_cr' ? 'bg-orange-100 text-orange-800 border-orange-300'
                           : cls === '4A_sst' ? 'bg-blue-100 text-blue-800 border-blue-300'
                             : 'bg-yellow-50 text-yellow-800 border-yellow-300';
                       return (
