@@ -228,14 +228,21 @@ export function aplicarGuardrailsSaida(
     ...REGRAS_CLINICAS,
   ];
 
-  for (const { id, re, replacement } of regras) {
+  const NEGACAO = /\b(n[ãa]o|nunca|jamais|sem)\b[^.!?\n]{0,80}$/i;
+
+  for (const { id, re, replacement, permiteNegacao } of regras) {
     re.lastIndex = 0;
-    if (re.test(out)) {
-      violations.push(id);
-      re.lastIndex = 0;
-      out = out.replace(re, replacement);
-    }
+    let alterou = false;
+    out = out.replace(re, (match: string, ...args: unknown[]) => {
+      const offset = args[args.length - 2] as number;
+      const antes = out.slice(Math.max(0, offset - 90), offset);
+      if (permiteNegacao && NEGACAO.test(antes)) return match;
+      alterou = true;
+      return replacement;
+    });
+    if (alterou) violations.push(id);
   }
+
 
   // Nunca expor JSON interno ao usuário.
   if (/"analysis_result"|"class_principal"/.test(out)) {
