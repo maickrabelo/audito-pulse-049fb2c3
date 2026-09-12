@@ -229,14 +229,16 @@ describe("multi-tenant e isolamento de caso", () => {
   });
 });
 
-test("privacidade negada não é reescrita (esclarecimento correto)", () => {
+describe("privacidade negada-vs-afirmada", () => {
+  it("não reescreve esclarecimento negado" não é reescrita (esclarecimento correto)", () => {
   const r = aplicarGuardrailsSaida("Não posso prometer anonimato absoluto, mas sua identidade é protegida.");
   expect(r.violations).toEqual([]);
   expect(r.text).toContain("Não posso prometer anonimato absoluto");
 });
 
-test("privacidade afirmada continua bloqueada", () => {
+  it("bloqueia afirmação absoluta", () => {
   const r = aplicarGuardrailsSaida("Aqui você tem anonimato absoluto.");
   expect(r.violations).toContain("anonimato_absoluto");
   expect(r.text).not.toContain("anonimato absoluto");
+});
 });
