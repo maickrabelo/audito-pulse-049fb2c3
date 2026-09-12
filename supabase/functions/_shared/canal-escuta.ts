@@ -191,7 +191,7 @@ const REGRAS_ACAO_FICTICIA: Regra[] = [
 ];
 
 const REGRAS_JURIDICAS: Regra[] = [
-  { id: "verdicto_juridico", re: /[^.!?\n]*\b(houve\s+(crime|fraude|ass[ée]dio(\s+moral|\s+sexual)?)|[ée]\s+(culpad[oa]|criminos[oa])|configura\s+(crime|ass[ée]dio|fraude)|[ée]\s+(procedente|improcedente)|den[úu]ncia\s+[ée]\s+(verdadeira|falsa))\b[^.!?\n]*[.!?]?/gi, replacement: TEMPLATES.culpa },
+  { id: "verdicto_juridico", re: /[^.!?\n]*(houve\s+(crime|fraude|ass[ée]dio(\s+moral|\s+sexual)?)|(?:[ée]|eh)\s+(culpad[oa]|criminos[oa]|procedente|improcedente)|configura\s+(crime|ass[ée]dio|fraude)|den[úu]ncia\s+(?:[ée]|eh)\s+(verdadeira|falsa))[^.!?\n]*[.!?]?/gi, replacement: TEMPLATES.culpa },
   { id: "punicao", re: /[^.!?\n]*\b(deve\s+ser\s+(demitid[oa]|punid[oa]|afastad[oa])|justa\s+causa|a\s+empresa\s+[ée]\s+obrigada\s+a)\b[^.!?\n]*[.!?]?/gi, replacement: TEMPLATES.culpa },
 ];
 
