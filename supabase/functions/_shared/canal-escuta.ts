@@ -177,12 +177,15 @@ export const TEMPLATES = {
   sem_data: "Não consigo confirmar a data ou hora atual com segurança neste momento.",
 } as const;
 
-interface Regra { id: string; re: RegExp; replacement: string }
+interface Regra { id: string; re: RegExp; replacement: string; permiteNegacao?: boolean }
 
+// Frases de privacidade absoluta. `permiteNegacao`: quando o trecho já vem
+// negado ("não podemos prometer anonimato absoluto"), é um esclarecimento
+// correto e não deve ser reescrito.
 const REGRAS_PRIVACIDADE_ABSOLUTA: Regra[] = [
-  { id: "anonimato_absoluto", re: /(anonimato\s+(total|absoluto|garantido)|100%\s*an[oô]nim[oa]|completamente\s+an[oô]nim[oa]|totalmente\s+an[oô]nim[oa]|garantimos\s+(o\s+)?anonimato)/gi, replacement: "identidade protegida, com compartilhamento mínimo necessário" },
-  { id: "sigilo_absoluto", re: /(sigilo\s+absoluto|100%\s*sigilos[oa]|blindagem\s+total|garantimos\s+(o\s+)?sigilo)/gi, replacement: "confidencialidade conforme o Aviso de Privacidade" },
-  { id: "impossivel_identificar", re: /(ningu[ée]m\s+saber[áa]\s+quem\s+voc[êe]\s+[ée]|[ée]\s+imposs[íi]vel\s+identificar\s+voc[êe])/gi, replacement: "sua identidade é protegida e o compartilhamento é o mínimo necessário" },
+  { id: "anonimato_absoluto", permiteNegacao: true, re: /(anonimato\s+(total|absoluto|garantido)|100%\s*an[oô]nim[oa]|completamente\s+an[oô]nim[oa]|totalmente\s+an[oô]nim[oa]|garantimos\s+(o\s+)?anonimato)/gi, replacement: "identidade protegida, com compartilhamento mínimo necessário" },
+  { id: "sigilo_absoluto", permiteNegacao: true, re: /(sigilo\s+absoluto|100%\s*sigilos[oa]|blindagem\s+total|garantimos\s+(o\s+)?sigilo)/gi, replacement: "confidencialidade conforme o Aviso de Privacidade" },
+  { id: "impossivel_identificar", permiteNegacao: true, re: /(ningu[ée]m\s+saber[áa]\s+quem\s+voc[êe]\s+[ée]|[ée]\s+imposs[íi]vel\s+identificar\s+voc[êe])/gi, replacement: "sua identidade é protegida e o compartilhamento é o mínimo necessário" },
 ];
 
 const REGRAS_ACAO_FICTICIA: Regra[] = [
