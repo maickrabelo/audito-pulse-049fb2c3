@@ -82,6 +82,7 @@ SAÍDA: SOMENTE JSON válido, sem markdown, com exatamente estas chaves:
 export interface SaidaIA {
   classificacao_principal: Competencia;
   risco_grave_imediato: Risco;
+  possivel_ambito_criminal: boolean;
   prioridade: Prioridade;
   pilares_psicossociais: Pilar[];
   parte_competencia_amo: string | null;
@@ -173,6 +174,7 @@ export function validarSaidaIA(raw: unknown, prioridadeIndeterminado: Prioridade
     saida: {
       classificacao_principal: competencia,
       risco_grave_imediato: risco,
+      possivel_ambito_criminal: o.possivel_ambito_criminal === true,
       prioridade,
       pilares_psicossociais: pilares,
       parte_competencia_amo: parteAmo,
