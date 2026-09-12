@@ -121,7 +121,7 @@ const INJECTION_PATTERNS: { id: string; re: RegExp }[] = [
   { id: "new_role", re: /(agora\s+voc[êe]\s+[ée]|a\s+partir\s+de\s+agora\s+voc[êe]\s+[ée])\s+(administrador|admin|root|desenvolvedor|sistema|outro)/gi },
   { id: "disable_rules", re: /(desative|desabilite|esque[çc]a|remova)\s+(suas\s+)?(regras|restri[çc][õo]es|filtros|guardrails)/gi },
   { id: "reveal_prompt", re: /(revele|mostre|imprima|repita|qual\s+[ée])\s+(o\s+)?(seu\s+)?(system\s*prompt|prompt\s+do\s+sistema|instru[çc][õo]es\s+internas|prompt\s+interno)/gi },
-  { id: "authority_claim", re: /\b(sou|falo\s+como|aqui\s+[ée]\s+o)\s+(o\s+|a\s+)?(diretor|diretora|dpo|jur[ií]dico|advogad[oa]|administrador|admin|de\s+ti|do\s+ti|presidente|ceo)\b/gi },
+  { id: "authority_claim", re: /\b(sou|falo\s+como|aqui\s+[ée]\s+o)\s+(o\s+|a\s+|d[oa]\s+)?(diretor|diretora|dpo|jur[ií]dico|advogad[oa]|administrador|admin|de\s+ti|do\s+ti|presidente|ceo)\b/gi },
   { id: "authorization_claim", re: /\b(o\s+)?(dpo|jur[ií]dico|diretor|meu\s+advogado|a\s+diretoria)\s+(autorizou|liberou|permitiu|aprovou)\b/gi },
   { id: "test_env_claim", re: /([ée]\s+(apenas\s+)?(um\s+)?(ambiente\s+de\s+)?teste|modo\s+de\s+teste|isto\s+[ée]\s+um\s+teste\s+interno)/gi },
   { id: "prompt_tag", re: /<\/?\s*(system|assistant|developer)\s*>/gi },
