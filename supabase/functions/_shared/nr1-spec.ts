@@ -70,8 +70,10 @@ CONSISTÊNCIA: PT-00 nunca coexiste com outros; EMPRESA_CLIENTE sem SST usa ["PT
 
 DOCUMENTOS SUGERIDOS conforme o tema: sobrecarga/metas -> escala, controle de jornada, distribuição de tarefas, dimensionamento, metas e histórico; jornada/pausas -> espelho de ponto, banco de horas, registro de pausas, acordo coletivo; acúmulo de funções -> descrição de cargo, organograma, quadro de pessoal; mudança organizacional -> comunicados, plano, treinamento, atas; retorno ao trabalho -> ASO, restrições, plano de reintegração; ergonomia -> AET, PGR, laudos, manutenção, fotos do posto; autonomia/comunicação -> fluxos de decisão, atas, pesquisa de clima, feedback, treinamento de liderança.
 
+POSSÍVEL ÂMBITO CRIMINAL: marque possivel_ambito_criminal=true quando houver elementos que POSSAM indicar ilícito (furto, desvio, fraude, agressão, ameaça, corrupção). Isso nunca confirma crime, autoria ou culpa; é sinalização preliminar sujeita a validação humana.
+
 SAÍDA: SOMENTE JSON válido, sem markdown, com exatamente estas chaves:
-{"classificacao_principal":"SST_NR1"|"EMPRESA_CLIENTE"|"DENUNCIA_MISTA"|"INFORMACOES_INSUFICIENTES","risco_grave_imediato":"SIM"|"NAO"|"INDETERMINADO","prioridade":"CRITICA"|"ALTA"|"MODERADA"|"BAIXA","pilares_psicossociais":["PT-0X"],"parte_competencia_amo":string|null,"parte_competencia_empresa":string|null,"justificativa_classificacao":string,"trechos_relevantes":[string],"documentos_sugeridos":[string],"dados_faltantes":[string],"acao_recomendada":[string],"confianca":0-100,"validacao_humana":"OBRIGATORIA"}`;
+{"classificacao_principal":"SST_NR1"|"EMPRESA_CLIENTE"|"DENUNCIA_MISTA"|"INFORMACOES_INSUFICIENTES","risco_grave_imediato":"SIM"|"NAO"|"INDETERMINADO","possivel_ambito_criminal":true|false,"prioridade":"CRITICA"|"ALTA"|"MODERADA"|"BAIXA","pilares_psicossociais":["PT-0X"],"parte_competencia_amo":string|null,"parte_competencia_empresa":string|null,"justificativa_classificacao":string,"trechos_relevantes":[string],"documentos_sugeridos":[string],"dados_faltantes":[string],"acao_recomendada":[string],"confianca":0-100,"validacao_humana":"OBRIGATORIA"}`;
 
 
 // ---------------------------------------------------------------------------
