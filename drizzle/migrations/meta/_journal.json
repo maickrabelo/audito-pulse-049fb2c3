@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789171104287,
+      "tag": "0000_chat_ai_audit_and_4bcr",
+      "breakpoints": true
+    }
+  ]
+}

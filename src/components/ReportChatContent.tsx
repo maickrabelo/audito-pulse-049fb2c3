@@ -11,6 +11,16 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
+// Taxonomia oficial do Canal de Escuta (rótulos de exibição).
+const TAXONOMIA_LABELS: Record<string, string> = {
+  "4A": "SST/NR-1",
+  "4B": "Fora do escopo SST",
+  "4B-CR": "Possível âmbito criminal",
+  "4C": "Mista",
+  INSUFICIENTE: "Informações Insuficientes",
+};
+
+
 interface ReportSnapshot {
   unidade?: string | null;
   setor?: string | null;
@@ -53,7 +63,7 @@ interface Attachment {
 const initialMessages = [
   {
     role: "system",
-    content: "Olá, sou Ana, assistente virtual da ouvidoria. Estou aqui para ouvir sua manifestação de forma confidencial. Pode me contar o que aconteceu com detalhes. Em que posso ajudar?",
+    content: "Olá, sou Ana, assistente do Canal de Escuta. Estou aqui para ouvir seu relato com confidencialidade e identidade protegida, conforme o Aviso de Privacidade. Pode me contar o que aconteceu.",
   },
 ];
 
@@ -65,6 +75,11 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
   const [summary, setSummary] = useState("");
   const [reportId, setReportId] = useState("");
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substring(7)}`);
+  const [caseId] = useState(() => (globalThis.crypto?.randomUUID?.() ?? `case_${Date.now()}`));
+  // Gating de finalização: só o backend decide quando é seguro finalizar.
+  const [canFinalize, setCanFinalize] = useState(false);
+  const [criticalCrisis, setCriticalCrisis] = useState(false);
+  const [preliminary, setPreliminary] = useState<{ class_principal?: string } | null>(null);
   const [showIdDialog, setShowIdDialog] = useState(false);
   const [showTrackingDialog, setShowTrackingDialog] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -74,6 +89,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
 
   // Removed automatic scrolling - user can scroll manually if needed
 
@@ -198,63 +214,36 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
 
   const handleSendMessage = async () => {
     if (input.trim() === "") return;
-    
-    const userMessage = {
-      role: "user",
-      content: input,
-    };
-    
+
+    const userMessage = { role: "user", content: input };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
 
     try {
-      console.log("Sending message to AI...");
-      
       const { data, error } = await supabase.functions.invoke('chat-report', {
-        body: { 
-          messages: updatedMessages.filter(m => m.role !== "system" || m.content.includes("Ana"))
+        body: {
+          mode: 'chat',
+          case_id: caseId,
+          messages: updatedMessages.filter(m => m.role === "user" || m.role === "assistant"),
         },
         headers: {
           'x-session-id': sessionId,
-          'x-company-id': companyId || ''
+          'x-company-id': companyId || '',
+          'x-case-id': caseId,
         }
       });
 
-      if (error) {
-        console.error("Error calling chat function:", error);
-        throw error;
-      }
+      if (error) throw error;
+      if (!data?.reply) throw new Error(data?.error || "Resposta inválida");
 
-      if (!data || !data.choices || !data.choices[0]) {
-        throw new Error("Resposta inválida da IA");
-      }
+      setMessages(prev => [...prev, { role: "assistant" as const, content: data.reply }]);
 
-      // Remove markdown formatting characters from AI response
-      const cleanContent = data.choices[0].message.content
-        .replace(/\*\*/g, '')  // Remove bold markers
-        .replace(/\*/g, '')    // Remove italic markers
-        .replace(/#{1,6}\s/g, '') // Remove heading markers
-        .replace(/`/g, '');    // Remove code markers
-
-      const aiResponse = {
-        role: "assistant" as const,
-        content: cleanContent,
-      };
-      
-      console.log("AI response received:", aiResponse.content);
-      setMessages(prev => [...prev, aiResponse]);
-      
-      // Show finish button hint after several exchanges
-      if (updatedMessages.filter(m => m.role === "user").length >= 3 && !isComplete) {
-        setTimeout(() => {
-          setMessages(prev => [...prev, {
-            role: "system",
-            content: "Para finalizar a manifestação e gerar o relatório, clique no botão 'Finalizar Manifestação' abaixo."
-          }]);
-        }, 1000);
-      }
+      // Controle de UI vem exclusivamente do backend (nunca do modelo direto).
+      setCanFinalize(!!data.control?.can_finalize);
+      setCriticalCrisis(!!data.control?.critical_crisis);
+      setPreliminary(data.preliminary || null);
     } catch (error) {
       console.error("Error in handleSendMessage:", error);
       toast({
@@ -262,125 +251,35 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
         description: "Não foi possível processar sua mensagem. Por favor, tente novamente.",
         variant: "destructive",
       });
-      
-      // Remove the user message if there was an error
       setMessages(messages);
     } finally {
       setIsLoading(false);
-      // Focus back on input
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   };
 
   const handleFinishReport = async () => {
     setIsLoading(true);
-    
+
     try {
-      console.log("Generating report summary...");
-      
-      // Extract only the conversation between user and assistant
-      const conversationText = messages
-        .filter(m => m.role !== "system")
-        .map(m => `${m.role === "user" ? "Manifestante" : "Ouvidoria"}: ${m.content}`)
-        .join("\n\n");
-      
-      console.log("Conversation text:", conversationText);
-      
-      // Send to AI with a specific system prompt for summarization
       const { data, error } = await supabase.functions.invoke('chat-report', {
-        body: { 
-          messages: [
-            {
-              role: "system",
-              content: `Você é um analista de ouvidoria especializado em criar resumos executivos de manifestações.
-              Sua tarefa é analisar a conversa completa e criar um resumo profissional e imparcial.
-              
-              O resumo deve conter:
-              1. Natureza da manifestação (tipo de incidente)
-              2. Quando e onde ocorreu
-              3. Pessoas envolvidas (sem nomes, use "manifestante", "superior", "colega", etc)
-              4. Gravidade e impacto
-              
-              Use linguagem formal, objetiva e imparcial. Máximo de 4-5 frases.`
-            },
-            {
-              role: "user",
-              content: `Analise esta conversa de manifestação e crie um resumo executivo:\n\n${conversationText}`
-            }
-          ]
+        body: {
+          mode: 'summary',
+          case_id: caseId,
+          messages: messages.filter(m => m.role === "user" || m.role === "assistant"),
         },
         headers: {
           'x-session-id': sessionId,
-          'x-company-id': companyId || ''
+          'x-company-id': companyId || '',
+          'x-case-id': caseId,
         }
       });
 
-      if (error) {
-        console.error("Error generating summary:", error);
-        throw error;
-      }
+      if (error) throw error;
+      if (!data?.summary) throw new Error(data?.error || "Não foi possível gerar o resumo");
 
-      if (!data || !data.choices || !data.choices[0]) {
-        throw new Error("Resposta inválida ao gerar resumo");
-      }
-
-      // Remove markdown formatting from summary
-      const cleanSummary = data.choices[0].message.content
-        .replace(/\*\*/g, '')  // Remove bold markers
-        .replace(/\*/g, '')    // Remove italic markers
-        .replace(/#{1,6}\s/g, '') // Remove heading markers
-        .replace(/`/g, '');    // Remove code markers
-
-      console.log("Summary generated:", cleanSummary);
-      
-      // Extract category and department from conversation
-      const { data: classificationData, error: classificationError } = await supabase.functions.invoke('chat-report', {
-        body: { 
-          messages: [
-            {
-              role: "system",
-              content: `Você é um classificador de manifestações. Analise a conversa e retorne APENAS um JSON válido (sem markdown) com:
-              {
-                "category": "uma das opções: Assédio, Discriminação, Fraude, Segurança, Conflito, Produção, RH, TI, Financeiro, Comercial, Outro",
-                "department": "nome do departamento/setor mencionado ou null se não mencionado"
-              }`
-            },
-            {
-              role: "user",
-              content: `Classifique esta manifestação:\n\n${conversationText}`
-            }
-          ]
-        },
-        headers: {
-          'x-session-id': sessionId,
-          'x-company-id': companyId || ''
-        }
-      });
-
-      let category = "Outros";
-      let department = null;
-
-      if (!classificationError && classificationData?.choices?.[0]?.message?.content) {
-        try {
-          const classification = JSON.parse(
-            classificationData.choices[0].message.content
-              .replace(/```json\n?/g, '')
-              .replace(/```\n?/g, '')
-              .trim()
-          );
-          category = classification.category || "Outros";
-          department = classification.department || null;
-          console.log("Classification extracted:", { category, department });
-        } catch (e) {
-          console.error("Error parsing classification:", e);
-        }
-      }
-      
-      setSummary(cleanSummary);
+      setSummary(data.summary);
       setIsComplete(true);
-      
-      // Store classification for later use
-      (window as any).__reportClassification = { category, department };
     } catch (error) {
       console.error("Error in handleFinishReport:", error);
       toast({
@@ -392,6 +291,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       setIsLoading(false);
     }
   };
+
 
   const handleSaveReport = async () => {
     if (!companyId) {
@@ -417,11 +317,9 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
         .map(m => `${m.role === "user" ? "Manifestante" : "Ouvidoria"}: ${m.content}`)
         .join("\n\n");
 
-      // Get classification from previous analysis
-      const classification = (window as any).__reportClassification || { 
-        category: "Outros", 
-        department: null 
-      };
+      // Classificação preliminar da taxonomia oficial (sujeita a validação humana).
+      const categoria = TAXONOMIA_LABELS[preliminary?.class_principal ?? "INSUFICIENTE"] ??
+        TAXONOMIA_LABELS.INSUFICIENTE;
 
       // Use the submit-report edge function instead of direct insert
       const { data, error } = await supabase.functions.invoke('submit-report', {
@@ -430,8 +328,9 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
           title: summary.substring(0, 100) || "Manifestação via chat",
           description: conversationText,
           ai_summary: summary,
-          category: classification.category,
-          department: classification.department,
+          category: categoria,
+          department: null,
+
           is_anonymous: true,
           attachments: uploadedAttachments,
           snapshot_unidade: snapshot?.unidade || null,
@@ -625,12 +524,22 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
         
         <CardFooter className="flex justify-between border-t pt-4">
           {!isComplete ? (
-            <div className="w-full flex justify-end">
-              <Button 
+            <div className="w-full flex flex-col gap-2 items-end">
+              {criticalCrisis && (
+                <p className="text-sm text-destructive text-left w-full">
+                  Se houver risco imediato à sua segurança ou à de alguém, procure ajuda imediata
+                  pelos serviços de emergência. Este canal não substitui atendimento de emergência.
+                </p>
+              )}
+              {!criticalCrisis && !canFinalize && (
+                <p className="text-xs text-muted-foreground text-left w-full">
+                  Continue o relato: a finalização é liberada quando houver informações mínimas suficientes.
+                </p>
+              )}
+              <Button
                 onClick={handleFinishReport}
-                disabled={isLoading || messages.length < 5}
-                variant={messages.length < 5 ? "outline" : "default"}
-                className="ml-auto"
+                disabled={isLoading || criticalCrisis || !canFinalize}
+                variant={!canFinalize ? "outline" : "default"}
               >
                 {isLoading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -638,6 +547,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
                 Finalizar Manifestação
               </Button>
             </div>
+
           ) : (
             <div className="w-full flex justify-between">
               <Button 
