@@ -121,7 +121,7 @@ const INJECTION_PATTERNS: { id: string; re: RegExp }[] = [
   { id: "new_role", re: /(agora\s+voc[êe]\s+[ée]|a\s+partir\s+de\s+agora\s+voc[êe]\s+[ée])\s+(administrador|admin|root|desenvolvedor|sistema|outro)/gi },
   { id: "disable_rules", re: /(desative|desabilite|esque[çc]a|remova)\s+(suas\s+)?(regras|restri[çc][õo]es|filtros|guardrails)/gi },
   { id: "reveal_prompt", re: /(revele|mostre|imprima|repita|qual\s+[ée])\s+(o\s+)?(seu\s+)?(system\s*prompt|prompt\s+do\s+sistema|instru[çc][õo]es\s+internas|prompt\s+interno)/gi },
-  { id: "authority_claim", re: /\b(sou|falo\s+como|aqui\s+[ée]\s+o)\s+(o\s+|a\s+)?(diretor|diretora|dpo|jur[ií]dico|advogad[oa]|administrador|admin|de\s+ti|do\s+ti|presidente|ceo)\b/gi },
+  { id: "authority_claim", re: /\b(sou|falo\s+como|aqui\s+[ée]\s+o)\s+(o\s+|a\s+|d[oa]\s+)?(diretor|diretora|dpo|jur[ií]dico|advogad[oa]|administrador|admin|de\s+ti|do\s+ti|presidente|ceo)\b/gi },
   { id: "authorization_claim", re: /\b(o\s+)?(dpo|jur[ií]dico|diretor|meu\s+advogado|a\s+diretoria)\s+(autorizou|liberou|permitiu|aprovou)\b/gi },
   { id: "test_env_claim", re: /([ée]\s+(apenas\s+)?(um\s+)?(ambiente\s+de\s+)?teste|modo\s+de\s+teste|isto\s+[ée]\s+um\s+teste\s+interno)/gi },
   { id: "prompt_tag", re: /<\/?\s*(system|assistant|developer)\s*>/gi },
@@ -177,12 +177,15 @@ export const TEMPLATES = {
   sem_data: "Não consigo confirmar a data ou hora atual com segurança neste momento.",
 } as const;
 
-interface Regra { id: string; re: RegExp; replacement: string }
+interface Regra { id: string; re: RegExp; replacement: string; permiteNegacao?: boolean }
 
+// Frases de privacidade absoluta. `permiteNegacao`: quando o trecho já vem
+// negado ("não podemos prometer anonimato absoluto"), é um esclarecimento
+// correto e não deve ser reescrito.
 const REGRAS_PRIVACIDADE_ABSOLUTA: Regra[] = [
-  { id: "anonimato_absoluto", re: /(anonimato\s+(total|absoluto|garantido)|100%\s*an[oô]nim[oa]|completamente\s+an[oô]nim[oa]|totalmente\s+an[oô]nim[oa]|garantimos\s+(o\s+)?anonimato)/gi, replacement: "identidade protegida, com compartilhamento mínimo necessário" },
-  { id: "sigilo_absoluto", re: /(sigilo\s+absoluto|100%\s*sigilos[oa]|blindagem\s+total|garantimos\s+(o\s+)?sigilo)/gi, replacement: "confidencialidade conforme o Aviso de Privacidade" },
-  { id: "impossivel_identificar", re: /(ningu[ée]m\s+saber[áa]\s+quem\s+voc[êe]\s+[ée]|[ée]\s+imposs[íi]vel\s+identificar\s+voc[êe])/gi, replacement: "sua identidade é protegida e o compartilhamento é o mínimo necessário" },
+  { id: "anonimato_absoluto", permiteNegacao: true, re: /(anonimato\s+(total|absoluto|garantido)|100%\s*an[oô]nim[oa]|completamente\s+an[oô]nim[oa]|totalmente\s+an[oô]nim[oa]|garantimos\s+(o\s+)?anonimato)/gi, replacement: "identidade protegida, com compartilhamento mínimo necessário" },
+  { id: "sigilo_absoluto", permiteNegacao: true, re: /(sigilo\s+absoluto|100%\s*sigilos[oa]|blindagem\s+total|garantimos\s+(o\s+)?sigilo)/gi, replacement: "confidencialidade conforme o Aviso de Privacidade" },
+  { id: "impossivel_identificar", permiteNegacao: true, re: /(ningu[ée]m\s+saber[áa]\s+quem\s+voc[êe]\s+[ée]|[ée]\s+imposs[íi]vel\s+identificar\s+voc[êe])/gi, replacement: "sua identidade é protegida e o compartilhamento é o mínimo necessário" },
 ];
 
 const REGRAS_ACAO_FICTICIA: Regra[] = [
@@ -191,7 +194,7 @@ const REGRAS_ACAO_FICTICIA: Regra[] = [
 ];
 
 const REGRAS_JURIDICAS: Regra[] = [
-  { id: "verdicto_juridico", re: /[^.!?\n]*\b(houve\s+(crime|fraude|ass[ée]dio(\s+moral|\s+sexual)?)|[ée]\s+(culpad[oa]|criminos[oa])|configura\s+(crime|ass[ée]dio|fraude)|[ée]\s+(procedente|improcedente)|den[úu]ncia\s+[ée]\s+(verdadeira|falsa))\b[^.!?\n]*[.!?]?/gi, replacement: TEMPLATES.culpa },
+  { id: "verdicto_juridico", re: /[^.!?\n]*(houve\s+(crime|fraude|ass[ée]dio(\s+moral|\s+sexual)?)|(?:[ée]|eh)\s+(culpad[oa]|criminos[oa]|procedente|improcedente)|configura\s+(crime|ass[ée]dio|fraude)|den[úu]ncia\s+(?:[ée]|eh)\s+(verdadeira|falsa))[^.!?\n]*[.!?]?/gi, replacement: TEMPLATES.culpa },
   { id: "punicao", re: /[^.!?\n]*\b(deve\s+ser\s+(demitid[oa]|punid[oa]|afastad[oa])|justa\s+causa|a\s+empresa\s+[ée]\s+obrigada\s+a)\b[^.!?\n]*[.!?]?/gi, replacement: TEMPLATES.culpa },
 ];
 
@@ -225,14 +228,21 @@ export function aplicarGuardrailsSaida(
     ...REGRAS_CLINICAS,
   ];
 
-  for (const { id, re, replacement } of regras) {
+  const NEGACAO = /\b(n[ãa]o|nunca|jamais|sem)\b[^.!?\n]{0,80}$/i;
+
+  for (const { id, re, replacement, permiteNegacao } of regras) {
     re.lastIndex = 0;
-    if (re.test(out)) {
-      violations.push(id);
-      re.lastIndex = 0;
-      out = out.replace(re, replacement);
-    }
+    let alterou = false;
+    out = out.replace(re, (match: string, ...args: unknown[]) => {
+      const offset = args[args.length - 2] as number;
+      const antes = out.slice(Math.max(0, offset - 90), offset);
+      if (permiteNegacao && NEGACAO.test(antes)) return match;
+      alterou = true;
+      return replacement;
+    });
+    if (alterou) violations.push(id);
   }
+
 
   // Nunca expor JSON interno ao usuário.
   if (/"analysis_result"|"class_principal"/.test(out)) {

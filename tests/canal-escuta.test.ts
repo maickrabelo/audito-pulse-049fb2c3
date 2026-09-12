@@ -228,3 +228,17 @@ describe("multi-tenant e isolamento de caso", () => {
     expect(pertenceAoEscopo(outraSessao, exigirEscopo(A))).toBe(false);
   });
 });
+
+describe("privacidade: negada vs afirmada", () => {
+  it("não reescreve esclarecimento negado", () => {
+    const r = aplicarGuardrailsSaida("Não posso prometer anonimato absoluto, mas sua identidade é protegida.");
+    expect(r.violations).toEqual([]);
+    expect(r.text).toContain("Não posso prometer anonimato absoluto");
+  });
+
+  it("bloqueia afirmação absoluta", () => {
+    const r = aplicarGuardrailsSaida("Aqui você tem anonimato absoluto.");
+    expect(r.violations).toContain("anonimato_absoluto");
+    expect(r.text).not.toContain("anonimato absoluto");
+  });
+});

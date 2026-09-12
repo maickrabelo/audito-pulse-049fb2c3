@@ -7,7 +7,7 @@ const features = [
     icon: MessageSquareWarning,
     title: 'Canal de Manifestações',
     description: 'Chat inteligente que guia o colaborador a relatar situações com segurança e anonimato garantido.',
-    highlights: ['100% anônimo', 'Chat com IA', 'Código de rastreio']
+    highlights: ['Identidade protegida', 'Chat com IA', 'Código de rastreio']
   },
   {
     icon: BarChart3,

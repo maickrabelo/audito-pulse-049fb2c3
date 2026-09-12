@@ -162,7 +162,7 @@ serve(async (req) => {
       ai_classification: saida.classificacao_principal === "SST_NR1"
         ? "4A_sst"
         : saida.classificacao_principal === "EMPRESA_CLIENTE"
-          ? "4B_out_of_scope"
+          ? (saida.possivel_ambito_criminal ? "4B_cr" : "4B_out_of_scope")
           : saida.classificacao_principal === "DENUNCIA_MISTA"
             ? "4C_mixed"
             : "pending_ai",
