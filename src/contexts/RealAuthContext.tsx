@@ -17,6 +17,7 @@ type UserRole =
   | 'dpo'
   | 'visualizador'
   | 'triador_sst'
+  | 'gestor_usuarios'
   | null;
 
 interface Profile {
@@ -131,7 +132,9 @@ export const RealAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const navigateByRole = (userRole: UserRole, userProfile: Profile | null) => {
-    if (userProfile?.must_change_password) {
+    if (userRole === 'gestor_usuarios') {
+      navigate('/gestor-usuarios');
+    } else if (userProfile?.must_change_password) {
       navigate('/change-password');
     } else if (userRole === 'pending') {
       navigate('/pending-approval');

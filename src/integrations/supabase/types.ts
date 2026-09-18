@@ -813,6 +813,72 @@ export type Database = {
           },
         ]
       }
+      company_user_invites: {
+        Row: {
+          accepted_at: string | null
+          company_id: string
+          created_at: string
+          email: string
+          expires_at: string | null
+          external_user_id: string | null
+          full_name: string | null
+          id: string
+          invited_by: string | null
+          role: string
+          status: string
+          token_hash: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          company_id: string
+          created_at?: string
+          email: string
+          expires_at?: string | null
+          external_user_id?: string | null
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          role: string
+          status?: string
+          token_hash?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          company_id?: string
+          created_at?: string
+          email?: string
+          expires_at?: string | null
+          external_user_id?: string | null
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          role?: string
+          status?: string
+          token_hash?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_user_invites_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_user_invites_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comunicacoes: {
         Row: {
           assunto: string | null
@@ -1127,6 +1193,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integration_webhook_deliveries: {
+        Row: {
+          attempts: number
+          created_at: string
+          event: string
+          id: string
+          last_attempt_at: string | null
+          payload: Json
+          response_body: string | null
+          response_status: number | null
+          status: string
+          target_url: string | null
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          event: string
+          id?: string
+          last_attempt_at?: string | null
+          payload?: Json
+          response_body?: string | null
+          response_status?: number | null
+          status?: string
+          target_url?: string | null
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          event?: string
+          id?: string
+          last_attempt_at?: string | null
+          payload?: Json
+          response_body?: string | null
+          response_status?: number | null
+          status?: string
+          target_url?: string | null
+        }
+        Relationships: []
       }
       internal_users: {
         Row: {
@@ -2963,6 +3068,7 @@ export type Database = {
         | "triador_sst"
         | "medico_trabalho"
         | "visualizador"
+        | "gestor_usuarios"
       competencia_denuncia:
         | "SST_NR1"
         | "EMPRESA_CLIENTE"
@@ -3153,6 +3259,7 @@ export const Constants = {
         "triador_sst",
         "medico_trabalho",
         "visualizador",
+        "gestor_usuarios",
       ],
       competencia_denuncia: [
         "SST_NR1",

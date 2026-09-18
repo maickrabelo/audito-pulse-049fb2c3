@@ -31,6 +31,8 @@ import PoliticaRetencao from "./pages/PoliticaRetencao";
 import TriagemAMO from "./pages/TriagemAMO";
 import TriadorDashboard from "./pages/TriadorDashboard";
 import AvisoPrivacidadeCanal from "./pages/AvisoPrivacidadeCanal";
+import CompanyUserManager from "./pages/CompanyUserManager";
+import AcceptInvite from "./pages/AcceptInvite";
 import TermsGate from "./components/legal/TermsGate";
 
 const queryClient = new QueryClient();
@@ -66,6 +68,8 @@ const App = () => (
               <Route path="/master-dashboard" element={<MasterDashboard />} />
               <Route path="/user-management" element={<UserManagement />} />
               <Route path="/empresa/usuarios" element={<CompanyUsers />} />
+              <Route path="/gestor-usuarios" element={<CompanyUserManager />} />
+              <Route path="/convite" element={<AcceptInvite />} />
               <Route path="/company-dashboard/:id" element={<Dashboard />} />
               <Route path="/sst-dashboard" element={<SSTDashboard />} />
               <Route path="/report/:companySlug" element={<CompanyReport />} />

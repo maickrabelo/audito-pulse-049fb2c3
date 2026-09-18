@@ -8,6 +8,20 @@
       "when": 1789171104287,
       "tag": "0000_chat_ai_audit_and_4bcr",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789724224182,
+      "tag": "0001_add_gestor_usuarios_role",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789724249230,
+      "tag": "0002_company_user_invites_and_webhook_deliveries",
+      "breakpoints": true
     }
   ]
 }
