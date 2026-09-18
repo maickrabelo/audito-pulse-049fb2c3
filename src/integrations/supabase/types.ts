@@ -2963,6 +2963,7 @@ export type Database = {
         | "triador_sst"
         | "medico_trabalho"
         | "visualizador"
+        | "gestor_usuarios"
       competencia_denuncia:
         | "SST_NR1"
         | "EMPRESA_CLIENTE"
@@ -3153,6 +3154,7 @@ export const Constants = {
         "triador_sst",
         "medico_trabalho",
         "visualizador",
+        "gestor_usuarios",
       ],
       competencia_denuncia: [
         "SST_NR1",
