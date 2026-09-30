@@ -20,7 +20,7 @@ serve(async (req) => {
       c?.notification_email_1, c?.notification_email_2, c?.notification_email_3,
     ].filter(Boolean);
 
-    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY_1");
     if (RESEND_API_KEY && emails.length) {
       await fetch("https://api.resend.com/emails", {
         method: "POST",

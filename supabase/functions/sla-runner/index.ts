@@ -31,7 +31,7 @@ serve(async (req) => {
   if (ids.length) await supabase.from("sla_prazos").update({ em_atraso: true }).in("id", ids);
 
   const paraAlertar = (vencidos || []).filter((v: { alerta_enviado_em: string | null }) => !v.alerta_enviado_em);
-  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY_1");
 
   for (const v of paraAlertar) {
     const rep = (v as { reports?: { tracking_code?: string; company_id?: string } }).reports;
