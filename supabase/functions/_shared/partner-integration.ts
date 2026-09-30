@@ -130,10 +130,11 @@ export async function sendInviteEmail(opts: {
     </div>`;
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${lovableKey}`,
+        "X-Connection-Api-Key": connectionKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
