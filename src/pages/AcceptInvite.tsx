@@ -88,6 +88,8 @@ const AcceptInvite = () => {
         return;
       }
       toast({ title: "Cadastro concluído", description: "Bem-vindo(a) à Ouvidoria AMO." });
+      const role = (info as unknown as { role?: string })?.role;
+      navigate(role === "gestor_usuarios" ? "/gestor-usuarios" : "/dashboard", { replace: true });
     } catch (e) {
       toast({
         title: "Não foi possível concluir",
