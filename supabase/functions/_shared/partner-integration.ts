@@ -101,8 +101,11 @@ export async function sendInviteEmail(opts: {
   token: string;
   isManager: boolean;
 }): Promise<{ ok: boolean; error?: string }> {
-  const apiKey = Deno.env.get("RESEND_API_KEY_1");
-  if (!apiKey) return { ok: false, error: "RESEND_API_KEY não configurada" };
+  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+  const connectionKey = Deno.env.get("RESEND_API_KEY_1");
+  if (!lovableKey || !connectionKey) {
+    return { ok: false, error: "Credenciais de e-mail não configuradas" };
+  }
 
   const link = `${APP_URL}/convite?token=${opts.token}`;
   const greeting = opts.fullName ? `Olá, ${opts.fullName}!` : "Olá!";
@@ -127,10 +130,11 @@ export async function sendInviteEmail(opts: {
     </div>`;
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${lovableKey}`,
+        "X-Connection-Api-Key": connectionKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

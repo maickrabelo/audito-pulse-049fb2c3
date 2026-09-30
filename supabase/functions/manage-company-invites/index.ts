@@ -49,8 +49,16 @@ Deno.serve(async (req) => {
     ]);
 
     const roles = (callerRoles ?? []).map((r: { role: string }) => r.role);
-    const companyId = callerProfile?.company_id ?? null;
-    if (!roles.some((r) => MANAGER_ROLES.includes(r)) || !companyId) {
+    const isAdmin = roles.includes("admin");
+    if (!roles.some((r) => MANAGER_ROLES.includes(r))) {
+      return json({ error: "Sem permissão para gerenciar usuários." }, 403);
+    }
+
+    const body = await req.json().catch(() => ({}));
+    const action = String(body.action ?? "list");
+    // Admin sem empresa vinculada pode agir informando company_id no corpo.
+    const companyId = callerProfile?.company_id ?? (isAdmin ? String(body.company_id ?? "") || null : null);
+    if (!companyId) {
       return json({ error: "Sem permissão para gerenciar usuários." }, 403);
     }
 
@@ -60,9 +68,6 @@ Deno.serve(async (req) => {
       .eq("id", companyId)
       .maybeSingle();
     if (!company) return json({ error: "Empresa não encontrada" }, 404);
-
-    const body = await req.json().catch(() => ({}));
-    const action = String(body.action ?? "list");
 
     const loadUsers = async () => {
       const { data: profiles } = await admin
