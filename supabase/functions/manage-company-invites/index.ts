@@ -69,9 +69,6 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (!company) return json({ error: "Empresa não encontrada" }, 404);
 
-    const body = await req.json().catch(() => ({}));
-    const action = String(body.action ?? "list");
-
     const loadUsers = async () => {
       const { data: profiles } = await admin
         .from("profiles")
