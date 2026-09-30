@@ -709,7 +709,7 @@ Deno.serve(async (req) => {
           });
 
           await resend.emails.send({
-            from: "SOIA <noreply@sfrfranco.com.br>",
+            from: "Ouvidoria AMO <nao-responda@soia.app.br>",
             to: [email.trim().toLowerCase()],
             subject: "Bem-vindo ao SOIA - Teste Grátis para Gestoras SST",
             html: `

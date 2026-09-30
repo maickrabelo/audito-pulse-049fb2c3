@@ -26,7 +26,7 @@ serve(async (req) => {
         method: "POST",
         headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: "Ouvidoria AMO <alertas@grupoamo.com.br>",
+          from: "Ouvidoria AMO <alertas@soia.app.br>",
           to: emails,
           subject: `🚨 ALERTA GRAVE E IMINENTE — Manifestação ${r.tracking_code}`,
           html: `<h2>Alerta de risco grave e iminente</h2>

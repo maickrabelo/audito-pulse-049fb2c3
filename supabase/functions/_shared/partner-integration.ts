@@ -134,7 +134,7 @@ export async function sendInviteEmail(opts: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Ouvidoria AMO <onboarding@resend.dev>",
+        from: "Ouvidoria AMO <nao-responda@soia.app.br>",
         to: [opts.to],
         subject: `Convite de acesso — Ouvidoria AMO (${opts.companyName})`,
         html,

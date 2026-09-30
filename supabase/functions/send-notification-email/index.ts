@@ -65,7 +65,7 @@ serve(async (req) => {
 
     // Enviar email para todos os endereços configurados
     const emailResponse = await resend.emails.send({
-      from: "Canal de Manifestações <onboarding@resend.dev>",
+      from: "Ouvidoria AMO <nao-responda@soia.app.br>",
       to: emailAddresses,
       subject: `Nova Manifestação Recebida - ${tracking_code}`,
       html: `
