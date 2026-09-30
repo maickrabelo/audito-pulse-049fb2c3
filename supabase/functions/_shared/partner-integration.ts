@@ -101,7 +101,7 @@ export async function sendInviteEmail(opts: {
   token: string;
   isManager: boolean;
 }): Promise<{ ok: boolean; error?: string }> {
-  const apiKey = Deno.env.get("RESEND_API_KEY");
+  const apiKey = Deno.env.get("RESEND_API_KEY_1");
   if (!apiKey) return { ok: false, error: "RESEND_API_KEY não configurada" };
 
   const link = `${APP_URL}/convite?token=${opts.token}`;

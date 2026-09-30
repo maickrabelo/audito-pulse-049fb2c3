@@ -180,7 +180,7 @@ serve(async (req) => {
       logStep("Subscription record created");
 
       // 6. Send welcome email with credentials
-      const resendKey = Deno.env.get("RESEND_API_KEY");
+      const resendKey = Deno.env.get("RESEND_API_KEY_1");
       if (resendKey) {
         const resend = new Resend(resendKey);
         
