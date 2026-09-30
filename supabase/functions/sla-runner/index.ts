@@ -46,7 +46,7 @@ serve(async (req) => {
           method: "POST",
           headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            from: "Ouvidoria AMO <alertas@grupoamo.com.br>",
+            from: "Ouvidoria AMO <alertas@soia.app.br>",
             to: emails,
             subject: `Prazo vencido — manifestação ${rep?.tracking_code ?? ""}`,
             html: `<p>O prazo <b>${(v as { evento: string }).evento}</b> da manifestação <b>${rep?.tracking_code ?? ""}</b> está vencido desde ${new Date((v as { limite_em: string }).limite_em).toLocaleString("pt-BR")}.</p>`,
