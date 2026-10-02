@@ -1999,6 +1999,7 @@ export type Database = {
           snapshot_cargo: string | null
           snapshot_cbo: string | null
           snapshot_ghe: string | null
+          snapshot_setor: string | null
           snapshot_unidade: string | null
           status: string
           testemunhas: string | null
@@ -2069,6 +2070,7 @@ export type Database = {
           snapshot_cargo?: string | null
           snapshot_cbo?: string | null
           snapshot_ghe?: string | null
+          snapshot_setor?: string | null
           snapshot_unidade?: string | null
           status?: string
           testemunhas?: string | null
@@ -2139,6 +2141,7 @@ export type Database = {
           snapshot_cargo?: string | null
           snapshot_cbo?: string | null
           snapshot_ghe?: string | null
+          snapshot_setor?: string | null
           snapshot_unidade?: string | null
           status?: string
           testemunhas?: string | null
