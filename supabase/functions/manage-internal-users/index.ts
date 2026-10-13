@@ -67,9 +67,16 @@ Deno.serve(async (req) => {
         }
       }
 
+      const roleMap: Record<string, string> = {};
+      if (ids.length) {
+        const { data: rr } = await admin.from("user_roles").select("user_id, role").in("user_id", ids);
+        for (const r of rr ?? []) roleMap[(r as { user_id: string }).user_id] = (r as { role: string }).role;
+      }
+
       return json({
         users: (internos ?? []).map((u: Record<string, unknown>) => ({
           ...u,
+          role: roleMap[u.user_id as string] ?? "triador_sst",
           tratamentos: tratativas[u.user_id as string] ?? 0,
         })),
       });

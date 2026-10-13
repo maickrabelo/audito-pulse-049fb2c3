@@ -30,6 +30,7 @@ import PoliticaSeguranca from "./pages/PoliticaSeguranca";
 import PoliticaRetencao from "./pages/PoliticaRetencao";
 import TriagemAMO from "./pages/TriagemAMO";
 import TriadorDashboard from "./pages/TriadorDashboard";
+import TratativasAMO from "./pages/TratativasAMO";
 import AvisoPrivacidadeCanal from "./pages/AvisoPrivacidadeCanal";
 import CompanyUserManager from "./pages/CompanyUserManager";
 import AcceptInvite from "./pages/AcceptInvite";
@@ -80,6 +81,7 @@ const App = () => (
               <Route path="/aviso-de-privacidade-canal" element={<AvisoPrivacidadeCanal />} />
               <Route path="/triagem-amo" element={<TriagemAMO />} />
               <Route path="/triagem-dashboard" element={<TriadorDashboard />} />
+              <Route path="/tratativas-amo" element={<TratativasAMO />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             </TermsGate>

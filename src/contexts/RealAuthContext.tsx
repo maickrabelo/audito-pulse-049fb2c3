@@ -17,6 +17,7 @@ type UserRole =
   | 'dpo'
   | 'visualizador'
   | 'triador_sst'
+  | 'tratador_amo'
   | 'gestor_usuarios'
   | null;
 
@@ -150,6 +151,8 @@ export const RealAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       navigate('/dashboard');
     } else if (userRole === 'triador_sst') {
       navigate('/triagem-dashboard');
+    } else if (userRole === 'tratador_amo') {
+      navigate('/tratativas-amo');
     } else if (userRole === 'sst') {
       navigate('/sst-dashboard');
     } else if (userRole === 'partner') {
