@@ -621,11 +621,11 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
               setShowIdDialog(false);
               toast({
                 title: "Obrigado!",
-                description: "Você será redirecionado para a página inicial."
+                description: "Você será redirecionado para o Canal de Escuta da empresa."
               });
               setTimeout(() => {
-                navigate('/');
-              }, 1500);
+                window.location.assign(window.location.pathname);
+              }, 1200);
             }}>
               Fechar
             </Button>

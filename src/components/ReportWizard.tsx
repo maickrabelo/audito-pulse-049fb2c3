@@ -160,15 +160,20 @@ const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
           {notFound && (
             <Alert variant="destructive">
               <AlertDescription>
-                CPF não localizado no cadastro desta empresa. Verifique os dígitos ou prossiga de forma anônima
+                CPF não localizado no cadastro desta empresa. Verifique os dígitos ou prossiga sem informar o CPF
                 (a manifestação passará por triagem adicional).
               </AlertDescription>
             </Alert>
           )}
-          <div className="flex flex-col sm:flex-row gap-2 justify-between">
-            <Button variant="ghost" onClick={() => { setAnonymous(true); setStep('dados'); }}>
-              Prefiro relatar de forma anônima
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-2 justify-between sm:items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <Button variant="outline" onClick={() => { setAnonymous(true); setStep('dados'); }}>
+                Prefiro não informar CPF
+              </Button>
+              <p className="text-xs text-muted-foreground max-w-xs">
+                Seu CPF não será visualizado pela empresa, esta é somente uma verificação de segurança.
+              </p>
+            </div>
             <Button onClick={validateCpf} disabled={loading || cpf.replace(/\D/g, '').length !== 11}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Validar
             </Button>

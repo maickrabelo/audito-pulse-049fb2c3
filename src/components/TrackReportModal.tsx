@@ -11,15 +11,20 @@ import { supabase } from "@/integrations/supabase/client";
 
 type TrackReportModalProps = {
   className?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
 };
 
-const TrackReportModal = ({ className }: TrackReportModalProps) => {
+const TrackReportModal = ({ className, open: openProp, onOpenChange, hideTrigger }: TrackReportModalProps) => {
   const [reportId, setReportId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState<any>(null);
   const [error, setError] = useState("");
   const { toast } = useToast();
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const open = openProp ?? openState;
+  const setOpen = (v: boolean) => { setOpenState(v); onOpenChange?.(v); };
   const [newUpdate, setNewUpdate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
@@ -206,7 +211,7 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
+      {!hideTrigger && <DialogTrigger asChild>
         <Button 
           variant="outline" 
           className={className}
@@ -214,7 +219,7 @@ const TrackReportModal = ({ className }: TrackReportModalProps) => {
           <Search className="h-4 w-4 mr-2" />
           Acompanhar Manifestação
         </Button>
-      </DialogTrigger>
+      </DialogTrigger>}
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Acompanhar Manifestação</DialogTitle>

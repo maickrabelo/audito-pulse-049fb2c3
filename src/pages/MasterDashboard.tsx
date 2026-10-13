@@ -134,7 +134,16 @@ const MasterDashboard = () => {
     setLoading(true);
     try {
       const [companiesRes, sstRes, assignmentsRes] = await Promise.all([
-        supabase.from('companies').select('*').order('created_at', { ascending: false }),
+        (async () => {
+          const all: any[] = [];
+          for (let from = 0; ; from += 1000) {
+            const r = await supabase.from('companies').select('*').order('created_at', { ascending: false }).range(from, from + 999);
+            if (r.error) return { data: null, error: r.error };
+            all.push(...(r.data || []));
+            if (!r.data || r.data.length < 1000) break;
+          }
+          return { data: all, error: null };
+        })(),
         supabase.from('sst_managers').select('*').order('created_at', { ascending: false }),
         supabase.from('company_sst_assignments').select('*')
       ]);

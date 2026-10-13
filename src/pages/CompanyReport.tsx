@@ -6,12 +6,16 @@ import Footer from '@/components/Footer';
 import ReportWizard from '@/components/ReportWizard';
 import TrackReportModal from '@/components/TrackReportModal';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search, PenLine } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const CompanyReport = () => {
   const { companySlug } = useParams<{ companySlug: string }>();
   const [company, setCompany] = useState<{ id: string; name: string; logo_url: string | null } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [choiceOpen, setChoiceOpen] = useState(true);
+  const [trackOpen, setTrackOpen] = useState(false);
   
   useEffect(() => {
     const fetchCompany = async () => {
@@ -91,16 +95,33 @@ const CompanyReport = () => {
                   className="h-16 object-contain mb-4"
                 />
               )}
-              <h1 className="text-3xl font-bold text-audit-primary">Canal de Escuta {company.name}</h1>
+              <h1 className="text-3xl font-bold text-audit-primary">Canal de Escuta — {company.name}</h1>
               <p className="text-gray-600 mt-2">
                 Aqui você pode registrar sua manifestação de forma anônima e segura.
               </p>
               <div className="mt-4">
-                <TrackReportModal />
+                <TrackReportModal open={trackOpen} onOpenChange={setTrackOpen} />
               </div>
             </div>
           </div>
           
+          <Dialog open={choiceOpen} onOpenChange={setChoiceOpen}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Canal de Escuta — {company.name}</DialogTitle>
+                <DialogDescription>O que você deseja fazer?</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-3">
+                <Button size="lg" variant="outline" className="justify-start h-auto py-4" onClick={() => { setChoiceOpen(false); setTrackOpen(true); }}>
+                  <Search className="h-5 w-5 mr-3" /> Quero acompanhar minha manifestação
+                </Button>
+                <Button size="lg" className="justify-start h-auto py-4" onClick={() => setChoiceOpen(false)}>
+                  <PenLine className="h-5 w-5 mr-3" /> Fazer nova manifestação
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
           <ReportWizard companyId={company.id} companyName={company.name} />
         </div>
       </main>
