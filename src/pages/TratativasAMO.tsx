@@ -170,30 +170,67 @@ const Detalhe = ({ caso, onChanged }: { caso: Caso; onChanged: () => void }) => 
 
   const destinos = useMemo(() => (TRANSICOES[caso.estado] || []).filter(d => DESTINOS_PERMITIDOS.has(d)), [caso.estado]);
 
+  const [files, setFiles] = useState<File[]>([]);
+  const [anexos, setAnexos] = useState<{ id: string; file_name: string; file_path: string; created_at: string }[]>([]);
+
+  const loadAnexos = async () => {
+    const { data } = await supabase.from('report_attachments').select('id, file_name, file_path, created_at').eq('report_id', caso.id).order('created_at', { ascending: false });
+    setAnexos(data || []);
+  };
+  useEffect(() => { loadAnexos(); }, [caso.id]);
+
+  const enviarAnexos = async (): Promise<string[]> => {
+    const nomes: string[] = [];
+    for (const f of files) {
+      if (f.size > 20 * 1024 * 1024) throw new Error(`${f.name} passa de 20 MB`);
+      const path = `${caso.id}/tratativa/${Date.now()}-${f.name.replace(/[^\w.\-]/g, '_')}`;
+      const up = await supabase.storage.from('report-attachments').upload(path, f);
+      if (up.error) throw up.error;
+      const ins = await supabase.from('report_attachments').insert({ report_id: caso.id, file_path: path, file_name: f.name, file_type: f.type || 'application/octet-stream', file_size: f.size });
+      if (ins.error) throw ins.error;
+      nomes.push(f.name);
+    }
+    return nomes;
+  };
+
+  const notaComAnexos = (nomes: string[]) =>
+    [nota.trim(), nomes.length ? `Anexos: ${nomes.join(', ')}` : ''].filter(Boolean).join('\n');
+
+  const abrirAnexo = async (path: string) => {
+    const { data, error } = await supabase.storage.from('report-attachments').createSignedUrl(path, 300);
+    if (error || !data) { toast({ title: 'Não foi possível abrir o anexo', variant: 'destructive' }); return; }
+    window.open(data.signedUrl, '_blank');
+  };
+
   const mover = async (destino: string) => {
     if (destino === 'ENCERRADA' && nota.trim().length < 10) {
       toast({ title: 'Justificativa obrigatória', description: 'Escreva a justificativa de encerramento (mín. 10 caracteres) no campo de observação.', variant: 'destructive' });
       return;
     }
     setBusy(true);
+    let nomes: string[] = [];
+    try { nomes = await enviarAnexos(); } catch (e) { setBusy(false); toast({ title: 'Erro ao enviar anexo', description: (e as Error).message, variant: 'destructive' }); return; }
+    const texto = notaComAnexos(nomes);
     const { data, error } = await supabase.functions.invoke('report-transition', {
-      body: { report_id: caso.id, estado_destino: destino, justificativa: nota.trim() || undefined, motivo: nota.trim() || undefined },
+      body: { report_id: caso.id, estado_destino: destino, justificativa: texto || undefined, motivo: texto || undefined },
     });
     setBusy(false);
     const err = error?.message || (data as { error?: string })?.error;
     if (err) { toast({ title: 'Não foi possível mudar a etapa', description: err, variant: 'destructive' }); return; }
     toast({ title: `Etapa: ${ESTADOS[destino]}` });
-    setNota('');
+    setNota(''); setFiles([]); loadAnexos();
     onChanged();
     loadAll();
   };
 
   const registrarNota = async () => {
-    if (!nota.trim()) return;
+    if (!nota.trim() && files.length === 0) return;
+    let nomes: string[] = [];
+    try { nomes = await enviarAnexos(); } catch (e) { toast({ title: 'Erro ao enviar anexo', description: (e as Error).message, variant: 'destructive' }); return; }
     const { data: u } = await supabase.auth.getUser();
-    const { error } = await supabase.from('report_updates').insert({ report_id: caso.id, user_id: u.user?.id, old_status: caso.estado, new_status: caso.estado, notes: nota.trim() });
+    const { error } = await supabase.from('report_updates').insert({ report_id: caso.id, user_id: u.user?.id, old_status: caso.estado, new_status: caso.estado, notes: notaComAnexos(nomes) });
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
-    setNota(''); loadAll();
+    setNota(''); setFiles([]); loadAll(); loadAnexos();
     toast({ title: 'Observação registrada' });
   };
 
@@ -288,14 +325,33 @@ const Detalhe = ({ caso, onChanged }: { caso: Caso; onChanged: () => void }) => 
             <div className="space-y-2">
               <Label>Observação / justificativa</Label>
               <Textarea rows={3} value={nota} onChange={e => setNota(e.target.value)} placeholder="Registre o que foi feito. Obrigatório para encerrar." />
+              <div className="space-y-1">
+                <Label htmlFor="anexos-tratativa">Anexar arquivos (opcional)</Label>
+                <input id="anexos-tratativa" type="file" multiple className="block text-sm"
+                  onChange={e => setFiles(Array.from(e.target.files || []))} />
+                {files.length > 0 && <p className="text-xs text-muted-foreground">{files.length} arquivo(s) selecionado(s) — serão enviados junto com a observação ou mudança de etapa.</p>}
+              </div>
               <div className="flex gap-2 flex-wrap">
-                <Button size="sm" variant="outline" onClick={registrarNota} disabled={!nota.trim()}>Registrar observação</Button>
+                <Button size="sm" variant="outline" onClick={registrarNota} disabled={!nota.trim() && files.length === 0}>Registrar observação</Button>
                 {destinos.map(d => (
                   <Button key={d} size="sm" disabled={busy} variant={d === 'ENCERRADA' ? 'destructive' : 'default'} onClick={() => mover(d)}>
                     {busy && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}Mover para: {ESTADOS[d]}
                   </Button>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-sm mb-2">Anexos do caso</h4>
+              {anexos.length === 0 ? <p className="text-xs text-muted-foreground">Nenhum anexo.</p> : (
+                <div className="space-y-1">
+                  {anexos.map(a => (
+                    <button key={a.id} type="button" onClick={() => abrirAnexo(a.file_path)} className="block text-xs text-primary underline text-left">
+                      {a.file_name} · {new Date(a.created_at).toLocaleString('pt-BR')}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>

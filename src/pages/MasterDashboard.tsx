@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import NewReportsNotifier from '@/components/NewReportsNotifier';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -1106,6 +1107,7 @@ const MasterDashboard = () => {
         <div className="audit-container">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-audit-primary">Painel Administrativo</h1>
+            <NewReportsNotifier />
           </div>
 
           
