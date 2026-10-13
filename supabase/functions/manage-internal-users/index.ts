@@ -80,6 +80,7 @@ Deno.serve(async (req) => {
       const email = String(body.email ?? "").trim().toLowerCase();
       const fullName = String(body.full_name ?? "").trim();
       const cpf = String(body.cpf ?? "").replace(/\D/g, "");
+      const newRole = body.role === "tratador_amo" ? "tratador_amo" : "triador_sst";
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "E-mail inválido" }, 400);
       if (!fullName || fullName.length > 120) return json({ error: "Nome é obrigatório" }, 400);
@@ -110,8 +111,8 @@ Deno.serve(async (req) => {
         .eq("id", newId);
 
       const { error: roleErr } = await admin
-        .from("user_roles").update({ role: "triador_sst" }).eq("user_id", newId);
-      if (roleErr) await admin.from("user_roles").insert({ user_id: newId, role: "triador_sst" });
+        .from("user_roles").update({ role: newRole }).eq("user_id", newId);
+      if (roleErr) await admin.from("user_roles").insert({ user_id: newId, role: newRole });
 
       const { error: insErr } = await admin.from("internal_users").insert({
         user_id: newId, full_name: fullName, cpf, email, created_by: caller.id,
