@@ -34,6 +34,7 @@ serve(async (req) => {
     const { data: roles } = await admin.from("user_roles").select("role").eq("user_id", user.id);
     const papeis = (roles || []).map((r: { role: string }) => r.role);
     const equipeAmo = papeis.some((p) => ["admin", "triador_sst", "apurador", "comite", "dpo", "medico_trabalho"].includes(p));
+    const tratadorAmo = !equipeAmo && papeis.includes("tratador_amo");
 
     const body = await req.json();
     const { report_id, estado_destino, classificacao, justificativa, motivo } = body as {
@@ -53,8 +54,12 @@ serve(async (req) => {
       .maybeSingle();
     if (!report) return json({ error: "Manifestação não encontrada" }, 404);
 
-    // Autorização: equipe AMO ou usuário da própria empresa
-    if (!equipeAmo) {
+    // Autorização: equipe AMO, tratador AMO (só casos CL-01/mistos, pós-classificação) ou usuário da própria empresa
+    if (tratadorAmo) {
+      if (!["SST_NR1", "DENUNCIA_MISTA"].includes(report.competencia ?? "")) return json({ error: "Sem permissão" }, 403);
+      const permitidosTratador: Estado[] = ["AGUARDANDO_EVIDENCIAS", "EM_ANALISE_TECNICA_AMO", "MEDIDAS_DEFINIDAS", "PLANO_DE_ACAO_ABERTO", "EM_ACOMPANHAMENTO", "AGUARDANDO_VALIDACAO_DE_ENCERRAMENTO", "ENCERRADA"];
+      if (!permitidosTratador.includes(estado_destino)) return json({ error: "Transição restrita à triagem AMO" }, 403);
+    } else if (!equipeAmo) {
       const { data: profile } = await admin.from("profiles").select("company_id").eq("id", user.id).maybeSingle();
       if (!profile || profile.company_id !== report.company_id) return json({ error: "Sem permissão" }, 403);
       const permitidosEmpresa: Estado[] = ["EM_APURACAO_EMPRESA", "MEDIDAS_DEFINIDAS", "PLANO_DE_ACAO_ABERTO", "EM_ACOMPANHAMENTO", "AGUARDANDO_VALIDACAO_DE_ENCERRAMENTO"];
@@ -145,7 +150,7 @@ serve(async (req) => {
       }
     }
     if (estado_destino === "ENCERRADA") {
-      if (!equipeAmo) return json({ error: "Somente a equipe AMO encerra a manifestação" }, 403);
+      if (!equipeAmo && !tratadorAmo) return json({ error: "Somente a equipe AMO encerra a manifestação" }, 403);
       if (!justificativa) return json({ error: "Justificativa de encerramento obrigatória" }, 400);
       update.status = "resolved";
       update.justificativa_humana = justificativa;

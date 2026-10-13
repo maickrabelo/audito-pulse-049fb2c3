@@ -18,6 +18,7 @@ interface InternalUser {
   cpf: string;
   email: string;
   created_at: string;
+  role?: string;
   tratamentos: number;
 }
 
@@ -30,7 +31,7 @@ const InternalUsersCard = () => {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ full_name: '', cpf: '', email: '' });
+  const [form, setForm] = useState({ full_name: '', cpf: '', email: '', role: 'triador_sst' });
   const [credentials, setCredentials] = useState<{ email: string; password: string } | null>(null);
 
   const call = async (body: Record<string, unknown>) => {
@@ -63,7 +64,7 @@ const InternalUsersCard = () => {
     try {
       const data = await call({ action: 'create', ...form });
       setCredentials({ email: data.email as string, password: data.password as string });
-      setForm({ full_name: '', cpf: '', email: '' });
+      setForm({ full_name: '', cpf: '', email: '', role: 'triador_sst' });
       setOpen(false);
       load();
     } catch (e) {
@@ -127,6 +128,14 @@ const InternalUsersCard = () => {
                   <Label>E-mail</Label>
                   <Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
                 </div>
+                <div>
+                  <Label>Tipo de acesso</Label>
+                  <select className="w-full border rounded-md h-10 px-3 bg-background text-sm"
+                    value={form.role} onChange={e => setForm({ ...form, role: e.target.value })}>
+                    <option value="triador_sst">Triagem (Triagem AMO + Manifestações por Categoria)</option>
+                    <option value="tratador_amo">Tratativas AMO (casos CL-01 e mistos encaminhados ao Grupo AMO)</option>
+                  </select>
+                </div>
               </div>
               <DialogFooter>
                 <Button onClick={create} disabled={saving}>
@@ -168,6 +177,7 @@ const InternalUsersCard = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
+                  <Badge variant="secondary">{u.role === 'tratador_amo' ? 'Tratativas AMO' : 'Triagem'}</Badge>
                   <Badge variant="outline">{u.tratamentos} tratamento(s)</Badge>
                   <Button size="sm" variant="outline" onClick={() => resetPassword(u)}>
                     <KeyRound className="h-3 w-3 mr-1" /> Nova senha

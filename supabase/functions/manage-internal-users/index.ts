@@ -67,9 +67,16 @@ Deno.serve(async (req) => {
         }
       }
 
+      const roleMap: Record<string, string> = {};
+      if (ids.length) {
+        const { data: rr } = await admin.from("user_roles").select("user_id, role").in("user_id", ids);
+        for (const r of rr ?? []) roleMap[(r as { user_id: string }).user_id] = (r as { role: string }).role;
+      }
+
       return json({
         users: (internos ?? []).map((u: Record<string, unknown>) => ({
           ...u,
+          role: roleMap[u.user_id as string] ?? "triador_sst",
           tratamentos: tratativas[u.user_id as string] ?? 0,
         })),
       });
@@ -80,6 +87,7 @@ Deno.serve(async (req) => {
       const email = String(body.email ?? "").trim().toLowerCase();
       const fullName = String(body.full_name ?? "").trim();
       const cpf = String(body.cpf ?? "").replace(/\D/g, "");
+      const newRole = body.role === "tratador_amo" ? "tratador_amo" : "triador_sst";
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "E-mail inválido" }, 400);
       if (!fullName || fullName.length > 120) return json({ error: "Nome é obrigatório" }, 400);
@@ -110,8 +118,8 @@ Deno.serve(async (req) => {
         .eq("id", newId);
 
       const { error: roleErr } = await admin
-        .from("user_roles").update({ role: "triador_sst" }).eq("user_id", newId);
-      if (roleErr) await admin.from("user_roles").insert({ user_id: newId, role: "triador_sst" });
+        .from("user_roles").update({ role: newRole }).eq("user_id", newId);
+      if (roleErr) await admin.from("user_roles").insert({ user_id: newId, role: newRole });
 
       const { error: insErr } = await admin.from("internal_users").insert({
         user_id: newId, full_name: fullName, cpf, email, created_by: caller.id,
