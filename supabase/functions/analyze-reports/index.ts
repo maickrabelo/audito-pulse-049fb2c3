@@ -97,7 +97,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Você é um analista estratégico de compliance e recursos humanos. Analise os dados e identifique APENAS insights realmente críticos e importantes para tomada de decisão. Gere entre 1 e 3 insights, mas somente se forem informações estratégicas relevantes. Não force insights genéricos. IMPORTANTE: NUNCA critique a falta de informações nas manifestações, problemas no formulário ou no canal de manifestações - você está analisando PARA o próprio canal. Foque exclusivamente em padrões comportamentais, riscos organizacionais e ações estratégicas."
+            content: "Você é um analista estratégico de compliance e recursos humanos. Analise os dados e identifique APENAS insights realmente críticos e importantes para tomada de decisão. Gere entre 1 e 3 insights, mas somente se forem informações estratégicas relevantes. Não force insights genéricos. IMPORTANTE: NUNCA critique a falta de informações nas manifestações, problemas no formulário ou no canal de escuta - você está analisando PARA o próprio canal. Foque exclusivamente em padrões comportamentais, riscos organizacionais e ações estratégicas."
           },
           {
             role: "user",
@@ -108,7 +108,7 @@ Não force insights genéricos ou óbvios. Seja seletivo e estratégico.
 
 RESTRIÇÕES CRÍTICAS:
 - NUNCA critique a falta de detalhes nas manifestações
-- NUNCA sugira melhorias no formulário ou canal de manifestações
+- NUNCA sugira melhorias no formulário ou canal de escuta
 - NUNCA mencione problemas de coleta de dados ou informações incompletas
 - Foque APENAS em padrões comportamentais e riscos organizacionais dos DADOS EXISTENTES
 

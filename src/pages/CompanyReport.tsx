@@ -91,7 +91,7 @@ const CompanyReport = () => {
                   className="h-16 object-contain mb-4"
                 />
               )}
-              <h1 className="text-3xl font-bold text-audit-primary">Ouvidoria {company.name}</h1>
+              <h1 className="text-3xl font-bold text-audit-primary">Canal de Escuta {company.name}</h1>
               <p className="text-gray-600 mt-2">
                 Aqui você pode registrar sua manifestação de forma anônima e segura.
               </p>

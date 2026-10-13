@@ -4,22 +4,22 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const PoliticaPrivacidade = () => {
   usePageSEO({
-    title: 'Política de Privacidade — Ouvidoria AMO | Agência Mundi',
-    description: 'Política de Privacidade do canal de manifestações Ouvidoria AMO da Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
+    title: 'Política de Privacidade — Canal de Escuta AMO | Agência Mundi',
+    description: 'Política de Privacidade do canal de escuta Canal de Escuta AMO da Agência Mundi, em conformidade com a LGPD (Lei nº 13.709/2018).',
   });
 
   return (
     <LegalLayout title="Política de Privacidade" updatedAt="10 de agosto de 2026">
       <p>
         Esta Política de Privacidade descreve como a <strong>Agência Mundi</strong>, por meio da
-        plataforma <strong>Ouvidoria AMO</strong>, coleta, utiliza, armazena e protege dados pessoais,
+        plataforma <strong>Canal de Escuta AMO</strong>, coleta, utiliza, armazena e protege dados pessoais,
         em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 — LGPD).
       </p>
 
       <h2>1. Papéis no tratamento</h2>
       <p>
         A empresa contratante (cliente) atua como <strong>Controladora</strong> dos dados
-        coletados em seu canal de manifestações. A <strong>Agência Mundi</strong> atua como{' '}
+        coletados em seu canal de escuta. A <strong>Agência Mundi</strong> atua como{' '}
         <strong>Operadora</strong>, tratando dados em nome e conforme instruções da Controladora,
         sendo também responsável pelo desenvolvimento e manutenção técnica da plataforma.
       </p>
@@ -54,7 +54,7 @@ const PoliticaPrivacidade = () => {
 
       <h2>4. Bases legais (art. 7º e 11 da LGPD)</h2>
       <ul>
-        <li><strong>Cumprimento de obrigação legal/regulatória</strong> — canal de manifestações, NR-01;</li>
+        <li><strong>Cumprimento de obrigação legal/regulatória</strong> — canal de escuta, NR-01;</li>
         <li><strong>Execução de contrato</strong> — entre Controladora e Operador;</li>
         <li><strong>Legítimo interesse</strong> — apuração de irregularidades e segurança;</li>
         <li><strong>Consentimento</strong> — quando o manifestante opta por se identificar.</li>

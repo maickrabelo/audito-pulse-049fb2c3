@@ -57,7 +57,7 @@ const ReportWizard: React.FC<Props> = ({ companyId, companyName }) => {
       <Card>
         <CardHeader>
           <CardTitle>Antes de começar</CardTitle>
-          <CardDescription>Leia com atenção este canal de ouvidoria.</CardDescription>
+          <CardDescription>Leia com atenção este Canal de Escuta.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert>

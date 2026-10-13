@@ -78,7 +78,7 @@ const getEmailHTML = (request: PartnerEmailRequest): string => {
               <p>Estamos ansiosos para tê-lo como parceiro!</p>
             </div>
             <div class="footer">
-              <p>SOIA - Sistema de Ouvidoria Inteligente e Automatizado</p>
+              <p>SOIA - Sistema de Canal de Escuta Inteligente e Automatizado</p>
             </div>
           </div>
         </body>
@@ -103,7 +103,7 @@ const getEmailHTML = (request: PartnerEmailRequest): string => {
               <p>Qualquer dúvida, entre em contato conosco.</p>
             </div>
             <div class="footer">
-              <p>SOIA - Sistema de Ouvidoria Inteligente e Automatizado</p>
+              <p>SOIA - Sistema de Canal de Escuta Inteligente e Automatizado</p>
             </div>
           </div>
         </body>
@@ -145,7 +145,7 @@ const getEmailHTML = (request: PartnerEmailRequest): string => {
               <p>Bem-vindo à família SOIA!</p>
             </div>
             <div class="footer">
-              <p>SOIA - Sistema de Ouvidoria Inteligente e Automatizado</p>
+              <p>SOIA - Sistema de Canal de Escuta Inteligente e Automatizado</p>
             </div>
           </div>
         </body>
@@ -177,7 +177,7 @@ const getEmailHTML = (request: PartnerEmailRequest): string => {
               <p>Você pode tentar um novo cadastro após resolver as pendências indicadas.</p>
             </div>
             <div class="footer">
-              <p>SOIA - Sistema de Ouvidoria Inteligente e Automatizado</p>
+              <p>SOIA - Sistema de Canal de Escuta Inteligente e Automatizado</p>
             </div>
           </div>
         </body>
@@ -220,7 +220,7 @@ const handler = async (req: Request): Promise<Response> => {
     const html = getEmailHTML(request);
 
     const emailOptions: any = {
-      from: "Ouvidoria AMO <nao-responda@soia.app.br>",
+      from: "Canal de Escuta AMO <nao-responda@soia.app.br>",
       to: [email],
       subject: subject,
       html: html,

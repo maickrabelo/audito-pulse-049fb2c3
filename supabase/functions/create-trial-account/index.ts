@@ -186,7 +186,7 @@ Deno.serve(async (req) => {
         });
 
         await resend.emails.send({
-          from: "Ouvidoria AMO <nao-responda@soia.app.br>",
+          from: "Canal de Escuta AMO <nao-responda@soia.app.br>",
           to: [email.trim().toLowerCase()],
           subject: "Bem-vindo ao SOIA - Seu período de teste começou!",
           html: `
