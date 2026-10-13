@@ -3056,6 +3056,8 @@ export type Database = {
         Returns: boolean
       }
       is_company_principal: { Args: { _user_id: string }; Returns: boolean }
+      is_report_amo_scope: { Args: { _report_id: string }; Returns: boolean }
+      is_tratador_amo: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role:
@@ -3072,6 +3074,7 @@ export type Database = {
         | "medico_trabalho"
         | "visualizador"
         | "gestor_usuarios"
+        | "tratador_amo"
       competencia_denuncia:
         | "SST_NR1"
         | "EMPRESA_CLIENTE"
@@ -3263,6 +3266,7 @@ export const Constants = {
         "medico_trabalho",
         "visualizador",
         "gestor_usuarios",
+        "tratador_amo",
       ],
       competencia_denuncia: [
         "SST_NR1",
