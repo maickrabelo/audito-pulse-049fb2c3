@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import NewReportsNotifier from '@/components/NewReportsNotifier';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useRealAuth } from '@/contexts/RealAuthContext';
@@ -72,7 +73,7 @@ const TriadorDashboard = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-1">Painel de Tratamento</h1>
+        <div className="flex items-center justify-between"><h1 className="text-3xl font-bold mb-1">Painel de Tratamento</h1><NewReportsNotifier /></div>
         <p className="text-sm text-muted-foreground mb-6">
           Análise e validação humana das manifestações do canal.
         </p>

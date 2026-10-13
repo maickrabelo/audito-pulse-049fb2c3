@@ -5,7 +5,7 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 const features = [
   {
     icon: MessageSquareWarning,
-    title: 'Canal de Manifestações',
+    title: 'Canal de Escuta',
     description: 'Chat inteligente que guia o colaborador a relatar situações com segurança e anonimato garantido.',
     highlights: ['Identidade protegida', 'Chat com IA', 'Código de rastreio']
   },
@@ -65,7 +65,7 @@ const FeaturesSection = () => {
             Sistema completo para gestão de riscos psicossociais
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            O Ouvidoria AMO integra canal de manifestações, pesquisa de clima, avaliação de burnout, levantamento de riscos psicossociais e compliance NR-01 em uma solução completa.
+            O Canal de Escuta AMO integra canal de escuta, pesquisa de clima, avaliação de burnout, levantamento de riscos psicossociais e compliance NR-01 em uma solução completa.
           </p>
         </div>
 

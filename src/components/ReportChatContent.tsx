@@ -314,7 +314,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       // Extract conversation for description
       const conversationText = messages
         .filter(m => m.role !== "system")
-        .map(m => `${m.role === "user" ? "Manifestante" : "Ouvidoria"}: ${m.content}`)
+        .map(m => `${m.role === "user" ? "Manifestante" : "Canal de Escuta"}: ${m.content}`)
         .join("\n\n");
 
       // Classificação preliminar da taxonomia oficial (sujeita a validação humana).
@@ -425,7 +425,7 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
       <Card className="shadow-md">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Chat da Ouvidoria</span>
+            <span>Chat da Canal de Escuta</span>
             {isComplete && <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300">Finalizado</Badge>}
           </CardTitle>
           <CardDescription>
@@ -621,11 +621,11 @@ export const ReportChat: React.FC<ReportChatProps> = ({ companyId, snapshot, met
               setShowIdDialog(false);
               toast({
                 title: "Obrigado!",
-                description: "Você será redirecionado para a página inicial."
+                description: "Você será redirecionado para o Canal de Escuta da empresa."
               });
               setTimeout(() => {
-                navigate('/');
-              }, 1500);
+                window.location.assign(window.location.pathname);
+              }, 1200);
             }}>
               Fechar
             </Button>

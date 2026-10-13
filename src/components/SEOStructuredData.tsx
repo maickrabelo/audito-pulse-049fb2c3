@@ -15,7 +15,7 @@ const SEOStructuredData: React.FC<SEOStructuredDataProps> = ({ faqs = [] }) => {
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Ouvidoria AMO',
+    name: 'Canal de Escuta AMO',
     description: 'Sistema NR-01 para levantamento e gestão de riscos psicossociais no trabalho',
     url: siteUrl,
     logo: `${siteUrl}/lovable-uploads/Logo_GrupoAMO.png`,
@@ -30,7 +30,7 @@ const SEOStructuredData: React.FC<SEOStructuredDataProps> = ({ faqs = [] }) => {
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Ouvidoria AMO - Sistema NR-01 de Riscos Psicossociais',
+    name: 'Canal de Escuta AMO - Sistema NR-01 de Riscos Psicossociais',
     url: siteUrl,
     description: 'Sistema completo para NR-01 e levantamento de riscos psicossociais',
   };
@@ -38,10 +38,10 @@ const SEOStructuredData: React.FC<SEOStructuredDataProps> = ({ faqs = [] }) => {
   const softwareSchema = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Ouvidoria AMO - Sistema NR-01',
+    name: 'Canal de Escuta AMO - Sistema NR-01',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
-    description: 'Plataforma completa para gestão de riscos psicossociais conforme NR-01, canal de manifestações anônimo, pesquisa de clima organizacional e avaliação de burnout.',
+    description: 'Plataforma completa para gestão de riscos psicossociais conforme NR-01, canal de escuta anônimo, pesquisa de clima organizacional e avaliação de burnout.',
     offers: {
       '@type': 'Offer',
       price: '0',

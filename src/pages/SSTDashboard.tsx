@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import NewReportsNotifier from '@/components/NewReportsNotifier';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -279,6 +280,7 @@ const SSTDashboard = () => {
               <p className="text-muted-foreground mt-1">Gerencie as empresas vinculadas à sua gestão</p>
             </div>
             <div className="flex gap-2 flex-wrap">
+              <NewReportsNotifier />
               <Button
                 variant="outline"
                 onClick={async () => {

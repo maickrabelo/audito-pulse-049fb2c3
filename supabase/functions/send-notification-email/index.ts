@@ -65,7 +65,7 @@ serve(async (req) => {
 
     // Enviar email para todos os endereços configurados
     const emailResponse = await resend.emails.send({
-      from: "Ouvidoria AMO <nao-responda@soia.app.br>",
+      from: "Canal de Escuta AMO <nao-responda@soia.app.br>",
       to: emailAddresses,
       subject: `Nova Manifestação Recebida - ${tracking_code}`,
       html: `
@@ -87,7 +87,7 @@ serve(async (req) => {
           </p>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 12px;">
-            <p>Este é um email automático do Canal de Manifestações.</p>
+            <p>Este é um email automático do Canal de Escuta.</p>
           </div>
         </div>
       `,

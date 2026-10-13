@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import NewReportsNotifier from '@/components/NewReportsNotifier';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -134,7 +135,16 @@ const MasterDashboard = () => {
     setLoading(true);
     try {
       const [companiesRes, sstRes, assignmentsRes] = await Promise.all([
-        supabase.from('companies').select('*').order('created_at', { ascending: false }),
+        (async () => {
+          const all: any[] = [];
+          for (let from = 0; ; from += 1000) {
+            const r = await supabase.from('companies').select('*').order('created_at', { ascending: false }).range(from, from + 999);
+            if (r.error) return { data: null, error: r.error };
+            all.push(...(r.data || []));
+            if (!r.data || r.data.length < 1000) break;
+          }
+          return { data: all, error: null };
+        })(),
         supabase.from('sst_managers').select('*').order('created_at', { ascending: false }),
         supabase.from('company_sst_assignments').select('*')
       ]);
@@ -1097,6 +1107,7 @@ const MasterDashboard = () => {
         <div className="audit-container">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-audit-primary">Painel Administrativo</h1>
+            <NewReportsNotifier />
           </div>
 
           

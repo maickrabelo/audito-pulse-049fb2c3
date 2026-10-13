@@ -494,7 +494,7 @@ const Dashboard = ({ embeddedCompanyId, hideNavigation }: { embeddedCompanyId?: 
           
           {companySlug && (
             <div className="mt-4 p-4 bg-muted rounded-lg space-y-3">
-              <p className="text-sm font-medium text-muted-foreground">Canal de Manifestações:</p>
+              <p className="text-sm font-medium text-muted-foreground">Canal de Escuta:</p>
               <div className="flex items-center gap-2">
                 <a 
                   href={`${window.location.origin}/report/${companySlug}`}

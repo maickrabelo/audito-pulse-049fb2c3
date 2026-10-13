@@ -36,6 +36,13 @@
       "when": 1791909437579,
       "tag": "0004_tratador_amo_role",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791910890130,
+      "tag": "0005_amo_team_view_attachment_files",
+      "breakpoints": true
     }
   ]
 }

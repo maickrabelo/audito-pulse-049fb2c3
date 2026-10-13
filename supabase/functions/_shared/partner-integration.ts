@@ -110,12 +110,12 @@ export async function sendInviteEmail(opts: {
   const link = `${APP_URL}/convite?token=${opts.token}`;
   const greeting = opts.fullName ? `Olá, ${opts.fullName}!` : "Olá!";
   const intro = opts.isManager
-    ? `Você foi cadastrado como <strong>gestor de usuários</strong> da Ouvidoria AMO da empresa <strong>${opts.companyName}</strong>. Nesse perfil você cadastra e acompanha os usuários que terão acesso ao canal.`
-    : `Você foi convidado para acessar a Ouvidoria AMO da empresa <strong>${opts.companyName}</strong> com o perfil <strong>${opts.roleLabel}</strong>.`;
+    ? `Você foi cadastrado como <strong>gestor de usuários</strong> da Canal de Escuta AMO da empresa <strong>${opts.companyName}</strong>. Nesse perfil você cadastra e acompanha os usuários que terão acesso ao canal.`
+    : `Você foi convidado para acessar a Canal de Escuta AMO da empresa <strong>${opts.companyName}</strong> com o perfil <strong>${opts.roleLabel}</strong>.`;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color:#222;">
-      <h1 style="color:#0b5d3b; border-bottom:2px solid #0b5d3b; padding-bottom:10px;">Ouvidoria AMO</h1>
+      <h1 style="color:#0b5d3b; border-bottom:2px solid #0b5d3b; padding-bottom:10px;">Canal de Escuta AMO</h1>
       <p>${greeting}</p>
       <p>${intro}</p>
       <p>Para concluir o cadastro, crie sua senha de acesso:</p>
@@ -125,7 +125,7 @@ export async function sendInviteEmail(opts: {
       <p style="font-size:13px;color:#666;">Se o botão não funcionar, copie e cole este endereço no navegador:<br>${link}</p>
       <p style="font-size:13px;color:#666;">Este convite expira em 7 dias. Se você não esperava este e-mail, ignore-o.</p>
       <div style="margin-top:30px;padding-top:16px;border-top:1px solid #ddd;color:#999;font-size:12px;">
-        E-mail automático — Ouvidoria AMO.
+        E-mail automático — Canal de Escuta AMO.
       </div>
     </div>`;
 
@@ -138,9 +138,9 @@ export async function sendInviteEmail(opts: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Ouvidoria AMO <nao-responda@soia.app.br>",
+        from: "Canal de Escuta AMO <nao-responda@soia.app.br>",
         to: [opts.to],
-        subject: `Convite de acesso — Ouvidoria AMO (${opts.companyName})`,
+        subject: `Convite de acesso — Canal de Escuta AMO (${opts.companyName})`,
         html,
       }),
     });

@@ -4,8 +4,8 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const PoliticaSeguranca = () => {
   usePageSEO({
-    title: 'Política de Segurança da Informação — Ouvidoria AMO | Agência Mundi',
-    description: 'Política de Segurança da Informação da plataforma Ouvidoria AMO, com medidas técnicas e organizacionais em conformidade com a LGPD.',
+    title: 'Política de Segurança da Informação — Canal de Escuta AMO | Agência Mundi',
+    description: 'Política de Segurança da Informação da plataforma Canal de Escuta AMO, com medidas técnicas e organizacionais em conformidade com a LGPD.',
   });
 
   return (
@@ -13,7 +13,7 @@ const PoliticaSeguranca = () => {
       <p>
         Esta Política descreve as medidas técnicas e organizacionais adotadas pela{' '}
         <strong>Agência Mundi</strong> para proteger as informações tratadas na plataforma{' '}
-        Ouvidoria AMO, em conformidade com o art. 46 da LGPD.
+        Canal de Escuta AMO, em conformidade com o art. 46 da LGPD.
       </p>
 
       <h2>1. Princípios</h2>

@@ -13,8 +13,8 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const TrialSignup = () => {
   usePageSEO({
-    title: 'Teste Grátis | Sistema de Riscos Psicossociais NR-01 | Ouvidoria AMO',
-    description: 'Teste grátis por 7 dias o sistema NR-01 para levantamento de riscos psicossociais. Canal de manifestações, pesquisa de clima e compliance.',
+    title: 'Teste Grátis | Sistema de Riscos Psicossociais NR-01 | Canal de Escuta AMO',
+    description: 'Teste grátis por 7 dias o sistema NR-01 para levantamento de riscos psicossociais. Canal de Escuta, pesquisa de clima e compliance.',
   });
   const navigate = useNavigate();
   const { toast } = useToast();

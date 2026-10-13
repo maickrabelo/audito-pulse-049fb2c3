@@ -87,7 +87,7 @@ const AcceptInvite = () => {
         navigate("/auth");
         return;
       }
-      toast({ title: "Cadastro concluído", description: "Bem-vindo(a) à Ouvidoria AMO." });
+      toast({ title: "Cadastro concluído", description: "Bem-vindo(a) à Canal de Escuta AMO." });
       const role = (info as unknown as { role?: string })?.role;
       navigate(role === "gestor_usuarios" ? "/gestor-usuarios" : "/dashboard", { replace: true });
     } catch (e) {
@@ -111,8 +111,8 @@ const AcceptInvite = () => {
           </CardTitle>
           <CardDescription>
             {info
-              ? `${info.company_name ?? "Ouvidoria AMO"} — perfil ${info.role_label}`
-              : "Ouvidoria AMO"}
+              ? `${info.company_name ?? "Canal de Escuta AMO"} — perfil ${info.role_label}`
+              : "Canal de Escuta AMO"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

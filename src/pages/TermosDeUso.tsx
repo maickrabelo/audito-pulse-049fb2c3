@@ -4,14 +4,14 @@ import usePageSEO from '@/hooks/usePageSEO';
 
 const TermosDeUso = () => {
   usePageSEO({
-    title: 'Termos de Uso — Ouvidoria AMO | Agência Mundi',
-    description: 'Termos de Uso da plataforma Ouvidoria AMO, canal de manifestações e ouvidoria da Agência Mundi.',
+    title: 'Termos de Uso — Canal de Escuta AMO | Agência Mundi',
+    description: 'Termos de Uso da plataforma Canal de Escuta AMO, canal de escuta e ouvidoria da Agência Mundi.',
   });
 
   return (
     <LegalLayout title="Termos de Uso" updatedAt="10 de agosto de 2026">
       <p>
-        Estes Termos regem o uso da plataforma <strong>Ouvidoria AMO</strong>,
+        Estes Termos regem o uso da plataforma <strong>Canal de Escuta AMO</strong>,
         de titularidade da <strong>Agência Mundi</strong>. Ao acessar ou utilizar a plataforma, o usuário
         concorda integralmente com estes Termos e com a{' '}
         <a href="/politica-de-privacidade">Política de Privacidade</a>.
@@ -19,8 +19,8 @@ const TermosDeUso = () => {
 
       <h2>1. Definições</h2>
       <ul>
-        <li><strong>Plataforma</strong>: sistema Ouvidoria AMO, incluindo site, painéis e APIs.</li>
-        <li><strong>Controladora</strong>: empresa cliente que contrata o canal de manifestações.</li>
+        <li><strong>Plataforma</strong>: sistema Canal de Escuta AMO, incluindo site, painéis e APIs.</li>
+        <li><strong>Controladora</strong>: empresa cliente que contrata o canal de escuta.</li>
         <li><strong>Operador</strong>: Agência Mundi, titular da plataforma.</li>
         <li><strong>Desenvolvedora/Mantenedora</strong>: Agência Mundi, responsável pelo desenvolvimento, operação técnica, segurança e manutenção da plataforma.</li>
         <li><strong>Usuário</strong>: qualquer pessoa que acesse a plataforma, incluindo manifestantes, gestores e administradores.</li>

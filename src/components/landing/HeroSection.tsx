@@ -16,11 +16,11 @@ const HeroSection = () => {
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm mb-8 animate-fade-in">
             <Shield className="h-4 w-4" />
-            <span>Canal de Ouvidoria</span>
+            <span>Canal de Canal de Escuta</span>
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-10 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            Sistema de Ouvidoria
+            Sistema de Canal de Escuta
             <br />
             <span className="text-audit-secondary">Grupo AMO</span>
           </h1>

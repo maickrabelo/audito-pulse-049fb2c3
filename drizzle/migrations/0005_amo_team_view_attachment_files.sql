@@ -1,0 +1,2 @@
+create policy "AMO team view report attachments files" on storage.objects for select to authenticated
+using (bucket_id = 'report-attachments' and (public.is_tratador_amo(auth.uid()) or public.is_amo_team(auth.uid()) or public.has_role(auth.uid(),'sst')));

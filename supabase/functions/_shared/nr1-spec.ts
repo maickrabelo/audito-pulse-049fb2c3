@@ -50,7 +50,7 @@ export function preProcessar(texto: string): string {
 // ---------------------------------------------------------------------------
 // Prompt do motor de IA
 // ---------------------------------------------------------------------------
-export const SYSTEM_PROMPT = `MOTOR DE TRIAGEM do Canal de Manifestações SST/NR-1 (Grupo AMO Saúde). Sua saída é SUGESTÃO sujeita a validação humana obrigatória.
+export const SYSTEM_PROMPT = `MOTOR DE TRIAGEM do Canal de Escuta SST/NR-1 (Grupo AMO Saúde). Sua saída é SUGESTÃO sujeita a validação humana obrigatória.
 
 PODE: triar, definir competência, classificar risco grave/imediato e pilares psicossociais da parte SST, separar escopos, sugerir evidências, listar dados faltantes, informar confiança.
 NÃO PODE: julgar mérito, afirmar culpa, confirmar assédio juridicamente, diagnosticar, punir, encerrar, investigar, presumir fatos ou identificar pessoas.
