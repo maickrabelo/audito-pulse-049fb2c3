@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import TriagemAMO from './TriagemAMO';
+import CompaniesListTab from '@/components/triador/CompaniesListTab';
 
 interface ReportRow {
   id: string;
@@ -82,6 +83,7 @@ const TriadorDashboard = () => {
           <TabsList className="mb-4">
             <TabsTrigger value="reports-cat">Manifestações por Categoria</TabsTrigger>
             <TabsTrigger value="triagem">Triagem AMO</TabsTrigger>
+            <TabsTrigger value="empresas">Empresas Cadastradas</TabsTrigger>
           </TabsList>
 
           <TabsContent value="reports-cat">
@@ -159,6 +161,10 @@ const TriadorDashboard = () => {
 
           <TabsContent value="triagem">
             <TriagemAMO embedded />
+          </TabsContent>
+
+          <TabsContent value="empresas">
+            <CompaniesListTab />
           </TabsContent>
         </Tabs>
       </main>
