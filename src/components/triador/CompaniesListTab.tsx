@@ -16,6 +16,18 @@ const CompaniesListTab = () => {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
+  const { toast } = useToast();
+
+  const reportUrl = (slug: string) => `${window.location.origin}/report/${slug}`;
+
+  const copyLink = async (slug: string, name: string) => {
+    try {
+      await navigator.clipboard.writeText(reportUrl(slug));
+      toast({ title: 'Link copiado', description: `Link do Canal de Escuta de ${name} copiado.` });
+    } catch {
+      toast({ title: 'Erro ao copiar', description: 'Não foi possível copiar o link.', variant: 'destructive' });
+    }
+  };
 
   useEffect(() => {
     (async () => {
