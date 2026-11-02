@@ -10,14 +10,16 @@ interface QRCodeDownloaderProps {
   variant?: 'default' | 'outline' | 'ghost';
   size?: 'default' | 'sm' | 'lg';
   className?: string;
+  iconOnly?: boolean;
 }
 
-export const QRCodeDownloader: React.FC<QRCodeDownloaderProps> = ({ 
-  url, 
-  filename, 
+export const QRCodeDownloader: React.FC<QRCodeDownloaderProps> = ({
+  url,
+  filename,
   variant = 'outline',
   size = 'default',
-  className 
+  className,
+  iconOnly = false,
 }) => {
   const { toast } = useToast();
 
@@ -63,14 +65,15 @@ export const QRCodeDownloader: React.FC<QRCodeDownloaderProps> = ({
   };
 
   return (
-    <Button 
-      variant={variant} 
+    <Button
+      variant={variant}
       size={size}
       onClick={handleDownload}
       className={className}
+      title={iconOnly ? 'Baixar QR Code' : undefined}
     >
-      <Download className="h-4 w-4 mr-2" />
-      Baixar QR Code
+      <Download className={`h-4 w-4 ${iconOnly ? '' : 'mr-2'}`} />
+      {!iconOnly && 'Baixar QR Code'}
     </Button>
   );
 };
