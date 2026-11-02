@@ -72,9 +72,20 @@ const CompaniesListTab = () => {
                     <div className="text-xs text-muted-foreground">CNPJ: {c.cnpj || '—'}{c.email ? ` · ${c.email}` : ''} · {c.subscription_status === 'active' ? 'Ativa' : c.subscription_status === 'pending' ? 'Pendente' : 'Inativa'}</div>
                   </div>
                   {c.slug && (
-                    <Button size="sm" variant="outline" onClick={() => window.open(`${window.location.origin}/report/${c.slug}`, '_blank')}>
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <Button size="sm" variant="outline" title="Copiar link do canal" onClick={() => copyLink(c.slug!, c.name)}>
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <QRCodeDownloader
+                        url={reportUrl(c.slug)}
+                        filename={`qrcode-canal-${c.slug}.png`}
+                        size="sm"
+                        className="[&>svg]:mr-0 px-2"
+                      />
+                      <Button size="sm" variant="outline" title="Abrir canal" onClick={() => window.open(reportUrl(c.slug!), '_blank')}>
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </div>
                   )}
                 </div>
               ))}
