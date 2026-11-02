@@ -80,7 +80,8 @@ const CompaniesListTab = () => {
                         url={reportUrl(c.slug)}
                         filename={`qrcode-canal-${c.slug}.png`}
                         size="sm"
-                        className="[&>svg]:mr-0 px-2"
+                        iconOnly
+                        className="px-2"
                       />
                       <Button size="sm" variant="outline" title="Abrir canal" onClick={() => window.open(reportUrl(c.slug!), '_blank')}>
                         <ExternalLink className="h-4 w-4" />

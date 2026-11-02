@@ -13,12 +13,13 @@ interface QRCodeDownloaderProps {
   iconOnly?: boolean;
 }
 
-export const QRCodeDownloader: React.FC<QRCodeDownloaderProps> = ({ 
-  url, 
-  filename, 
+export const QRCodeDownloader: React.FC<QRCodeDownloaderProps> = ({
+  url,
+  filename,
   variant = 'outline',
   size = 'default',
-  className 
+  className,
+  iconOnly = false,
 }) => {
   const { toast } = useToast();
 
