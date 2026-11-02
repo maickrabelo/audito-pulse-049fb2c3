@@ -3,7 +3,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, ExternalLink } from 'lucide-react';
+import { Loader2, ExternalLink, Copy } from 'lucide-react';
+import { QRCodeDownloader } from '@/components/QRCodeDownloader';
+import { useToast } from '@/hooks/use-toast';
 
 interface Company { id: string; name: string; cnpj: string | null; slug: string | null; email: string | null; subscription_status: string | null; }
 
