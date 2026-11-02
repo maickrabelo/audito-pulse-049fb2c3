@@ -10,6 +10,7 @@ interface QRCodeDownloaderProps {
   variant?: 'default' | 'outline' | 'ghost';
   size?: 'default' | 'sm' | 'lg';
   className?: string;
+  iconOnly?: boolean;
 }
 
 export const QRCodeDownloader: React.FC<QRCodeDownloaderProps> = ({ 
