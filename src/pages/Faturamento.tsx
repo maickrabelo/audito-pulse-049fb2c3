@@ -51,7 +51,7 @@ export default function Faturamento() {
     try {
       const start = new Date(ini + "T00:00:00-03:00").toISOString();
       const end = new Date(fim + "T23:59:59.999-03:00").toISOString();
-      const empresas = await fetchAll<any>((a, b) => supabase.from("companies").select("name, cnpj, created_at").gte("created_at", start).lte("created_at", end).order("created_at").range(a, b));
+      const empresas = await fetchAll<any>((a, b) => supabase.from("companies").select("name, cnpj, created_at").lte("created_at", end).order("created_at").range(a, b));
       const ia = await fetchAll<any>((a, b) => supabase.from("ai_usage_logs").select("function_name, total_tokens, cost_usd").gte("created_at", start).lte("created_at", end).range(a, b));
       const cot = Number(cotacao.replace(",", ".")) || 0;
       const iaUsd = ia.reduce((s, r) => s + Number(r.cost_usd || 0), 0) * MULT_IA;
@@ -72,7 +72,7 @@ export default function Faturamento() {
       doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text("Resumo", 14, y); y += 8;
       doc.setFont("helvetica", "normal"); doc.setFontSize(10);
       const linha = (a: string, b: string, bold = false) => { check(); doc.setFont("helvetica", bold ? "bold" : "normal"); doc.text(a, 14, y); doc.text(b, W - 14, y, { align: "right" }); y += 7; };
-      linha(`Empresas cadastradas no período: ${empresas.length} x ${brl(PRECO_EMPRESA)}`, brl(totEmp));
+      linha(`Empresas na base até o fim do período: ${empresas.length} x ${brl(PRECO_EMPRESA)}`, brl(totEmp));
       linha(`Uso de IA: ${ia.length} processamentos (${usd(iaUsd)} x cotação R$ ${cot.toFixed(2)})`, brl(iaBrl));
       doc.line(14, y - 3, W - 14, y - 3); y += 2;
       doc.setFontSize(12); linha("TOTAL A PAGAR", brl(totEmp + iaBrl), true); doc.setFontSize(10); y += 6;
