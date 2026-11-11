@@ -34,6 +34,7 @@ import TratativasAMO from "./pages/TratativasAMO";
 import AvisoPrivacidadeCanal from "./pages/AvisoPrivacidadeCanal";
 import CompanyUserManager from "./pages/CompanyUserManager";
 import AcceptInvite from "./pages/AcceptInvite";
+import Faturamento from "./pages/Faturamento";
 import TermsGate from "./components/legal/TermsGate";
 
 const queryClient = new QueryClient();
@@ -82,6 +83,7 @@ const App = () => (
               <Route path="/triagem-amo" element={<TriagemAMO />} />
               <Route path="/triagem-dashboard" element={<TriadorDashboard />} />
               <Route path="/tratativas-amo" element={<TratativasAMO />} />
+              <Route path="/faturamento" element={<Faturamento />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             </TermsGate>
